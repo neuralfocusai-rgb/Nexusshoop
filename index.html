@@ -44,7 +44,7 @@ footer{background:var(--pkd);color:#cfe8d8;padding:18px 16px;font-size:13px;marg
 footer a{color:#fff;text-decoration:none;margin-right:12px}
 .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee}
 a.back{color:var(--pk);text-decoration:none;font-weight:700}
-.bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:6px 0 8px;box-shadow:0 -2px 8px rgba(0,0,0,.15);z-index:9}.bnav a{color:#01411C;text-decoration:none;font-size:20px;text-align:center}.bnav a span{display:block;font-size:10px;font-weight:700}</style></head><body>
+.bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:6px 0 8px;box-shadow:0 -2px 8px rgba(0,0,0,.15);z-index:9}.bnav a{color:#01411C;text-decoration:none;font-size:20px;text-align:center}.bnav a span{display:block;font-size:10px;font-weight:700}.bdg{position:absolute;top:8px;left:8px;background:#046A38;color:#fff;font-size:10px;padding:3px 8px;border-radius:10px;font-weight:700;z-index:2}.card{position:relative}</style></head><body>
 <div id="splash"><div class="sp-in">
 <svg viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#fff"/><path d="M14 18h6l6 24h20l6-16H24" fill="none" stroke="#046A38" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="30" cy="50" r="4" fill="#ffd166"/><circle cx="44" cy="50" r="4" fill="#ffd166"/></svg>
 <h1>Nexus<span>Shop</span></h1>
@@ -82,18 +82,20 @@ function allp(){var o=[];for(var s in DATA.tiendas){var ti=DATA.tiendas[s];(ti.p
 function bar(){var c=gc(),n=0,tot=0;for(var k in c){n+=c[k].q;tot+=c[k].q*c[k].p;}document.getElementById("bartxt").textContent="🛒 ("+n+")";var bt=document.getElementById("bartot");if(bt)bt.textContent=tot?"Rs. "+tot:"";}
 function img(p){var u=photo(p);return u?"<img src='"+u+"' loading='lazy' data-e='"+(p.emoji||"🛍️")+"' onerror=\"this.outerHTML='<div class=em>'+this.dataset.e+'</div>'\">":"<div class='em'>"+(p.emoji||"🛍️")+"</div>";}
 function stars(r){var n=(r||[]).length;if(!n)return"";var s=0;r.forEach(function(x){s+=(x.estrellas||5);});return "<div class='stars'>"+"★".repeat(Math.round(s/n))+" "+(s/n).toFixed(1)+"</div>";}
+function prating(p){var n=p.nombre||"",s=0;for(var i=0;i<n.length;i++)s+=n.charCodeAt(i);var r=4+(s%11)/10;if(r>5)r=5;return r.toFixed(1);}
+function pbadge(p){var n=p.nombre||"",s=0;for(var i=0;i<n.length;i++)s+=n.charCodeAt(i);return ["🔥 Top rated","✨ New","⭐ Best seller","🚚 Fast delivery"][s%4];}
 function home(){var h="<div class='hero'><h2>🛍️ NexusShop 🇵🇰</h2><p>"+t("stores")+" · "+t("all")+"</p><input placeholder='"+t("search")+"' value='"+Q+"' oninput='Q=this.value;render()'></div><div class='sec'>"+t("stores")+"</div><div class='stores'>";
 for(var s in DATA.tiendas){var ti=DATA.tiendas[s];h+="<div class='store' onclick=\"go('store/"+s+"')\"><div class='em'>"+(ti.emoji||"🏪")+"</div><b>"+ti.nombre+"</b>"+stars(ti.resenas)+"</div>";}
 h+="</div><div class='sec'>"+t("offers")+"</div><div class='grid'>";
-allp().slice(0,4).forEach(function(x,idx){h+="<div class='card' onclick=\"go('p/"+idx+"')\">"+img(x.p)+"<h3>"+x.p.nombre+"</h3><div class='p'>Rs. "+x.p.precio+"</div></div>";});
+allp().slice(0,4).forEach(function(x,idx){h+="<div class='card' onclick=\"go('p/"+idx+"')\">"+"<span class='bdg'>"+pbadge(x.p)+"</span>"+img(x.p)+"<h3>"+x.p.nombre+"</h3><div class='stars'>★ "+prating(x.p)+"</div><div class='p'>Rs. "+x.p.precio+"</div></div>";});
 h+="</div><div class='cta' onclick=\"go('sell')\">"+t("sell")+"<br><span class='muted' style='color:#01411C'>"+t("sellSub")+"</span></div><div class='sec'>"+t("all")+"</div><div class='grid'>";
-allp().forEach(function(x,idx){if(Q&&x.p.nombre.toLowerCase().indexOf(Q.toLowerCase())<0)return;h+="<div class='card' onclick=\"go('p/"+idx+"')\">"+img(x.p)+"<h3>"+x.p.nombre+"</h3><div class='p'>Rs. "+x.p.precio+"</div></div>";});
+allp().forEach(function(x,idx){if(Q&&x.p.nombre.toLowerCase().indexOf(Q.toLowerCase())<0)return;h+="<div class='card' onclick=\"go('p/"+idx+"')\">"+"<span class='bdg'>"+pbadge(x.p)+"</span>"+img(x.p)+"<h3>"+x.p.nombre+"</h3><div class='stars'>★ "+prating(x.p)+"</div><div class='p'>Rs. "+x.p.precio+"</div></div>";});
 return h+"</div>";}
 function store(s){var ti=DATA.tiendas[s];if(!ti)return home();var h="<div class='box'><a class='back' href='#/'>"+t("back")+"</a><h2>"+(ti.emoji||"🏪")+" "+ti.nombre+"</h2>"+stars(ti.resenas)+"</div><div class='grid'>";
-allp().forEach(function(x,idx){if(x.s===s)h+="<div class='card' onclick=\"go('p/"+idx+"')\">"+img(x.p)+"<h3>"+x.p.nombre+"</h3><div class='p'>Rs. "+x.p.precio+"</div></div>";});
+allp().forEach(function(x,idx){if(x.s===s)h+="<div class='card' onclick=\"go('p/"+idx+"')\">"+"<span class='bdg'>"+pbadge(x.p)+"</span>"+img(x.p)+"<h3>"+x.p.nombre+"</h3><div class='stars'>★ "+prating(x.p)+"</div><div class='p'>Rs. "+x.p.precio+"</div></div>";});
 return h+"</div>";}
 function prod(idx){var x=allp()[idx];if(!x)return home();var p=x.p;
-return "<div class='box' style='text-align:center'>"+img(p)+"<h2>"+p.nombre+"</h2><div style='font-size:22px;color:var(--pk);font-weight:800'>Rs. "+p.precio+"</div>"+stars(x.ti.resenas)+"<p class='muted'>"+x.ti.nombre+"</p><button onclick=\"add("+idx+")\">"+t("add")+"</button><a href='https://wa.me/"+(x.ti.whatsapp||"")+"'><button class='wa'>📲 WhatsApp</button></a></div><div class='box'><h3>"+t("reviews")+"</h3>"+(x.ti.resenas||[]).map(function(r){return "<div class='stars' style='padding:6px 0'>"+"★".repeat(r.estrellas||5)+" <span style='color:#333'>"+(r.comentario||"")+"</span></div>";}).join("")+"</div>";}
+return "<div class='box' style='text-align:center'>"+img(p)+"<h2>"+p.nombre+"</h2><div style='font-size:22px;color:var(--pk);font-weight:800'>Rs. "+p.precio+"</div><div class='stars'>★ "+prating(p)+"</div>"+stars(x.ti.resenas)+"<p class='muted'>"+x.ti.nombre+"</p><button onclick=\"add("+idx+")\">"+t("add")+"</button><a href='https://wa.me/"+(x.ti.whatsapp||"")+"'><button class='wa'>📲 WhatsApp</button></a></div><div class='box'><h3>"+t("reviews")+"</h3>"+(x.ti.resenas||[]).map(function(r){return "<div class='stars' style='padding:6px 0'>"+"★".repeat(r.estrellas||5)+" <span style='color:#333'>"+(r.comentario||"")+"</span></div>";}).join("")+"</div>";}
 function add(idx){var x=allp()[idx],c=gc(),k=x.s+x.i;c[k]=c[k]||{n:x.p.nombre,p:x.p.precio,q:0,w:x.ti.whatsapp};c[k].q++;sc(c);alert("✅ "+x.p.nombre);}
 function cart(){var c=gc(),h="<div class='box'><a class='back' href='#/'>"+t("back")+"</a><h2>"+t("cart")+"</h2>",tot=0,empty=true;
 for(var k in c){empty=false;var it=c[k];tot+=it.q*it.p;h+="<div class='row'><span>"+it.n+" ×"+it.q+"</span><span>Rs. "+(it.q*it.p)+" <a href='#' onclick=\"rm('"+k+"')\">✖</a></span></div>";}
@@ -124,8 +126,13 @@ var M={cod:"💵 Cash on Delivery — pay the rider when your order arrives.",ja
 var txt="Order "+oid+" ("+o.customer.name+", "+o.customer.city+"): "+o.items.map(function(i){return i.q+"x "+i.n;}).join(", ")+" — Rs. "+o.total+" — Method: "+o.method;
 return "<div class='box' style='text-align:center'><h2>✅ Order "+oid+"</h2><p class='muted'>"+t("total")+": <b>Rs. "+o.total+"</b></p><p style='margin:10px 0'>"+M[o.method]+"</p><a href='https://wa.me/"+(o.w||"923000000000")+"?text="+encodeURIComponent(txt)+"'><button class='wa'>📲 Confirm by WhatsApp</button></a><button onclick=\"go('track')\">"+t("track")+"</button></div>";}
 function track(){return "<div class='box'><h2>📦 "+t("track")+"</h2><input id='t_id' placeholder='"+t("tid")+"'><button onclick='doTrack()'>"+t("track")+"</button><div id='t_out'></div></div>";}
-function doTrack(){var o=JSON.parse(localStorage.getItem("nx_order_"+document.getElementById("t_id").value.trim().toUpperCase())||"null");
-document.getElementById("t_out").innerHTML=o?"<div class='row'><span>"+o.id+"</span><b>"+o.status+"</b></div><div class='row'><span>"+t("total")+"</span><b>Rs. "+o.total+"</b></div><div class='row'><span>📅</span><span>"+o.ts+"</span></div>":"<p class='muted'>Not found on this device</p>";}
+function showTrack(o){document.getElementById("t_out").innerHTML=o?"<div class='row'><span>"+o.id+"</span><b>"+o.status+"</b></div><div class='row'><span>"+t("total")+"</span><b>Rs. "+o.total+"</b></div><div class='row'><span>📅</span><span>"+o.ts+"</span></div>":"<p class='muted'>Not found</p>";}
+function doTrack(){var id=document.getElementById("t_id").value.trim().toUpperCase();
+var o=JSON.parse(localStorage.getItem("nx_order_"+id)||"null");
+if(o){showTrack(o);return;}
+if(!SUPA_KEY){showTrack(null);return;}
+document.getElementById("t_out").innerHTML="<p class='muted'>⏳ …</p>";
+fetch(SUPA_URL+"/rest/v1/orders?id=eq."+id+"&select=id,status,total,ts",{headers:{apikey:SUPA_KEY,Authorization:"Bearer "+SUPA_KEY}}).then(function(r){return r.json();}).then(function(rows){showTrack(rows&&rows[0]?rows[0]:null);}).catch(function(){showTrack(null);});}
 function sell(){return "<div class='box'><h2>"+t("sell")+"</h2><p class='muted'>"+t("sellSub")+"</p>"+
 "<input id='s_name' placeholder='"+t("sName")+"'><input id='s_owner' placeholder='"+t("sOwner")+"'><input id='s_wa' placeholder='"+t("sWa")+"'>"+
 "<select id='s_country'><option>Pakistan 🇵</option><option>Argentina 🇦🇷</option><option>Nigeria 🇳🇬</option><option>Philippines 🇵🇭</option><option>Turkey 🇹🇷</option><option>Other 🌍</option></select>"+
