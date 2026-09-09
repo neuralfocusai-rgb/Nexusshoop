@@ -44,7 +44,7 @@ footer{background:var(--pkd);color:#cfe8d8;padding:18px 16px;font-size:13px;marg
 footer a{color:#fff;text-decoration:none;margin-right:12px}
 .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee}
 a.back{color:var(--pk);text-decoration:none;font-weight:700}
-</style></head><body>
+.bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:6px 0 8px;box-shadow:0 -2px 8px rgba(0,0,0,.15);z-index:9}.bnav a{color:#01411C;text-decoration:none;font-size:20px;text-align:center}.bnav a span{display:block;font-size:10px;font-weight:700}</style></head><body>
 <div id="splash"><div class="sp-in">
 <svg viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#fff"/><path d="M14 18h6l6 24h20l6-16H24" fill="none" stroke="#046A38" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="30" cy="50" r="4" fill="#ffd166"/><circle cx="44" cy="50" r="4" fill="#ffd166"/></svg>
 <h1>Nexus<span>Shop</span></h1>
@@ -55,7 +55,7 @@ a.back{color:var(--pk);text-decoration:none;font-weight:700}
 <header><div class="logo"><svg viewBox="0 0 64 64" width="26"><rect width="64" height="64" rx="14" fill="#fff"/><path d="M14 18h6l6 24h20l6-16H24" fill="none" stroke="#046A38" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="30" cy="50" r="5" fill="#ffd166"/><circle cx="44" cy="50" r="5" fill="#ffd166"/></svg>Nexus<span>Shop</span></div>
 <div class="hdr"><a href="#/track">📦</a><a href="#/sell">🏪</a><a href="#" onclick="setLang('en')">EN</a><a href="#" onclick="setLang('es')">ES</a><a href="#" onclick="setLang('ur')">اردو</a></div></header>
 <div id="app"></div>
-<div class="bar" onclick="go('cart')"><span id="bartxt">🛒 Cart</span><span id="bartot"></span></div>
+<nav class='bnav'><a href='#/'>🏠<span>Home</span></a><a href='#/sell'>🏪<span>Sell</span></a><a href='#/cart'>🛒<span id='bartxt'>Cart</span></a><a href='#/track'>📦<span>Orders</span></a></nav>
 <footer>
 <a href="#/terms">Terms & Conditions</a><a href="#/privacy">Privacy Policy</a><a href="#/track">Track Order</a><a href="#/sell">Open your store</a>
 <p style="margin-top:10px">© 2026 NexusShop · Built in Argentina 🇦🇷 for Pakistan 🇵🇰 and the world · Partners: add ?ref=CODE</p>
@@ -74,13 +74,13 @@ function enterShop(){sessionStorage.setItem("nx_in","1");document.getElementById
 if(sessionStorage.getItem("nx_in"))document.getElementById("splash").className="hide";
 var mref=location.search.match(/[?&]ref=([A-Za-z0-9_]+)/);if(mref)localStorage.setItem("nx_ref",mref[1]);
 var Q="";
-var PH=[["watch","photo-1524592094714-0f0654e20319"],["earbud","photo-1590658268037-6bf12165a8f"],["headphone","photo-1590658268037-6bf12165a8df"],["power bank","photo-1609091839311-d5365f9ff1c5"],["lawn","photo-1595777457583-95e059d581b8"],["dress","photo-1595777457583-95e059d581b8"],["shalwar","photo-1596755094514-f87e34085b2c"],["kameez","photo-1596755094514-f87e34085b2c"],["dupatta","photo-1601924994987-69e26d50dc26"],["scarf","photo-1601924994987-69e26d50dc26"],["bedsheet","photo-1522708323590-d24dbb6b0267"],["bed","photo-1522708323590-d24dbb6b0267"],["clock","photo-1563861826100-9cb868fdbe1c"],["led","photo-1550989460-0adf9ea622e2"],["light","photo-1550989460-0adf9ea622e2"],["chai","photo-1541167760496-1628856ab772"],["karak","photo-1541167760496-1628856ab772"],["tea","photo-1541167760496-1628856ab772"],["croissant","photo-1555507036-ab1f4038808a"],["fruit","photo-1555507036-ab1f4038808a"]];
+var PH=[["watch","photo-1523275335684-37898b6baf30"],["earbud","photo-1590658268037-6bf12165a8df"],["headphone","photo-1590658268037-6bf12165a8df"],["lawn","photo-1595777457583-95e059d581b8"],["dress","photo-1595777457583-95e059d581b8"],["shalwar","photo-1596755094514-f87e34085b2c"],["kameez","photo-1596755094514-f87e34085b2c"],["dupatta","photo-1601924994987-69e26d50dc26"],["scarf","photo-1601924994987-69e26d50dc26"],["bedsheet","photo-1522708323590-d24dbb6b0267"],["bed","photo-1522708323590-d24dbb6b0267"],["clock","photo-1563861826100-9cb868fdbe1c"],["chai","photo-1541167760496-1628856ab772"],["karak","photo-1541167760496-1628856ab772"],["tea","photo-1541167760496-1628856ab772"]];
 function photo(p){if(p.img)return p.img;var n=(p.nombre||"").toLowerCase();for(var i=0;i<PH.length;i++){if(n.indexOf(PH[i][0])>=0)return "https://images.unsplash.com/"+PH[i][1]+"?w=400&q=60";}return null;}
 function gc(){try{return JSON.parse(localStorage.getItem("nx_cart")||"{}")}catch(e){return{}}}
 function sc(c){localStorage.setItem("nx_cart",JSON.stringify(c));bar();}
 function allp(){var o=[];for(var s in DATA.tiendas){var ti=DATA.tiendas[s];(ti.productos||[]).forEach(function(p,i){o.push({s:s,ti:ti,p:p,i:i});});}return o;}
-function bar(){var c=gc(),n=0,tot=0;for(var k in c){n+=c[k].q;tot+=c[k].q*c[k].p;}document.getElementById("bartxt").textContent=t("cart")+" ("+n+")";document.getElementById("bartot").textContent=tot?"Rs. "+tot:"";}
-function img(p){var u=photo(p);return u?"<img src='"+u+"' loading='lazy'>":"<div class='em'>"+(p.emoji||"🛍️")+"</div>";}
+function bar(){var c=gc(),n=0,tot=0;for(var k in c){n+=c[k].q;tot+=c[k].q*c[k].p;}document.getElementById("bartxt").textContent="🛒 ("+n+")";var bt=document.getElementById("bartot");if(bt)bt.textContent=tot?"Rs. "+tot:"";}
+function img(p){var u=photo(p);return u?"<img src='"+u+"' loading='lazy' data-e='"+(p.emoji||"🛍️")+"' onerror=\"this.outerHTML='<div class=em>'+this.dataset.e+'</div>'\">":"<div class='em'>"+(p.emoji||"🛍️")+"</div>";}
 function stars(r){var n=(r||[]).length;if(!n)return"";var s=0;r.forEach(function(x){s+=(x.estrellas||5);});return "<div class='stars'>"+"★".repeat(Math.round(s/n))+" "+(s/n).toFixed(1)+"</div>";}
 function home(){var h="<div class='hero'><h2>🛍️ NexusShop 🇵🇰</h2><p>"+t("stores")+" · "+t("all")+"</p><input placeholder='"+t("search")+"' value='"+Q+"' oninput='Q=this.value;render()'></div><div class='sec'>"+t("stores")+"</div><div class='stores'>";
 for(var s in DATA.tiendas){var ti=DATA.tiendas[s];h+="<div class='store' onclick=\"go('store/"+s+"')\"><div class='em'>"+(ti.emoji||"🏪")+"</div><b>"+ti.nombre+"</b>"+stars(ti.resenas)+"</div>";}
