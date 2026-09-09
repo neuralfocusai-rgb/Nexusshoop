@@ -70,7 +70,7 @@ var lang=localStorage.getItem("nx_lang")||"en";
 function t(k){return (L[lang]&&L[lang][k])||L.en[k];}
 function setLang(l){lang=l;localStorage.setItem("nx_lang",l);render();}
 function go(r){location.hash="#/"+r;}
-function enterShop(){sessionStorage.setItem("nx_in","1");document.getElementById("splash").className="hide";}
+function enterShop(){document.getElementById("splash").classList.add("hide");sessionStorage.setItem("nx_splash","1");go('home');}
 if(sessionStorage.getItem("nx_in"))document.getElementById("splash").className="hide";
 var mref=location.search.match(/[?&]ref=([A-Za-z0-9_]+)/);if(mref)localStorage.setItem("nx_ref",mref[1]);
 var Q="";
