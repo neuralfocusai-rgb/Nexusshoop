@@ -78,7 +78,8 @@ var PH=[["watch","photo-1523275335684-37898b6baf30"],["earbud","photo-1590658268
 function photo(p){if(p.img)return p.img;var n=(p.nombre||"").toLowerCase();for(var i=0;i<PH.length;i++){if(n.indexOf(PH[i][0])>=0)return "https://images.unsplash.com/"+PH[i][1]+"?w=400&q=60";}return null;}
 function gc(){try{return JSON.parse(localStorage.getItem("nx_cart")||"{}")}catch(e){return{}}}
 function sc(c){localStorage.setItem("nx_cart",JSON.stringify(c));bar();}
-function allp(){var o=[];for(var s in DATA.tiendas){var ti=DATA.tiendas[s];(ti.productos||[]).forEach(function(p,i){o.push({s:s,ti:ti,p:p,i:i});});}return o;}
+function storeObj(id){if(DATA.tiendas[id])return DATA.tiendas[id];for(var i=0;i<DBS.length;i++){if(DBS[i].id===id)return {nombre:DBS[i].name,emoji:"🏪",whatsapp:DBS[i].whatsapp,resenas:[]};}return {nombre:"NexusShop Store",emoji:"🏪",whatsapp:"",resenas:[]};}
+function allp(){var o=[];for(var s in DATA.tiendas){var ti=DATA.tiendas[s];(ti.productos||[]).forEach(function(p,i){o.push({s:s,ti:ti,p:p,i:i});});}DBP.forEach(function(p){o.push({s:p.store_id,ti:storeObj(p.store_id),p:p,db:1});});return o;}
 function bar(){var c=gc(),n=0,tot=0;for(var k in c){n+=c[k].q;tot+=c[k].q*c[k].p;}document.getElementById("bartxt").textContent="🛒 ("+n+")";var bt=document.getElementById("bartot");if(bt)bt.textContent=tot?"Rs. "+tot:"";}
 function img(p){var u=photo(p);return u?"<img src='"+u+"' loading='lazy' data-e='"+(p.emoji||"🛍️")+"' onerror=\"this.outerHTML='<div class=em>'+this.dataset.e+'</div>'\">":"<div class='em'>"+(p.emoji||"🛍️")+"</div>";}
 function stars(r){var n=(r||[]).length;if(!n)return"";var s=0;r.forEach(function(x){s+=(x.estrellas||5);});return "<div class='stars'>"+"★".repeat(Math.round(s/n))+" "+(s/n).toFixed(1)+"</div>";}
@@ -86,16 +87,17 @@ function prating(p){var n=p.nombre||"",s=0;for(var i=0;i<n.length;i++)s+=n.charC
 function pbadge(p){var n=p.nombre||"",s=0;for(var i=0;i<n.length;i++)s+=n.charCodeAt(i);return ["🔥 Top rated","✨ New","⭐ Best seller","🚚 Fast delivery"][s%4];}
 function home(){var h="<div class='hero'><h2>🛍️ NexusShop 🇵🇰</h2><p>"+t("stores")+" · "+t("all")+"</p><input placeholder='"+t("search")+"' value='"+Q+"' oninput='Q=this.value;render()'></div><div class='sec'>"+t("stores")+"</div><div class='stores'>";
 for(var s in DATA.tiendas){var ti=DATA.tiendas[s];h+="<div class='store' onclick=\"go('store/"+s+"')\"><div class='em'>"+(ti.emoji||"🏪")+"</div><b>"+ti.nombre+"</b>"+stars(ti.resenas)+"</div>";}
+DBS.forEach(function(st){h+="<div class='store' onclick=\"go('store/"+st.id+"')\"><div class='em'>🏪</div><b>"+st.name+"</b><div class='stars'>✨ New</div></div>";});
 h+="</div><div class='sec'>"+t("offers")+"</div><div class='grid'>";
 allp().slice(0,4).forEach(function(x,idx){h+="<div class='card' onclick=\"go('p/"+idx+"')\">"+"<span class='bdg'>"+pbadge(x.p)+"</span>"+img(x.p)+"<h3>"+x.p.nombre+"</h3><div class='stars'>★ "+prating(x.p)+"</div><div class='p'>Rs. "+x.p.precio+"</div></div>";});
 h+="</div><div class='cta' onclick=\"go('sell')\">"+t("sell")+"<br><span class='muted' style='color:#01411C'>"+t("sellSub")+"</span></div><div class='sec'>"+t("all")+"</div><div class='grid'>";
 allp().forEach(function(x,idx){if(Q&&x.p.nombre.toLowerCase().indexOf(Q.toLowerCase())<0)return;h+="<div class='card' onclick=\"go('p/"+idx+"')\">"+"<span class='bdg'>"+pbadge(x.p)+"</span>"+img(x.p)+"<h3>"+x.p.nombre+"</h3><div class='stars'>★ "+prating(x.p)+"</div><div class='p'>Rs. "+x.p.precio+"</div></div>";});
 return h+"</div>";}
-function store(s){var ti=DATA.tiendas[s];if(!ti)return home();var h="<div class='box'><a class='back' href='#/'>"+t("back")+"</a><h2>"+(ti.emoji||"🏪")+" "+ti.nombre+"</h2>"+stars(ti.resenas)+"</div><div class='grid'>";
+function store(s){var ti=storeObj(s);var h="<div class='box'><a class='back' href='#/'>"+t("back")+"</a><h2>"+(ti.emoji||"🏪")+" "+ti.nombre+"</h2>"+stars(ti.resenas)+"</div><div class='grid'>";
 allp().forEach(function(x,idx){if(x.s===s)h+="<div class='card' onclick=\"go('p/"+idx+"')\">"+"<span class='bdg'>"+pbadge(x.p)+"</span>"+img(x.p)+"<h3>"+x.p.nombre+"</h3><div class='stars'>★ "+prating(x.p)+"</div><div class='p'>Rs. "+x.p.precio+"</div></div>";});
 return h+"</div>";}
 function prod(idx){var x=allp()[idx];if(!x)return home();var p=x.p;
-return "<div class='box' style='text-align:center'>"+img(p)+"<h2>"+p.nombre+"</h2><div style='font-size:22px;color:var(--pk);font-weight:800'>Rs. "+p.precio+"</div><div class='stars'>★ "+prating(p)+"</div>"+stars(x.ti.resenas)+"<p class='muted'>"+x.ti.nombre+"</p><button onclick=\"add("+idx+")\">"+t("add")+"</button><a href='https://wa.me/"+(x.ti.whatsapp||"")+"'><button class='wa'>📲 WhatsApp</button></a></div><div class='box'><h3>"+t("reviews")+"</h3>"+(x.ti.resenas||[]).map(function(r){return "<div class='stars' style='padding:6px 0'>"+"★".repeat(r.estrellas||5)+" <span style='color:#333'>"+(r.comentario||"")+"</span></div>";}).join("")+"</div>";}
+return "<div class='box' style='text-align:center'>"+img(p)+"<h2>"+p.nombre+"</h2><div style='font-size:22px;color:var(--pk);font-weight:800'>Rs. "+p.precio+"</div><div class='stars'>★ "+prating(p)+"</div>"+stars(x.ti.resenas)+(p.desc?"<p class='muted' style='margin:8px 0'>"+p.desc+"</p>":"")+(p.stock!=null?"<p class='muted'> Stock: "+p.stock+"</p>":"")+"<p class='muted'>"+x.ti.nombre+"</p><button onclick=\"add("+idx+")\">"+t("add")+"</button><a href='https://wa.me/"+(x.ti.whatsapp||"")+"'><button class='wa'>📲 WhatsApp</button></a></div><div class='box'><h3>"+t("reviews")+"</h3>"+(x.ti.resenas||[]).map(function(r){return "<div class='stars' style='padding:6px 0'>"+"★".repeat(r.estrellas||5)+" <span style='color:#333'>"+(r.comentario||"")+"</span></div>";}).join("")+DBR.filter(function(r){return r.product_id===p.id;}).map(function(r){return "<div class='stars' style='padding:6px 0'>"+"★".repeat(r.stars||5)+" <span style='color:#333'>"+(r.comment||"")+" — "+(r.author||"")+"</span></div>";}).join("")+"</div>";}
 function add(idx){var x=allp()[idx],c=gc(),k=x.s+x.i;c[k]=c[k]||{n:x.p.nombre,p:x.p.precio,q:0,w:x.ti.whatsapp};c[k].q++;sc(c);alert("✅ "+x.p.nombre);}
 function cart(){var c=gc(),h="<div class='box'><a class='back' href='#/'>"+t("back")+"</a><h2>"+t("cart")+"</h2>",tot=0,empty=true;
 for(var k in c){empty=false;var it=c[k];tot+=it.q*it.p;h+="<div class='row'><span>"+it.n+" ×"+it.q+"</span><span>Rs. "+(it.q*it.p)+" <a href='#' onclick=\"rm('"+k+"')\">✖</a></span></div>";}
@@ -159,6 +161,18 @@ else if(h==="#/terms")app.innerHTML=terms();
 else if(h==="#/privacy")app.innerHTML=privacy();
 else app.innerHTML=home();
 bar();window.scrollTo(0,0);}
-window.onhashchange=render;render();
+var DBP=[],DBS=[],DBR=[];
+function loadDB(){if(!SUPA_KEY){render();return;}
+var H={apikey:SUPA_KEY,Authorization:"Bearer "+SUPA_KEY};
+Promise.all([
+fetch(SUPA_URL+"/rest/v1/products?active=eq.true&select=*&order=created_at.desc",{headers:H}).then(function(r){return r.json();}).catch(function(){return [];}),
+fetch(SUPA_URL+"/rest/v1/stores?active=eq.true&select=*",{headers:H}).then(function(r){return r.json();}).catch(function(){return [];}),
+fetch(SUPA_URL+"/rest/v1/reviews?select=*",{headers:H}).then(function(r){return r.json();}).catch(function(){return [];})
+]).then(function(res){
+DBP=(res[0]||[]).map(function(r){return {nombre:r.name,precio:Number(r.price),img:(r.images&&r.images[0])||"",emoji:r.emoji||"🛍️",desc:r.description,specs:r.specs,images:r.images,stock:r.stock,id:r.id,store_id:r.store_id};});
+DBS=(res[1]||[]).filter(function(x){return !DATA.tiendas[x.id];});
+DBR=res[2]||[];
+render();}).catch(function(){render();});}
+window.onhashchange=render;loadDB();
 if("serviceWorker" in navigator)navigator.serviceWorker.register("/sw.js").catch(function(){});
 </script></body></html>
