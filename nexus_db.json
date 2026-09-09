@@ -1,0 +1,26 @@
+{"tiendas":{
+"karachi_electronics":{"nombre":"Karachi Electronics","whatsapp":"923001234567","emoji":"📱",
+"resenas":[{"estrellas":5,"comentario":"بہترین سروس"},{"estrellas":4,"comentario":"Fast delivery"}],
+"productos":[
+{"nombre":"Smart Watch","precio":2499,"emoji":"⌚","categoria":"Electronics","desc":"Bluetooth, heart rate, waterproof."},
+{"nombre":"Wireless Earbuds","precio":1899,"emoji":"🎧","categoria":"Electronics","desc":"Noise cancellation, 24hr battery."},
+{"nombre":"Power Bank 20000mAh","precio":3200,"emoji":"🔋","categoria":"Electronics","desc":"Fast charging, dual USB."}]},
+"lahore_fashion":{"nombre":"Lahore Fashion","whatsapp":"923009876543","emoji":"👗",
+"resenas":[{"estrellas":5,"comentario":"Beautiful collection!"},{"estrellas":5,"comentario":"بہت اچھا"}],
+"productos":[
+{"nombre":"Lawn Suit 3pc","precio":4500,"emoji":"👗","categoria":"Fashion","desc":"Premium cotton lawn, unstitched."},
+{"nombre":"Men Shalwar Kameez","precio":3800,"emoji":"👔","categoria":"Fashion","desc":"Wash & wear fabric."},
+{"nombre":"Dupatta Embroidered","precio":1200,"emoji":"🧣","categoria":"Fashion","desc":"Chiffon with handwork."}]},
+"islamabad_home":{"nombre":"Islamabad Home","whatsapp":"923211112222","emoji":"🏠",
+"resenas":[{"estrellas":4,"comentario":"Good quality"}],
+"productos":[
+{"nombre":"Bedsheet Set","precio":2800,"emoji":"🛏️","categoria":"Home","desc":"King size, cotton, 3 piece set."},
+{"nombre":"Wall Clock","precio":1500,"emoji":"🕰️","categoria":"Home","desc":"Wooden, modern design."},
+{"nombre":"LED Fairy Lights","precio":650,"emoji":"💡","categoria":"Home","desc":"10m, warm white, USB powered."}]},
+"peshawar_food":{"nombre":"Peshawar Food","whatsapp":"923331234567","emoji":"🍽️",
+"resenas":[{"estrellas":5,"comentario":"Authentic taste!"},{"estrellas":5,"comentario":"لاجواب"}],
+"productos":[
+{"nombre":"Chapli Kebab Pack","precio":800,"emoji":"🥩","categoria":"Food","desc":"6 pieces, frozen, ready to cook."},
+{"nombre":"Green Tea Peshawari","precio":450,"emoji":"🍵","categoria":"Food","desc":"Kehwa style, 50 bags."},
+{"nombre":"Dry Fruits Mix","precio":1800,"emoji":"🥜","categoria":"Food","desc":"500g premium Afghan mix."}]}
+}}
