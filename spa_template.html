@@ -54,7 +54,7 @@ a.back{color:var(--pk);text-decoration:none;font-weight:700}
 </div></div>
 <header><div class="logo"><svg viewBox="0 0 64 64" width="26"><rect width="64" height="64" rx="14" fill="#fff"/><path d="M14 18h6l6 24h20l6-16H24" fill="none" stroke="#046A38" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="30" cy="50" r="5" fill="#ffd166"/><circle cx="44" cy="50" r="5" fill="#ffd166"/></svg>Nexus<span>Shop</span></div>
 <div class="hdr"><a href="#/track">📦</a><a href="#/sell">🏪</a><a href="#" onclick="setLang('en')">EN</a><a href="#" onclick="setLang('es')">ES</a><a href="#" onclick="setLang('ur')">اردو</a></div></header>
-<div id="topnav"><a href="#/home">Home</a><a href="#/sell">Sell</a><a href="#/cart">Cart</a><a href="#/orders">Orders</a><a href="#/panel">Merchant</a></div><div id="app"></div>
+<div id="topnav"><a href="#/home">Home</a><a href="#/sell">Sell</a><a href="#/cart">Cart</a><a href="#/orders">Orders</a><a href="#/panel">Merchant</a><a href="#/myorders">My Orders</a></div><div id="app"></div>
 <nav class='bnav'><a href='#/'>🏠<span>Home</span></a><a href='#/sell'>🏪<span>Sell</span></a><a href='#/cart'>🛒<span id='bartxt'>Cart</span></a><a href='#/track'>📦<span>Orders</span></a></nav>
 <footer style="margin-top:40px;padding:32px 16px;background:#111;color:#ccc;text-align:center;font-size:13px;line-height:1.8">
 <div style="font-size:20px;font-weight:700;color:#fff;letter-spacing:1px">NexusShop</div>
@@ -430,6 +430,150 @@ var l=document.querySelector("#splash > div");
 if(!l)return;
 l.style.transform="rotateY("+(e.gamma||0)/3+"deg) "
 +"rotateX("+(-(e.beta||0))/3+"deg)";});
+var TAX_PCT=5;
+var COUPONS={"BIENVENIDA":10,"SAIRA20":20,"GOLD15":15};
+window.nxCup=0;window.nxSub=0;
+function applyCup(){var el=document.getElementById("c_cup");
+var code=(el?el.value:"").trim().toUpperCase();
+if(CUPONS_OK(code)){window.nxCup=COUPONS[code];
+alert("-"+COUPONS[code]+"% ✔");render();}
+else{alert("Cupón inválido");}}
+function CUPONS_OK(c){return COUPONS.hasOwnProperty(c);}
+function checkout(){var c=gci();var sub=0,disc=0,rows="";
+var A=allp();
+for(var k in c){var p=null;
+for(var i=0;i<A.length;i++){if(A[i].id===k)p=A[i];}
+if(!p)continue;var q=c[k];var li=p.price*q;
+disc+=li*(p.discount||0)/100;sub+=li;
+rows+="<div class='row'><span>"+p.name+" x"+q
++(p.discount?" (-"+p.discount+"%)":"")+"</span><b>Rs. "+li+"</b></div>";}
+window.nxSub=sub;
+var cup=Math.round(sub*(window.nxCup||0)/100);
+var tax=Math.round((sub-disc-cup)*TAX_PCT/100);
+var tot=Math.round(sub-disc-cup+tax);
+return "<div class='box'><h2>"+t("cart")+"</h2>"+rows
++"<div class='row'><span>Subtotal</span><b>Rs. "+sub+"</b></div>"
++"<div class='row'><span>Descuentos</span><b>-Rs. "+(disc+cup)+"</b></div>"
++"<div class='row'><span>Impuesto "+TAX_PCT+"%</span><b>Rs. "+tax+"</b></div>"
++"<input id='c_cup' placeholder='Coupon (BIENVENIDA)'>"
++"<button onclick='applyCup()'>Apply</button>"
++"<p><b>Total: Rs. "+tot+"</b></p>"
++"<input id='c_w' placeholder='WhatsApp'>"
++"<input id='c_addr' placeholder='"+t("addr")+"'>"
++"<select id='c_pay'><option>COD</option><option>Card</option>"
++"<option>JazzCash</option><option>Easypaisa</option></select>"
++"<button class='btn' onclick='placeOrder()'>"
++t("place")+"</button></div>";}
+function placeOrder(){var c=gci();var sub=0,disc=0,items=[];
+var A=allp();
+for(var k in c){var p=null;
+for(var i=0;i<A.length;i++){if(A[i].id===k)p=A[i];}
+if(!p)continue;var q=c[k];
+items.push({nombre:p.name,precio:p.price,cantidad:q});
+sub+=p.price*q;disc+=p.price*q*(p.discount||0)/100;}
+var cup=Math.round(sub*(window.nxCup||0)/100);
+var tax=Math.round((sub-disc-cup)*TAX_PCT/100);
+var tot=Math.round(sub-disc-cup+tax);
+var g=function(i){var e=document.getElementById(i);
+return e?e.value:"";};
+var w=g("c_w");
+var id="NS-"+Math.random().toString(16).slice(2,8).toUpperCase();
+var row={id:id,ts:new Date().toISOString(),total:tot,
+pay:g("c_pay")||"COD",w:w,buyer:w,addr:g("c_addr"),
+items:items,status:"pending"};
+fetch(SUPA_URL+"/rest/v1/orders",{method:"POST",
+headers:{apikey:SUPA_KEY,Authorization:"Bearer "+SUPA_KEY,
+"Content-Type":"application/json"},
+body:JSON.stringify([row])}).then(function(){
+localStorage.setItem("nx_cart","{}");window.nxCup=0;
+app.innerHTML="<div class='box' style='text-align:center'>"
++"<h2>✅ Order "+id+" confirmed</h2>"
++"<p>Total Rs. "+tot+" · "+row.pay+"</p>"
++"<p class='muted'>Impuesto incluido: Rs. "+tax+"</p>"
++"<a href='#/invoice/"+id+"'><button>🧾 Invoice</button></a> "
++"<a href='#/myorders'><button>📦 My Orders</button></a></div>";
+}).catch(function(e){alert("ERR red: "+e);});}
+function myOrdersPage(){return "<div class='box'><h2>📦 My Orders</h2>"
++"<input id='mo_w' placeholder='WhatsApp'>"
++"<button onclick='moLoad()'>Ver</button>"
++"<div id='mo_out'></div></div>";}
+function moLoad(){var e=document.getElementById("mo_w");
+var w=e?e.value.trim():"";
+if(w)localStorage.setItem("nx_buyer",w);
+else w=localStorage.getItem("nx_buyer")||"";
+fetch(SUPA_URL+"/rest/v1/orders?buyer=eq."
++encodeURIComponent(w)+"&select=*&order=ts.desc",{
+headers:{apikey:SUPA_KEY,Authorization:"Bearer "+SUPA_KEY}})
+.then(function(r){return r.json();}).then(function(rows){
+var el=document.getElementById("mo_out");if(!el)return;
+el.innerHTML=(rows||[]).map(function(o){
+return "<div class='row'><span>"+o.id+" · "
++String(o.ts).slice(0,10)+"</span><b>"+o.status+" · Rs. "+o.total
++" <a href='#/invoice/"+o.id+"'>🧾</a></b></div>";
+}).join("")||"<p class='muted'>Sin pedidos aún</p>";
+}).catch(function(){});}
+function storeFormHTML(sid){
+return "<input id='q_name' placeholder='"+t("pName")+"'>"
++"<input id='q_price' type='number' placeholder='"+t("pPrice")+"'>"
++"<input id='q_disc' type='number' value='0' placeholder='Discount %'>"
++"<input id='q_desc' placeholder='"+t("pDesc")+"'>"
++"<textarea id='q_specs' rows='3' placeholder='"
++t("specs")+": Color: Negro&#10;Material: Cuero'></textarea>"
++"<input id='q_file' type='file' accept='image/*' multiple>"
++"<input id='q_img' placeholder='"+t("pImg")+" (URL)'>"
++"<input id='q_video' placeholder='Video URL (YouTube)'>"
++"<input id='q_emoji' placeholder='"+t("pEmoji")+"'>"
++"<input id='q_stock' type='number' value='10'>"
++"<button onclick='qAdd(\""+sid+"\")'>"
++t("publish")+" 🚀</button>";}
+function qAdd(sid){var n=document.getElementById("q_name").value;
+var pr=Number(document.getElementById("q_price").value);
+if(!n||!pr){alert(t("pName")+" + "+t("pPrice"));return;}
+var imgs=[];var fu=document.getElementById("q_file");
+var vu=document.getElementById("q_img").value.trim();
+if(vu)imgs.push(vu);
+var vids=document.getElementById("q_video").value.trim();
+function done(){var row={
+id:"pd-"+Math.random().toString(16).slice(2,8),
+store_id:sid,name:n,price:pr,
+discount:Number(document.getElementById("q_disc").value)||0,
+description:document.getElementById("q_desc").value,
+emoji:document.getElementById("q_emoji").value||"🛍️",
+images:imgs,video:vids||null,
+specs:parseSpecs(document.getElementById("q_specs").value),
+payments:["COD","Card"],
+stock:Number(document.getElementById("q_stock").value)||10,
+active:true};
+fetch(SUPA_URL+"/rest/v1/products",{method:"POST",
+headers:{apikey:SUPA_KEY,Authorization:"Bearer "+SUPA_KEY,
+"Content-Type":"application/json"},
+body:JSON.stringify([row])}).then(function(){
+alert("OK 🚀");loadDB();render();
+}).catch(function(){alert(t("mBad"));});}
+if(fu&&fu.files&&fu.files.length){var pend=fu.files.length;
+for(var i=0;i<fu.files.length;i++){(function(f){
+var rd=new FileReader();
+rd.onload=function(){var im=new Image();
+im.onload=function(){var c=document.createElement("canvas");
+var w=800,h=800*im.height/im.width;
+if(im.width<800){w=im.width;h=im.height;}
+c.width=w;c.height=h;
+c.getContext("2d").drawImage(im,0,0,w,h);
+imgs.push(c.toDataURL("image/jpeg",0.7));
+pend--;if(pend===0)done();};
+im.src=rd.result;};
+rd.readAsDataURL(f);})(fu.files[i]);}
+}else{done();}}
+setInterval(function(){var h=location.hash||"";
+if(h.indexOf("#/store/")===0
+&&!sessionStorage.getItem("nx_merchant")
+&&!document.getElementById("mz")){
+var d=document.createElement("div");
+d.id="mz";d.className="box";
+d.innerHTML="<a href='#/panel'><button class='btn'>🧑 "
++t("panel")+"</button></a>";
+var ap=document.getElementById("app");
+if(ap&&ap.firstChild)ap.insertBefore(d,ap.firstChild);}},800);
 function terms(){return "<div class='box'><h2>Terms & Conditions</h2><p class='muted'>Last updated: Sep 2026</p><p>1. NexusShop is a marketplace platform connecting independent merchants with customers. Each merchant is responsible for their products, prices and fulfillment.</p><p>2. Orders are confirmed via WhatsApp with the merchant. Payment methods: Cash on Delivery, JazzCash/Easypaisa, card/PayPal and bank transfer.</p><p>3. Refunds and returns are handled by each merchant according to their published policy.</p><p>4. Partner links (?ref=) tag orders for commission purposes only and do not affect prices.</p><p>5. By using NexusShop you accept these terms.</p></div>";}
 function privacy(){return "<div class='box'><h2>Privacy Policy</h2><p class='muted'>Last updated: Sep 2026</p><p>1. Your cart and orders are stored locally on your device until confirmed with the merchant via WhatsApp.</p><p>2. We only collect checkout data (name, WhatsApp, address, city) to process your order.</p><p>3. We do not sell personal data to third parties.</p><p>4. Request deletion of your data anytime via support.</p></div>";}
 function render(){var h=location.hash||"#/";var app=document.getElementById("app");
@@ -444,6 +588,7 @@ else if(h==="#/panel")app.innerHTML=panel();
 else if(h.indexOf("#/invoice/")===0)app.innerHTML=invoice(h.slice(10));
 else if(h.indexOf("#/search/")===0)app.innerHTML=searchPage(decodeURIComponent(h.slice(9)));
 else if(h==="#/track")app.innerHTML=trackPage();
+else if(h==="#/myorders")app.innerHTML=myOrdersPage();
 else if(h==="#/terms")app.innerHTML=terms();
 else if(h==="#/privacy")app.innerHTML=privacy();
 else app.innerHTML=home();
