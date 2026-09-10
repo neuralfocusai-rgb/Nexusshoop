@@ -130,9 +130,9 @@ function home(){var h="<div class='hero'><h2>🛍️ NexusShop 🇵🇰</h2><p>"
 DBS.slice().reverse().forEach(function(st){h+="<div class='store' onclick=\"go('store/"+st.id+"')\"><div class='em'>🏪</div><b>"+st.name+(st.plan&&st.plan!=="Freemium"?" 👑":"")+"</b><div class='stars'>✨ New</div></div>";});
 for(var s in DATA.tiendas){var ti=DATA.tiendas[s];h+="<div class='store' onclick=\"go('store/"+s+"')\"><div class='em'>"+(ti.emoji||"🏪")+"</div><b>"+ti.nombre+"</b>"+stars(ti.resenas)+"</div>";}
 h+="</div><div class='sec'>"+t("offers")+"</div><div class='grid'>";
-allp().slice(0,4).forEach(function(x,idx){h+="<div class='card' onclick=\"go('p/"+idx+"')\">"+"<span class='bdg'>"+pbadge(x.p)+"</span>"+img(x.p)+"<h3>"+x.p.nombre+"</h3><div class='stars'>★ "+prating(x.p)+"</div><div class='p'>Rs. "+x.p.precio+"</div></div>";});
+allp().slice(0,4).forEach(function(x,idx){h+="<div class='card' onclick=\"go('p/"+idx+"')\">"+"<span class='bdg'>"+pbadge(x.p)+"</span>"+img(x.p)+"<h3>"+x.p.nombre+"</h3><div class='stars'>★ "+prating(x.p)+"</div><div class='p'>"+usd(x.p.precio)+" <span class='muted'>Rs. "+x.p.precio+"</span>+"</div></div>";});
 h+="</div><div class='cta' onclick=\"go('sell')\">"+t("sell")+"<br><span class='muted' style='color:#01411C'>"+t("sellSub")+"</span></div><div class='sec'>"+t("all")+"</div><div class='grid'>";
-allp().forEach(function(x,idx){if(Q&&x.p.nombre.toLowerCase().indexOf(Q.toLowerCase())<0)return;h+="<div class='card' onclick=\"go('p/"+idx+"')\">"+"<span class='bdg'>"+pbadge(x.p)+"</span>"+img(x.p)+"<h3>"+x.p.nombre+"</h3><div class='stars'>★ "+prating(x.p)+"</div><div class='p'>Rs. "+x.p.precio+"</div></div>";});
+allp().forEach(function(x,idx){if(Q&&x.p.nombre.toLowerCase().indexOf(Q.toLowerCase())<0)return;h+="<div class='card' onclick=\"go('p/"+idx+"')\">"+"<span class='bdg'>"+pbadge(x.p)+"</span>"+img(x.p)+"<h3>"+x.p.nombre+"</h3><div class='stars'>★ "+prating(x.p)+"</div><div class='p'>"+usd(x.p.precio)+" <span class='muted'>Rs. "+x.p.precio+"</span>+"</div></div>";});
 return h+"</div>";}
 function store(s){var ti=storeObj(s);
 var mine=(sessionStorage.getItem("nx_merchant")===s);
@@ -150,13 +150,13 @@ return (p.store_id===s)||(p.tienda===s);});
 h+="<div class='grid'>";
 for(var i=0;i<ps.length;i++){var p=ps[i];
 h+="<div class='card' onclick=\"go('p/"+p.id+"')\">"+img(p)
-+"<h3>"+p.name+"</h3><div class='price'>Rs. "+p.price+"</div></div>";}
++"<h3>"+p.name+"</h3><div class='price'>"+usd(p.price)+" <span class='muted'>Rs. "+p.price+"</span>+"</div></div>";}
 h+="</div>";
 if(ps.length===0){h+="<div class='box'><p class='muted'>Esta tienda aún no tiene productos. ¡Sé el primero en publicar! 🚀</p></div>";}
 return h;}
 
 function prod(idx){var x=allp()[idx];if(!x)return home();var p=x.p;
-return "<div class='box' style='text-align:center'>"+img(p)+"<h2>"+p.nombre+"</h2><div style='font-size:22px;color:var(--pk);font-weight:800'>Rs. "+p.precio+"</div><div class='stars'>★ "+prating(p)+"</div>"+stars(x.ti.resenas)+(p.desc?"<p class='muted' style='margin:8px 0'>"+p.desc+"</p>":"")+(p.stock!=null?"<p class='muted'> Stock: "+p.stock+"</p>":"")+(p.compare?"<p class='muted' style='text-decoration:line-through'>Rs. "+p.compare+"</p>":"")+(p.specs&&Object.keys(p.specs).length?"<div class='box'><h3>"+t("specs")+"</h3>"+Object.keys(p.specs).map(function(k){return "<div class='row'><span>"+k+"</span><b>"+p.specs[k]+"</b></div>";}).join("")+"</div>":"")+(p.payments&&p.payments.length?"<p class='muted'>💳 "+t("payM")+": "+p.payments.join(" · ")+"</p>":"")+(p.video?"<iframe width='100%' height='220' src='"+ytEmbed(p.video)+"' frameborder='0' allowfullscreen></iframe>":"")+"<div class='box'><h3>"+t("reviews")+"</h3>"
+return "<div class='box' style='text-align:center'>"+img(p)+"<h2>"+p.nombre+"</h2><div style='font-size:22px;color:var(--pk);font-weight:800'>"+usd(p.precio)+" <span class='muted'>Rs. "+p.precio+"</span>+"</div><div class='stars'>★ "+prating(p)+"</div>"+stars(x.ti.resenas)+(p.desc?"<p class='muted' style='margin:8px 0'>"+p.desc+"</p>":"")+(p.stock!=null?"<p class='muted'> Stock: "+p.stock+"</p>":"")+(p.compare?"<p class='muted' style='text-decoration:line-through'>"+usd(p.compare)+" <span class='muted'>Rs. "+p.compare+"</span>+"</p>":"")+(p.specs&&Object.keys(p.specs).length?"<div class='box'><h3>"+t("specs")+"</h3>"+Object.keys(p.specs).map(function(k){return "<div class='row'><span>"+k+"</span><b>"+p.specs[k]+"</b></div>";}).join("")+"</div>":"")+(p.payments&&p.payments.length?"<p class='muted'>💳 "+t("payM")+": "+p.payments.join(" · ")+"</p>":"")+(p.video?"<iframe width='100%' height='220' src='"+ytEmbed(p.video)+"' frameborder='0' allowfullscreen></iframe>":"")+"<div class='box'><h3>"+t("reviews")+"</h3>"
 +"<div id='revlist'><p class='muted'>…</p></div>"
 +"<input id='rv_name' placeholder='"+t("name")+"'>"
 +"<select id='rv_rating'><option>5</option><option>4</option>"
@@ -170,7 +170,7 @@ function add(idx){var x=allp()[idx],c=gc(),k=x.s+x.i;c[k]=c[k]||{n:x.p.nombre,p:
 function cart(){var c=gc(),h="<div class='box'><a class='back' href='#/'>"+t("back")+"</a><h2>"+t("cart")+"</h2>",tot=0,empty=true;
 for(var k in c){empty=false;var it=c[k];tot+=it.q*it.p;h+="<div class='row'><span>"+it.n+" ×"+it.q+"</span><span>Rs. "+(it.q*it.p)+" <a href='#' onclick=\"rm('"+k+"')\">✖</a></span></div>";}
 if(empty)return h+"<p class='muted'>"+t("empty")+"</p></div>";
-return h+"<div class='row'><b>"+t("total")+"</b><b>Rs. "+tot+"</b></div><button onclick=\"go('checkout')\">"+t("checkout")+" →</button></div>";}
+return h+"<div class='row'><b>"+t("total")+"</b><b>"+usd(tot)+" <span class='muted'>Rs. "+tot+"</span>+"</b></div><button onclick=\"go('checkout')\">"+t("checkout")+" →</button></div>";}
 function rm(k){var c=gc();delete c[k];sc(c);render();}
 var PM="cod";
 function checkout(){var c=gc(),tot=0;for(var k in c)tot+=c[k].q*c[k].p;if(!tot)return cart();
@@ -181,7 +181,7 @@ return "<div class='box'><a class='back' href='#/cart'>"+t("back")+"</a><h2>"+t(
 "<div class='m' id='pm_jazz' onclick=\"selPM('jazz')\">📱 JazzCash / Easypaisa</div>"+
 "<div class='m' id='pm_card' onclick=\"selPM('card')\">💳 Card / PayPal</div>"+
 "<div class='m' id='pm_bank' onclick=\"selPM('bank')\">🏦 Bank Transfer</div></div>"+
-"<button onclick='placeOrder()'>"+t("place")+" · Rs. "+tot+"</button></div>";}
+"<button onclick='placeOrder()'>"+t("place")+" · "+usd(tot)+" <span class='muted'>Rs. "+tot+"</span>+"</button></div>";}
 function selPM(m){PM=m;["cod","jazz","card","bank"].forEach(function(x){document.getElementById("pm_"+x).className="m"+(x===m?" sel":"");});}
 function placeOrder(){var nm=document.getElementById("c_name").value,ph=document.getElementById("c_phone").value;
 if(!nm||!ph){alert(t("name")+" + "+t("phone"));return;}
@@ -192,11 +192,11 @@ localStorage.setItem("nx_order_"+oid,JSON.stringify(order));
 if(SUPA_KEY){fetch(SUPA_URL+"/rest/v1/orders",{method:"POST",headers:{apikey:SUPA_KEY,Authorization:"Bearer "+SUPA_KEY,"Content-Type":"application/json",Prefer:"return=minimal"},body:JSON.stringify([order])}).catch(function(){});}
 localStorage.setItem("nx_cart","{}");bar();go("pay/"+oid);}
 function pay(oid){var o=JSON.parse(localStorage.getItem("nx_order_"+oid)||"null");if(!o)return "<div class='box'>Order not found</div>";
-var M={cod:"💵 Cash on Delivery — pay the rider when your order arrives.",jazz:"📱 JazzCash / Easypaisa — send Rs. "+o.total+" to the merchant number, reference: "+oid,card:"💳 Card / PayPal — a secure payment link will be sent to your WhatsApp.",bank:"🏦 Bank Transfer — account details sent to your WhatsApp, reference: "+oid};
-var txt="Order "+oid+" ("+o.customer.name+", "+o.customer.city+"): "+o.items.map(function(i){return i.q+"x "+i.n;}).join(", ")+" — Rs. "+o.total+" — Method: "+o.method;
-return "<div class='box' style='text-align:center'><h2>✅ Order "+oid+"</h2><p class='muted'>"+t("total")+": <b>Rs. "+o.total+"</b></p><p style='margin:10px 0'>"+M[o.method]+"</p><a href='https://wa.me/"+(o.w||"923000000000")+"?text="+encodeURIComponent(txt)+"'><button class='wa'>📲 Confirm by WhatsApp</button></a><button onclick=\"go('track')\">"+t("track")+"</button></div>";}
+var M={cod:"💵 Cash on Delivery — pay the rider when your order arrives.",jazz:"📱 JazzCash / Easypaisa — send "+usd(o.total)+" <span class='muted'>Rs. "+o.total+"</span>+" to the merchant number, reference: "+oid,card:"💳 Card / PayPal — a secure payment link will be sent to your WhatsApp.",bank:"🏦 Bank Transfer — account details sent to your WhatsApp, reference: "+oid};
+var txt="Order "+oid+" ("+o.customer.name+", "+o.customer.city+"): "+o.items.map(function(i){return i.q+"x "+i.n;}).join(", ")+" — "+usd(o.total)+" <span class='muted'>Rs. "+o.total+"</span>+" — Method: "+o.method;
+return "<div class='box' style='text-align:center'><h2>✅ Order "+oid+"</h2><p class='muted'>"+t("total")+": <b>"+usd(o.total)+" <span class='muted'>Rs. "+o.total+"</span>+"</b></p><p style='margin:10px 0'>"+M[o.method]+"</p><a href='https://wa.me/"+(o.w||"923000000000")+"?text="+encodeURIComponent(txt)+"'><button class='wa'>📲 Confirm by WhatsApp</button></a><button onclick=\"go('track')\">"+t("track")+"</button></div>";}
 function track(){return "<div class='box'><h2>📦 "+t("track")+"</h2><input id='t_id' placeholder='"+t("tid")+"'><button onclick='doTrack()'>"+t("track")+"</button><div id='t_out'></div></div>";}
-function showTrack(o){document.getElementById("t_out").innerHTML=o?"<div class='row'><span>"+o.id+"</span><b>"+o.status+"</b></div><div class='row'><span>"+t("total")+"</span><b>Rs. "+o.total+"</b></div><div class='row'><span>📅</span><span>"+o.ts+"</span></div>":"<p class='muted'>Not found</p>";}
+function showTrack(o){document.getElementById("t_out").innerHTML=o?"<div class='row'><span>"+o.id+"</span><b>"+o.status+"</b></div><div class='row'><span>"+t("total")+"</span><b>"+usd(o.total)+" <span class='muted'>Rs. "+o.total+"</span>+"</b></div><div class='row'><span>📅</span><span>"+o.ts+"</span></div>":"<p class='muted'>Not found</p>";}
 function doTrack(){var id=document.getElementById("t_id").value.trim().toUpperCase();
 var o=JSON.parse(localStorage.getItem("nx_order_"+id)||"null");
 if(o){showTrack(o);return;}
@@ -288,14 +288,14 @@ fetch(SUPA_URL+"/rest/v1/products",{method:"POST",headers:{apikey:SUPA_KEY,Autho
 function delProd(id){fetch(SUPA_URL+"/rest/v1/products?id=eq."+id,{method:"DELETE",headers:{apikey:SUPA_KEY,Authorization:"Bearer "+SUPA_KEY}}).then(function(){mLoad();loadDB();});}
 function mLoad(){var el=document.getElementById("myprods"),eo=document.getElementById("myorders");if(!el)return;
 var H={apikey:SUPA_KEY,Authorization:"Bearer "+SUPA_KEY};
-fetch(SUPA_URL+"/rest/v1/products?store_id=eq."+mId()+"&select=*&order=created_at.desc",{headers:H}).then(function(r){return r.json();}).then(function(rows){el.innerHTML=(rows||[]).map(function(p){return "<div class='row'><span>"+(p.emoji||"🛍️")+" "+p.name+"<br><span class='muted'>Rs. "+p.price+" · Stock "+p.stock+"</span></span><span><a href='#' onclick=\"delProd('"+p.id+"')\">🗑️</a></span></div>";}).join("")||"<p class='muted'>—</p>";}).catch(function(){el.innerHTML="<p class='muted'>—</p>";});
-fetch(SUPA_URL+"/rest/v1/orders?w=eq."+(sessionStorage.getItem("nx_merchant_wa")||"")+"&select=id,total,status,ts&order=ts.desc",{headers:H}).then(function(r){return r.json();}).then(function(rows){eo.innerHTML=(rows||[]).map(function(o){return "<div class='row'><span>"+o.id+" · "+o.ts+" <a href='#/invoice/"+o.id+"'>🧾</a></span><b>"+o.status+" · Rs. "+o.total+"</b></div>";}).join("")||"<p class='muted'>—</p>";}).catch(function(){eo.innerHTML="<p class='muted'>—</p>";});}
+fetch(SUPA_URL+"/rest/v1/products?store_id=eq."+mId()+"&select=*&order=created_at.desc",{headers:H}).then(function(r){return r.json();}).then(function(rows){el.innerHTML=(rows||[]).map(function(p){return "<div class='row'><span>"+(p.emoji||"🛍️")+" "+p.name+"<br><span class='muted'>"+usd(p.price)+" <span class='muted'>Rs. "+p.price+"</span>+" · Stock "+p.stock+"</span></span><span><a href='#' onclick=\"delProd('"+p.id+"')\">🗑️</a></span></div>";}).join("")||"<p class='muted'>—</p>";}).catch(function(){el.innerHTML="<p class='muted'>—</p>";});
+fetch(SUPA_URL+"/rest/v1/orders?w=eq."+(sessionStorage.getItem("nx_merchant_wa")||"")+"&select=id,total,status,ts&order=ts.desc",{headers:H}).then(function(r){return r.json();}).then(function(rows){eo.innerHTML=(rows||[]).map(function(o){return "<div class='row'><span>"+o.id+" · "+o.ts+" <a href='#/invoice/"+o.id+"'>🧾</a></span><b>"+o.status+" · "+usd(o.total)+" <span class='muted'>Rs. "+o.total+"</span>+"</b></div>";}).join("")||"<p class='muted'>—</p>";}).catch(function(){eo.innerHTML="<p class='muted'>—</p>";});}
 function panel(){if(!SUPA_KEY)return "<div class='box'>"+t("mBad")+"</div>";
 if(!mId())return "<div class='box'><h2>🔐 "+t("mLogin")+"</h2><input id='m_id' placeholder='"+t("mId")+"'><input id='m_wa' placeholder='"+t("mWa")+"'><button onclick='mLogin()'>"+t("mEnter")+"</button><p class='muted'>"+t("mHint")+"</p></div>";
 return "<div class='box'><h2>🧑‍💼 "+(sessionStorage.getItem("nx_merchant_name")||mId())+"</h2><button onclick='sessionStorage.removeItem(\"nx_merchant\");render()'>"+t("logout")+"</button></div>"
 +"<div class='box'><h3>+ "+t("addProd")+"</h3>"
 +"<input id='p_name' placeholder='"+t("pName")+"'>"
-+"<input id='p_price' type='number' placeholder='"+t("pPrice")+"'>"
++"<input id='p_price' type='number' placeholder='Price USD · Precio USD'>"
 +"<input id='p_compare' type='number' placeholder='"+t("compare")+"'>"
 +"<input id='p_desc' placeholder='"+t("pDesc")+"'>"
 +"<textarea id='p_specs' rows='3' placeholder='"
@@ -314,7 +314,7 @@ return "<label style='margin-right:10px'>"
 +"<div class='box'><h3>"+t("myProds")+"</h3><div id='myprods'>…</div></div>"
 +"<div class='box'><h3>"+t("myOrders")+"</h3><div id='myorders'>…</div></div>";}
 function invoice(id){setTimeout(function(){fetch(SUPA_URL+"/rest/v1/orders?id=eq."+id+"&select=*",{headers:{apikey:SUPA_KEY,Authorization:"Bearer "+SUPA_KEY}}).then(function(r){return r.json();}).then(function(rows){var el=document.getElementById("invbox");if(!el)return;var o=rows&&rows[0];
-el.innerHTML=o?("<h2>🧾 "+t("invoice")+" "+o.id+"</h2><p class='muted'>"+o.ts+"</p><p>"+(o.items||[]).map(function(i){return (i.nombre||i.name)+" x"+(i.cantidad||i.qty||1)+" — Rs. "+((i.precio||i.price||0)*(i.cantidad||i.qty||1));}).join("<br>")+"</p><p><b>Total: Rs. "+o.total+"</b></p><p class='muted'>💳 "+(o.pay||o.payment||"—")+"</p><p class='muted'>🎧 "+t("support")+"</p><button onclick='window.print()'>🖨️ "+t("print")+"</button>"):"<p>—</p>";}).catch(function(){});},50);return "<div class='box' id='invbox'>…</div>";}
+el.innerHTML=o?("<h2>🧾 "+t("invoice")+" "+o.id+"</h2><p class='muted'>"+o.ts+"</p><p>"+(o.items||[]).map(function(i){return (i.nombre||i.name)+" x"+(i.cantidad||i.qty||1)+" — Rs. "+((i.precio||i.price||0)*(i.cantidad||i.qty||1));}).join("<br>")+"</p><p><b>Total: "+usd(o.total)+" <span class='muted'>Rs. "+o.total+"</span>+"</b></p><p class='muted'>💳 "+(o.pay||o.payment||"—")+"</p><p class='muted'>🎧 "+t("support")+"</p><button onclick='window.print()'>🖨️ "+t("print")+"</button>"):"<p>—</p>";}).catch(function(){});},50);return "<div class='box' id='invbox'>…</div>";}
 var COUNTRIES=["Afghanistan","Albania","Algeria","Andorra","Angola",
 "Antigua and Barbuda","Argentina","Armenia","Australia","Austria",
 "Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus",
@@ -368,7 +368,7 @@ res.forEach(function(p){
 h+="<div class='card' onclick=\"go('p/"+p.id+"')\">"
 +"<div class='em'>"+(p.emoji||"🛍️")+"</div>"
 +"<h3>"+p.name+"</h3>"
-+"<div class='p'>Rs. "+p.price+"</div></div>";});
++"<div class='p'>"+usd(p.price)+" <span class='muted'>Rs. "+p.price+"</span>+"</div></div>";});
 h+="</div>";
 h+="<div class='box'><h3>🌐 Internet stores</h3>"
 +"<p class='muted'>See this search in global stores:</p>"
@@ -390,14 +390,14 @@ headers:{apikey:SUPA_KEY,Authorization:"Bearer "+SUPA_KEY}})
 var el=document.getElementById("t_res");if(!el)return;
 var o=rows&&rows[0];
 el.innerHTML=o?("<p><b>"+o.id+"</b> · "+o.status+"</p>"
-+"<p>Total: Rs. "+o.total+"</p>"
++"<p>Total: "+usd(o.total)+" <span class='muted'>Rs. "+o.total+"</span>+"</p>"
 +"<p class='muted'>"+o.ts+"</p>"
 +"<a href='#/invoice/"+o.id+"'>🧾 "+t("invoice")+"</a>")
 :"<p>—</p>";}).catch(function(){});}
 function toggleSF(){var e=document.getElementById("sform");e.style.display=(e.style.display==="block")?"none":"block";}
 function storeFormHTML(sid){
 return "<input id='q_name' placeholder='"+t("pName")+"'>"
-+"<input id='q_price' type='number' placeholder='"+t("pPrice")+"'>"
++"<input id='q_price' type='number' placeholder='Price USD · Precio USD'>"
 +"<input id='q_desc' placeholder='"+t("pDesc")+"'>"
 +"<textarea id='q_specs' rows='3' placeholder='"
 +t("specs")+": Color: Negro&#10;Material: Cuero'></textarea>"
@@ -420,7 +420,7 @@ m=u.match(/youtu\.be\/([\w-]+)/);
 if(m)return "https://www.youtube.com/embed/"+m[1];
 return u;}
 function qAdd(sid){var n=document.getElementById("q_name").value;
-var pr=Number(document.getElementById("q_price").value);
+var pr=Math.round(Number(document.getElementById("q_price").value)*RATE);
 if(!n||!pr){alert(t("pName")+" + "+t("pPrice"));return;}
 var imgs=[];var fu=document.getElementById("q_file");
 var vu=document.getElementById("q_img").value.trim();
@@ -504,18 +504,18 @@ for(var i=0;i<A.length;i++){if(A[i].id===k)p=A[i];}
 if(!p)continue;var q=c[k];var li=p.price*q;
 disc+=li*(p.discount||0)/100;sub+=li;
 rows+="<div class='row'><span>"+p.name+" x"+q
-+(p.discount?" (-"+p.discount+"%)":"")+"</span><b>Rs. "+li+"</b></div>";}
++(p.discount?" (-"+p.discount+"%)":"")+"</span><b>"+usd(li)+" <span class='muted'>Rs. "+li+"</span>+"</b></div>";}
 window.nxSub=sub;
 var cup=Math.round(sub*(window.nxCup||0)/100);
 var tax=Math.round((sub-disc-cup)*TAX_PCT/100);
 var tot=Math.round(sub-disc-cup+tax);
 return "<div class='box'><h2>"+t("cart")+"</h2>"+rows
-+"<div class='row'><span>Subtotal</span><b>Rs. "+sub+"</b></div>"
++"<div class='row'><span>Subtotal</span><b>"+usd(sub)+" <span class='muted'>Rs. "+sub+"</span>+"</b></div>"
 +"<div class='row'><span>Descuentos</span><b>-Rs. "+(disc+cup)+"</b></div>"
-+"<div class='row'><span>Impuesto "+TAX_PCT+"%</span><b>Rs. "+tax+"</b></div>"
++"<div class='row'><span>Impuesto "+TAX_PCT+"%</span><b>"+usd(tax)+" <span class='muted'>Rs. "+tax+"</span>+"</b></div>"
 +"<input id='c_cup' placeholder='Coupon (BIENVENIDA)'>"
 +"<button onclick='applyCup()'>Apply</button>"
-+"<p><b>Total: Rs. "+tot+"</b></p>"
++"<p><b>Total: "+usd(tot)+" <span class='muted'>Rs. "+tot+"</span>+"</b></p>"
 +"<input id='c_w' placeholder='WhatsApp'>"
 +"<input id='c_addr' placeholder='"+t("addr")+"'>"
 +"<select id='c_pay'><option>COD</option><option>Card</option>"
@@ -546,8 +546,8 @@ body:JSON.stringify([row])}).then(function(){
 localStorage.setItem("nx_cart","{}");window.nxCup=0;
 app.innerHTML="<div class='box' style='text-align:center'>"
 +"<h2>✅ Order "+id+" confirmed</h2>"
-+"<p>Total Rs. "+tot+" · "+row.pay+"</p>"
-+"<p class='muted'>Impuesto incluido: Rs. "+tax+"</p>"
++"<p>Total "+usd(tot)+" <span class='muted'>Rs. "+tot+"</span>+" · "+row.pay+"</p>"
++"<p class='muted'>Impuesto incluido: "+usd(tax)+" <span class='muted'>Rs. "+tax+"</span>+"</p>"
 +"<a href='#/invoice/"+id+"'><button>🧾 Invoice</button></a> "
 +"<a href='#/myorders'><button>📦 My Orders</button></a></div>";
 }).catch(function(e){alert("ERR red: "+e);});}
@@ -572,7 +572,7 @@ return "<div class='row'><span>"+o.id+" · "
 }).catch(function(){});}
 function storeFormHTML(sid){
 return "<input id='q_name' placeholder='"+t("pName")+"'>"
-+"<input id='q_price' type='number' placeholder='"+t("pPrice")+"'>"
++"<input id='q_price' type='number' placeholder='Price USD · Precio USD'>"
 +"<input id='q_disc' type='number' value='0' placeholder='Discount %'>"
 +"<input id='q_desc' placeholder='"+t("pDesc")+"'>"
 +"<textarea id='q_specs' rows='3' placeholder='"
@@ -639,6 +639,17 @@ var bs=document.querySelectorAll("#app .store b");
 for(var i=0;i<bs.length;i++){var b=bs[i];
 if(b.textContent===st.name&&!b.dataset.crown){
 b.dataset.crown="1";b.textContent=b.textContent+" 👑";}}}});},1000);
+var RATE=280;
+function usd(n){return "US$ "+(n/RATE).toFixed(2);}
+setInterval(function(){var h=location.hash||"";
+if(h.indexOf("#/p/")===0&&!document.getElementById("bn")){
+var b=document.querySelector("#app button");
+if(b){var n=document.createElement("button");
+n.id="bn";n.textContent="⚡ Buy now · Comprar ya";
+n.onclick=function(){var id=h.slice(4);var c={};c[id]=1;
+localStorage.setItem("nx_cart",JSON.stringify(c));
+location.hash="#/checkout";};
+b.parentNode.insertBefore(n,b.nextSibling);}}},900);
 function terms(){return "<div class='box'><h2>Terms & Conditions</h2><p class='muted'>Last updated: Sep 2026</p><p>1. NexusShop is a marketplace platform connecting independent merchants with customers. Each merchant is responsible for their products, prices and fulfillment.</p><p>2. Orders are confirmed via WhatsApp with the merchant. Payment methods: Cash on Delivery, JazzCash/Easypaisa, card/PayPal and bank transfer.</p><p>3. Refunds and returns are handled by each merchant according to their published policy.</p><p>4. Partner links (?ref=) tag orders for commission purposes only and do not affect prices.</p><p>5. By using NexusShop you accept these terms.</p></div>";}
 function privacy(){return "<div class='box'><h2>Privacy Policy</h2><p class='muted'>Last updated: Sep 2026</p><p>1. Your cart and orders are stored locally on your device until confirmed with the merchant via WhatsApp.</p><p>2. We only collect checkout data (name, WhatsApp, address, city) to process your order.</p><p>3. We do not sell personal data to third parties.</p><p>4. Request deletion of your data anytime via support.</p></div>";}
 function render(){var h=location.hash||"#/";var app=document.getElementById("app");
