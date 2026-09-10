@@ -278,7 +278,7 @@ if(!SUPA_KEY){alert(t("mBad"));return;}
 fetch(SUPA_URL+"/rest/v1/stores?id=eq."+id+"&select=*",{headers:{apikey:SUPA_KEY,Authorization:"Bearer "+SUPA_KEY}}).then(function(r){return r.json();}).then(function(rows){
 if(rows&&rows[0]&&(String(rows[0].whatsapp).replace(/\D/g,"")===wa.replace(/\D/g,"")||String(rows[0].owner).toLowerCase()===wa.trim().toLowerCase())){sessionStorage.setItem("nx_merchant",id);sessionStorage.setItem("nx_merchant_name",rows[0].name);sessionStorage.setItem("nx_merchant_wa",wa);render();}
 else alert(t("mBad"));}).catch(function(){alert(t("mBad"));});}
-function pAdd(){var n=document.getElementById("p_name").value,pr=Number(document.getElementById("p_price").value);
+function pAdd(){var n=document.getElementById("p_name").value,pr=Math.round(Number(document.getElementById("p_price").value)*RATE);
 if(!n||!pr){alert(t("pName")+" + "+t("pPrice"));return;}
 var imgs=[];["p_img","p_img2","p_img3"].forEach(function(i){var v=document.getElementById(i).value.trim();if(v)imgs.push(v);});
 var specs={};(document.getElementById("p_specs").value||"").split("\n").forEach(function(ln){var kv=ln.split(":");if(kv.length>=2&&kv[0].trim())specs[kv[0].trim()]=kv.slice(1).join(":").trim();});
@@ -420,7 +420,7 @@ m=u.match(/youtu\.be\/([\w-]+)/);
 if(m)return "https://www.youtube.com/embed/"+m[1];
 return u;}
 function qAdd(sid){var n=document.getElementById("q_name").value;
-var pr=Number(document.getElementById("q_price").value);
+var pr=Math.round(Number(document.getElementById("q_price").value)*RATE);
 if(!n||!pr){alert(t("pName")+" + "+t("pPrice"));return;}
 var imgs=[];var fu=document.getElementById("q_file");
 var vu=document.getElementById("q_img").value.trim();
@@ -650,6 +650,99 @@ var m=t0.match(/^Rs\.?\s*(\d+)/);
 if(m){el.dataset.usd="1";
 el.innerHTML=usd(Number(m[1]))
 +" <span class='muted'>Rs. "+m[1]+"</span>";}}},700);
+function setPay(v){window.nxPay=v;render();}
+function setInst(v){window.nxInst=Number(v);
+var el=document.getElementById("instext");
+if(el)el.textContent="Rs. "
++Math.round((window.nxTot||0)/Number(v))
++" x "+v+" sin interes";}
+function checkout(){var c=gci();var sub=0,disc=0,rows="";
+var A=allp();
+for(var k in c){var p=null;
+for(var i=0;i<A.length;i++){if(A[i].id===k)p=A[i];}
+if(!p)continue;var q=c[k];var li=p.price*q;
+disc+=li*(p.discount||0)/100;sub+=li;
+rows+="<div class='row'><span>"+p.name+" x"+q
++(p.discount?" (-"+p.discount+"%)":"")
++"</span><b>Rs. "+li+"</b></div>";}
+window.nxSub=sub;
+var cup=Math.round(sub*(window.nxCup||0)/100);
+var tax=Math.round((sub-disc-cup)*TAX_PCT/100);
+var tot=Math.round(sub-disc-cup+tax);
+window.nxTot=tot;
+var pm=window.nxPay||"COD";
+function mopt(id,em,nm,d){
+return "<label style='display:block;border:2px solid "
++(pm===id?"#00e5a0":"#e2eae6")
++";border-radius:14px;padding:10px;margin:6px 0'>"
++"<input type='radio' name='paysel' value='"+id+"'"
++(pm===id?" checked":"")
++" onchange='setPay(this.value)'> "+em+" <b>"+nm+"</b> "
++"<span class='muted'>"+d+"</span></label>";}
+var paybox=mopt("COD","💵","Cash on delivery","Pago al recibir")
++mopt("CARD","💳","Tarjeta credito/debito","Hasta 12 cuotas")
++mopt("TRANSFER","🏦","Transferencia bancaria","Datos al confirmar")
++mopt("WALLET","📱","Billeteras","JazzCash / Easypaisa")
++mopt("MP","🧾","Mercado Pago","Link de pago seguro");
+var inst="";
+if(pm==="CARD"){inst="<select id='c_inst' onchange='setInst(this.value)'>"
++"<option value='1'>1 pago</option><option value='3'>3 cuotas</option>"
++"<option value='6'>6 cuotas</option><option value='12'>12 cuotas</option>"
++"</select><p class='muted' id='instext'></p>";}
+return "<div class='box'><h2>"+t("cart")+"</h2>"+rows
++"<div class='row'><span>Subtotal</span><b>Rs. "+sub+"</b></div>"
++"<div class='row'><span>Descuentos</span><b>-Rs. "+(disc+cup)+"</b></div>"
++"<div class='row'><span>Impuesto "+TAX_PCT+"%</span><b>Rs. "+tax+"</b></div>"
++"<input id='c_cup' placeholder='Coupon (BIENVENIDA)'>"
++"<button onclick='applyCup()'>Apply</button>"
++"<p><b>Total: Rs. "+tot+"</b></p>"
++"<h3>Metodo de pago</h3>"+paybox+inst
++"<input id='c_w' placeholder='WhatsApp'>"
++"<input id='c_addr' placeholder='"+t("addr")+"'>"
++"<button class='btn' onclick='placeOrder()'>"
++t("place")+"</button></div>";}
+function placeOrder(){var c=gci();var sub=0,disc=0,items=[];
+var A=allp();
+for(var k in c){var p=null;
+for(var i=0;i<A.length;i++){if(A[i].id===k)p=A[i];}
+if(!p)continue;var q=c[k];
+items.push({nombre:p.name,precio:p.price,cantidad:q});
+sub+=p.price*q;disc+=p.price*q*(p.discount||0)/100;}
+var cup=Math.round(sub*(window.nxCup||0)/100);
+var tax=Math.round((sub-disc-cup)*TAX_PCT/100);
+var tot=Math.round(sub-disc-cup+tax);
+var g=function(i){var e=document.getElementById(i);
+return e?e.value:"";};
+var w=g("c_w");
+var pm=window.nxPay||"COD";
+var inst=window.nxInst||1;
+var id="NS-"+Math.random().toString(16).slice(2,8).toUpperCase();
+var row={id:id,ts:new Date().toISOString(),total:tot,
+pay:pm,installments:inst,w:w,buyer:w,addr:g("c_addr"),
+items:items,status:"pending"};
+fetch(SUPA_URL+"/rest/v1/orders",{method:"POST",
+headers:{apikey:SUPA_KEY,Authorization:"Bearer "+SUPA_KEY,
+"Content-Type":"application/json"},
+body:JSON.stringify([row])}).then(function(){
+localStorage.setItem("nx_cart","{}");window.nxCup=0;
+if(pm==="MP"&&PAY_LINKS&&PAY_LINKS.MP)window.open(PAY_LINKS.MP);
+app.innerHTML="<div class='box' style='text-align:center'>"
++"<h2>✅ Order "+id+" confirmed</h2>"
++"<p>Total Rs. "+tot+" · "+pm
++(inst>1?" · "+inst+" cuotas":"")+"</p>"
++"<p class='muted'>Impuesto incluido: Rs. "+tax+"</p>"
++"<a href='#/invoice/"+id+"'><button>🧾 Invoice</button></a> "
++"<a href='#/myorders'><button>📦 My Orders</button></a></div>";
+}).catch(function(e){alert("ERR red: "+e);});}
+setInterval(function(){var h=location.hash||"";
+if(h.indexOf("#/p/")===0&&!document.getElementById("bn")){
+var b=document.querySelector("#app button");
+if(b){var n=document.createElement("button");
+n.id="bn";n.textContent="⚡ Buy now · Comprar ya";
+n.onclick=function(){var id=h.slice(4);var c={};c[id]=1;
+localStorage.setItem("nx_cart",JSON.stringify(c));
+location.hash="#/checkout";};
+b.parentNode.insertBefore(n,b.nextSibling);}}},900);
 function terms(){return "<div class='box'><h2>Terms & Conditions</h2><p class='muted'>Last updated: Sep 2026</p><p>1. NexusShop is a marketplace platform connecting independent merchants with customers. Each merchant is responsible for their products, prices and fulfillment.</p><p>2. Orders are confirmed via WhatsApp with the merchant. Payment methods: Cash on Delivery, JazzCash/Easypaisa, card/PayPal and bank transfer.</p><p>3. Refunds and returns are handled by each merchant according to their published policy.</p><p>4. Partner links (?ref=) tag orders for commission purposes only and do not affect prices.</p><p>5. By using NexusShop you accept these terms.</p></div>";}
 function privacy(){return "<div class='box'><h2>Privacy Policy</h2><p class='muted'>Last updated: Sep 2026</p><p>1. Your cart and orders are stored locally on your device until confirmed with the merchant via WhatsApp.</p><p>2. We only collect checkout data (name, WhatsApp, address, city) to process your order.</p><p>3. We do not sell personal data to third parties.</p><p>4. Request deletion of your data anytime via support.</p></div>";}
 function render(){var h=location.hash||"#/";var app=document.getElementById("app");
