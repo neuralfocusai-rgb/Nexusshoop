@@ -71,6 +71,8 @@ a.back{color:var(--pk);text-decoration:none;font-weight:700}
 </footer>
 <script>
 var DATA=__DATA__;
+window.onerror=function(m,u,l){alert("ERR: "+m+" (linea "+l+")");};
+var PAY_LINKS={Freemium:"",Premium:"",Gold:"",Platinum:""};
 var SUPA_URL="https://sewdrblynwoyjizugafj.supabase.co",SUPA_KEY="sb_publishable_ldSNvO3bvM-PSI7essB6TQ_0bJOJZPk";
 var L={en:{cart:"🛒 Cart",add:"Add to cart",checkout:"Checkout",total:"Total",back:"← Back",paym:"Payment method",reviews:"Reviews",all:"All products",search:"Search products…",name:"Full name",phone:"WhatsApp number",addr:"Address",city:"City",place:"Place order",track:"Track order",tid:"Order ID (e.g. NS-ABC123)",empty:"Your cart is empty",stores:"Official stores",offers:"🔥 Today's offers",sell:"🏪 Open YOUR store on NexusShop",sellSub:"Sell to your city, your country, the world. Payments active from day one.",sName:"Store name",sOwner:"Owner name",sWa:"WhatsApp (+92…)",sCountry:"Country",sPlan:"Plan",sSubmit:"Create my store",sOk:"✅ Request received! Our team will contact you on WhatsApp within 24h with your store ready.",req:"Request ID",mLogin:"Merchant login",mId:"Store ID (st-…)",mWa:"Registered WhatsApp",mEnter:"Enter",mBad:"Invalid credentials or network",addProd:"Add product",pName:"Product name",pPrice:"Price (Rs.)",pDesc:"Short description",pImg:"Image URL (optional)",pEmoji:"Emoji (optional)",pStock:"Stock",publish:"Publish",myProds:"My products",myOrders:"My orders",logout:"Logout",specs:"Specifications",support:"Platform support: WhatsApp +54 2257 550650 · neuralfocusia@gmail.com",payM:"Accepted payments",compare:"Compare-at price (optional)",invoice:"Invoice",print:"Print",mHint:"Use the WhatsApp registered when creating the store (digits only)",panel:"Merchant panel"},
 es:{cart:"🛒 Carrito",add:"Agregar",checkout:"Comprar",total:"Total",back:"← Volver",paym:"Método de pago",reviews:"Reseñas",all:"Todos los productos",search:"Buscar productos…",name:"Nombre completo",phone:"Número de WhatsApp",addr:"Dirección",city:"Ciudad",place:"Confirmar pedido",track:"Seguir pedido",tid:"ID del pedido (ej. NS-ABC123)",empty:"Tu carrito está vacío",stores:"Tiendas oficiales",offers:"🔥 Ofertas de hoy",sell:"🏪 Abrí TU tienda en NexusShop",sellSub:"Vendé a tu ciudad, tu país, el mundo. Pagos activos desde el día uno.",sName:"Nombre de la tienda",sOwner:"Nombre del dueño",sWa:"WhatsApp (+92…)",sCountry:"País",sPlan:"Plan",sSubmit:"Crear mi tienda",sOk:"✅ ¡Solicitud recibida! Te contactamos por WhatsApp en 24h con tu tienda lista.",req:"ID de solicitud",mLogin:"Acceso merchant",mId:"ID de tienda (st-…)",mWa:"WhatsApp registrado",mEnter:"Entrar",mBad:"Credenciales inválidas o red",addProd:"Agregar producto",pName:"Nombre del producto",pPrice:"Precio (Rs.)",pDesc:"Descripción corta",pImg:"URL de imagen (opcional)",pEmoji:"Emoji (opcional)",pStock:"Stock",publish:"Publicar",myProds:"Mis productos",myOrders:"Mis pedidos",logout:"Salir",specs:"Especificaciones",support:"Soporte de la plataforma: WhatsApp +54 2257 550650 · neuralfocusia@gmail.com",payM:"Medios de pago aceptados",compare:"Precio tachado (opcional)",invoice:"Factura",print:"Imprimir",mHint:"Usá el WhatsApp que cargaste al crear la tienda (solo números)",panel:"Panel merchant"},
@@ -95,7 +97,7 @@ function stars(r){var n=(r||[]).length;if(!n)return"";var s=0;r.forEach(function
 function prating(p){var n=p.nombre||"",s=0;for(var i=0;i<n.length;i++)s+=n.charCodeAt(i);var r=4+(s%11)/10;if(r>5)r=5;return r.toFixed(1);}
 function pbadge(p){var n=p.nombre||"",s=0;for(var i=0;i<n.length;i++)s+=n.charCodeAt(i);return ["🔥 Top rated","✨ New","⭐ Best seller","🚚 Fast delivery"][s%4];}
 function home(){var h="<div class='hero'><h2>🛍️ NexusShop 🇵🇰</h2><p>"+t("stores")+" · "+t("all")+"</p><input placeholder='"+t("search")+"' oninput='srch(this.value)' value='"+Q+"' oninput='Q=this.value;render()'></div><div class='sec'>"+t("stores")+"</div><div class='stores'>";
-DBS.slice().reverse().forEach(function(st){h+="<div class='store' onclick=\"go('store/"+st.id+"')\"><div class='em'>🏪</div><b>"+st.name+"</b><div class='stars'>✨ New</div></div>";});
+DBS.slice().reverse().forEach(function(st){h+="<div class='store' onclick=\"go('store/"+st.id+"')\"><div class='em'>🏪</div><b>"+st.name+(st.plan&&st.plan!=="Freemium"?" 👑":"")+"</b><div class='stars'>✨ New</div></div>";});
 for(var s in DATA.tiendas){var ti=DATA.tiendas[s];h+="<div class='store' onclick=\"go('store/"+s+"')\"><div class='em'>"+(ti.emoji||"🏪")+"</div><b>"+ti.nombre+"</b>"+stars(ti.resenas)+"</div>";}
 h+="</div><div class='sec'>"+t("offers")+"</div><div class='grid'>";
 allp().slice(0,4).forEach(function(x,idx){h+="<div class='card' onclick=\"go('p/"+idx+"')\">"+"<span class='bdg'>"+pbadge(x.p)+"</span>"+img(x.p)+"<h3>"+x.p.nombre+"</h3><div class='stars'>★ "+prating(x.p)+"</div><div class='p'>Rs. "+x.p.precio+"</div></div>";});
@@ -103,7 +105,7 @@ h+="</div><div class='cta' onclick=\"go('sell')\">"+t("sell")+"<br><span class='
 allp().forEach(function(x,idx){if(Q&&x.p.nombre.toLowerCase().indexOf(Q.toLowerCase())<0)return;h+="<div class='card' onclick=\"go('p/"+idx+"')\">"+"<span class='bdg'>"+pbadge(x.p)+"</span>"+img(x.p)+"<h3>"+x.p.nombre+"</h3><div class='stars'>★ "+prating(x.p)+"</div><div class='p'>Rs. "+x.p.precio+"</div></div>";});
 return h+"</div>";}
 function store(s){var ti=storeObj(s);var mine=(sessionStorage.getItem("nx_merchant")===s);
-var h=(mine?'<div class="box"><button class="btn" onclick="toggleSF()">+ '+t("addProd")+'</button><div id="sform" style="display:none">'+storeFormHTML(s)+'</div></div>':'')+"<div class='box'><a class='back' href='#/'>"+t("back")+"</a><h2>"+(ti.emoji||"🏪")+" "+ti.nombre+"</h2>"+stars(ti.resenas)+"</div><div class='grid'>";
+var h=(mine?'<div class="box"><button class="btn" onclick="toggleSF()">+ '+t("addProd")+'</button><div id="sform" style="display:none">'+storeFormHTML(s)+'</div></div>':'<div class="box"><a href="#/panel"><button class="btn">🧑‍💼 '+t("panel")+'</button></a></div>')+"<div class='box'><a class='back' href='#/'>"+t("back")+"</a><h2>"+(ti.emoji||"🏪")+" "+ti.nombre+"</h2>"+stars(ti.resenas)+"</div><div class='grid'>";
 allp().forEach(function(x,idx){if(x.s===s)h+="<div class='card' onclick=\"go('p/"+idx+"')\">"+"<span class='bdg'>"+pbadge(x.p)+"</span>"+img(x.p)+"<h3>"+x.p.nombre+"</h3><div class='stars'>★ "+prating(x.p)+"</div><div class='p'>Rs. "+x.p.precio+"</div></div>";});
 return h+"</div>";}
 function prod(idx){var x=allp()[idx];if(!x)return home();var p=x.p;
@@ -156,16 +158,50 @@ document.getElementById("t_out").innerHTML="<p class='muted'>⏳ …</p>";
 fetch(SUPA_URL+"/rest/v1/orders?id=eq."+id+"&select=id,status,total,ts",{headers:{apikey:SUPA_KEY,Authorization:"Bearer "+SUPA_KEY}}).then(function(r){return r.json();}).then(function(rows){showTrack(rows&&rows[0]?rows[0]:null);}).catch(function(){showTrack(null);});}
 function sell(){return "<div class='box'><h2>"+t("sell")+"</h2><p class='muted'>"+t("sellSub")+"</p>"+
 "<input id='s_name' placeholder='"+t("sName")+"'><input id='s_owner' placeholder='"+t("sOwner")+"'><input id='s_wa' placeholder='"+t("sWa")+"'>"+
-"+ctrySel()+"+
+"+ctrySel()+"+"<div class='box'><h3>Plan</h3>"+planOpt("Freemium","Rs. 0","Tienda basica")+planOpt("Premium","Rs. 999/mo","Badges + stats")+planOpt("Gold","Rs. 2499/mo","Top search + video")+planOpt("Platinum","Rs. 4999/mo","Full suite + AR")+"</div>"+
 "<select id='s_plan'><option value='growth'>Growth — $49/mes</option><option value='pro'>Pro — $99/mes</option></select>"+
 "<button onclick='sellStore()'>"+t("sSubmit")+" 🚀</button></div>";}
-function sellStore(){var nm=document.getElementById("s_name").value,ow=document.getElementById("s_owner").value,wa=document.getElementById("s_wa").value;
-if(!nm||!ow||!wa){alert(t("sName")+" + "+t("sOwner")+" + "+t("sWa"));return;}
+function val(i){var e=document.getElementById(i);
+return e?e.value.trim():"";}
+function goPanel(){go("panel");}
+function goStoreMe(){go("store/"
++sessionStorage.getItem("nx_merchant"));}
+function planOpt(n,p,d){
+return "<label style='display:block;margin:8px 0'>"
++"<input type='radio' name='plan' value='"+n+"'"
++(n==="Freemium"?" checked":"")+" > <b>"+n+"</b> · "+p
++" <span class='muted'>"+d+"</span></label>";}
+function sellStore(){try{
+var nm=val("s_name")||val("s_owner");
+var st=val("s_store")||nm;
+var wa=val("s_wa")||val("s_phone");
+var ow=val("s_owner")||nm;
+var ct=val("s_country");
+var em=val("s_email");
+var cy=val("s_city");
+var el=document.querySelector("input[name=plan]:checked");
+var pl=el?el.value:"Freemium";
+if(!nm||!wa){alert(t("name")+" + WhatsApp");return;}
 var id="st-"+Math.random().toString(16).slice(2,8);
-var st={id:id,name:nm,owner:ow,whatsapp:wa,country:document.getElementById("s_country").value,plan:document.getElementById("s_plan").value,active:false};
-localStorage.setItem("nx_storereq_"+id,JSON.stringify(st));
-if(SUPA_KEY){fetch(SUPA_URL+"/rest/v1/stores",{method:"POST",headers:{apikey:SUPA_KEY,Authorization:"Bearer "+SUPA_KEY,"Content-Type":"application/json"},body:JSON.stringify([st])}).catch(function(){});}
-document.getElementById("app").innerHTML="<div class='box' style='text-align:center'><h2>"+t("sOk")+"</h2><p class='muted'>"+t("req")+": "+id+"</p><button onclick=\"go('panel')\">🧑‍💼 "+t("panel")+"</button><button onclick=\"go('')\">🛍️ NexusShop</button></div>";}
+var row={id:id,name:st,owner:ow,whatsapp:wa,
+country:ct,city:cy,email:em,plan:pl,active:false};
+fetch(SUPA_URL+"/rest/v1/stores",{method:"POST",
+headers:{apikey:SUPA_KEY,
+Authorization:"Bearer "+SUPA_KEY,
+"Content-Type":"application/json"},
+body:JSON.stringify([row])}).then(function(){
+sessionStorage.setItem("nx_merchant",id);
+sessionStorage.setItem("nx_merchant_name",st);
+if(PAY_LINKS[pl])window.open(PAY_LINKS[pl]);
+app.innerHTML="<div class='box' style='text-align:center'>"
++"<h2>✅ "+t("reqOK")+"</h2>"
++"<p class='muted'>"+t("req")+": "+id+"</p>"
++"<p><b>Plan: "+pl+"</b></p>"
++"<button onclick='goPanel()'>🧑‍ Panel</button> "
++"<button onclick='goStoreMe()'>🛍️ Tienda</button></div>";
+}).catch(function(e){alert("ERR red: "+e);});
+}catch(e){alert("ERR2: "+e);}}
+
 function mId(){return sessionStorage.getItem("nx_merchant")||"";}
 function mLogin(){var id=document.getElementById("m_id").value.trim(),wa=document.getElementById("m_wa").value.trim();
 if(!SUPA_KEY){alert(t("mBad"));return;}
