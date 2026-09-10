@@ -44,7 +44,7 @@ footer{background:var(--pkd);color:#cfe8d8;padding:18px 16px;font-size:13px;marg
 footer a{color:#fff;text-decoration:none;margin-right:12px}
 .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee}
 a.back{color:var(--pk);text-decoration:none;font-weight:700}
-.bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:6px 0 8px;box-shadow:0 -2px 8px rgba(0,0,0,.15);z-index:9}.bnav a{color:#01411C;text-decoration:none;font-size:20px;text-align:center}.bnav a span{display:block;font-size:10px;font-weight:700}.bdg{position:absolute;top:8px;left:8px;background:#046A38;color:#fff;font-size:10px;padding:3px 8px;border-radius:10px;font-weight:700;z-index:2}.card{position:relative}.stores{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;overflow:visible}.store{min-width:0}</style></head><body>
+.bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:6px 0 8px;box-shadow:0 -2px 8px rgba(0,0,0,.15);z-index:9}.bnav a{color:#01411C;text-decoration:none;font-size:20px;text-align:center}.bnav a span{display:block;font-size:10px;font-weight:700}.bdg{position:absolute;top:8px;left:8px;background:#046A38;color:#fff;font-size:10px;padding:3px 8px;border-radius:10px;font-weight:700;z-index:2}.card{position:relative}.stores{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;overflow:visible}.store{min-width:0}@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}@keyframes grad{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}#splash{background:linear-gradient(120deg,#064e3b,#059669,#064e3b);background-size:200% 200%;animation:grad 6s ease infinite}#splash > div:first-of-type{animation:float 3s ease-in-out infinite}#splash h1,#splash p,#splash button{animation:fadeUp .8s ease both}#splash p{animation-delay:.2s}#splash button{animation-delay:.4s}</style></head><body>
 <div id="splash"><div class="sp-in">
 <svg viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#fff"/><path d="M14 18h6l6 24h20l6-16H24" fill="none" stroke="#046A38" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="30" cy="50" r="4" fill="#ffd166"/><circle cx="44" cy="50" r="4" fill="#ffd166"/></svg>
 <h1>Nexus<span>Shop</span></h1>
@@ -102,11 +102,20 @@ allp().slice(0,4).forEach(function(x,idx){h+="<div class='card' onclick=\"go('p/
 h+="</div><div class='cta' onclick=\"go('sell')\">"+t("sell")+"<br><span class='muted' style='color:#01411C'>"+t("sellSub")+"</span></div><div class='sec'>"+t("all")+"</div><div class='grid'>";
 allp().forEach(function(x,idx){if(Q&&x.p.nombre.toLowerCase().indexOf(Q.toLowerCase())<0)return;h+="<div class='card' onclick=\"go('p/"+idx+"')\">"+"<span class='bdg'>"+pbadge(x.p)+"</span>"+img(x.p)+"<h3>"+x.p.nombre+"</h3><div class='stars'>★ "+prating(x.p)+"</div><div class='p'>Rs. "+x.p.precio+"</div></div>";});
 return h+"</div>";}
-function store(s){var ti=storeObj(s);var h="<div class='box'><a class='back' href='#/'>"+t("back")+"</a><h2>"+(ti.emoji||"🏪")+" "+ti.nombre+"</h2>"+stars(ti.resenas)+"</div><div class='grid'>";
+function store(s){var ti=storeObj(s);var mine=(sessionStorage.getItem("nx_merchant")===s);var h=(mine?"<div class='box'><button class='btn' onclick=\"document.getElementById('sform').style.display='block'\">+ "+t("addProd")+"</button><div id='sform' style='display:none'>""+storeFormHTML(s)+"</div></div>":"")+"<div class='box'><a class='back' href='#/'>"+t("back")+"</a><h2>"+(ti.emoji||"🏪")+" "+ti.nombre+"</h2>"+stars(ti.resenas)+"</div><div class='grid'>";
 allp().forEach(function(x,idx){if(x.s===s)h+="<div class='card' onclick=\"go('p/"+idx+"')\">"+"<span class='bdg'>"+pbadge(x.p)+"</span>"+img(x.p)+"<h3>"+x.p.nombre+"</h3><div class='stars'>★ "+prating(x.p)+"</div><div class='p'>Rs. "+x.p.precio+"</div></div>";});
 return h+"</div>";}
 function prod(idx){var x=allp()[idx];if(!x)return home();var p=x.p;
-return "<div class='box' style='text-align:center'>"+img(p)+"<h2>"+p.nombre+"</h2><div style='font-size:22px;color:var(--pk);font-weight:800'>Rs. "+p.precio+"</div><div class='stars'>★ "+prating(p)+"</div>"+stars(x.ti.resenas)+(p.desc?"<p class='muted' style='margin:8px 0'>"+p.desc+"</p>":"")+(p.stock!=null?"<p class='muted'> Stock: "+p.stock+"</p>":"")+(p.compare?"<p class='muted' style='text-decoration:line-through'>Rs. "+p.compare+"</p>":"")+(p.specs&&Object.keys(p.specs).length?"<div class='box'><h3>"+t("specs")+"</h3>"+Object.keys(p.specs).map(function(k){return "<div class='row'><span>"+k+"</span><b>"+p.specs[k]+"</b></div>";}).join("")+"</div>":"")+(p.payments&&p.payments.length?"<p class='muted'>💳 "+t("payM")+": "+p.payments.join(" · ")+"</p>":"")+"<p class='muted'>🎧 "+t("support")+"</p>"+"<p class='muted'>"+x.ti.nombre+"</p><button onclick=\"add("+idx+")\">"+t("add")+"</button><a href='https://wa.me/"+(x.ti.whatsapp||"")+"'><button class='wa'>📲 WhatsApp</button></a></div><div class='box'><h3>"+t("reviews")+"</h3>"+(x.ti.resenas||[]).map(function(r){return "<div class='stars' style='padding:6px 0'>"+"★".repeat(r.estrellas||5)+" <span style='color:#333'>"+(r.comentario||"")+"</span></div>";}).join("")+DBR.filter(function(r){return r.product_id===p.id;}).map(function(r){return "<div class='stars' style='padding:6px 0'>"+"★".repeat(r.stars||5)+" <span style='color:#333'>"+(r.comment||"")+" — "+(r.author||"")+"</span></div>";}).join("")+"</div>";}
+return "<div class='box' style='text-align:center'>"+img(p)+"<h2>"+p.nombre+"</h2><div style='font-size:22px;color:var(--pk);font-weight:800'>Rs. "+p.precio+"</div><div class='stars'>★ "+prating(p)+"</div>"+stars(x.ti.resenas)+(p.desc?"<p class='muted' style='margin:8px 0'>"+p.desc+"</p>":"")+(p.stock!=null?"<p class='muted'> Stock: "+p.stock+"</p>":"")+(p.compare?"<p class='muted' style='text-decoration:line-through'>Rs. "+p.compare+"</p>":"")+(p.specs&&Object.keys(p.specs).length?"<div class='box'><h3>"+t("specs")+"</h3>"+Object.keys(p.specs).map(function(k){return "<div class='row'><span>"+k+"</span><b>"+p.specs[k]+"</b></div>";}).join("")+"</div>":"")+(p.payments&&p.payments.length?"<p class='muted'>💳 "+t("payM")+": "+p.payments.join(" · ")+"</p>":"")+(p.video?"<iframe width='100%' height='220' src='"+ytEmbed(p.video)+"' frameborder='0' allowfullscreen></iframe>":"")+"<div class='box'><h3>"+t("reviews")+"</h3>"
++"<div id='revlist'><p class='muted'>…</p></div>"
++"<input id='rv_name' placeholder='"+t("name")+"'>"
++"<select id='rv_rating'><option>5</option><option>4</option>"
++"<option>3</option><option>2</option><option>1</option></select>"
++"<textarea id='rv_text' rows='2' placeholder='"+t("reviews")+"'>"
++"</textarea>"
++"<button onclick='rvPost(\""+p.id+"\")'>💬</button>"
++"<img src=x onerror='loadRev(\""+p.id+"\")' style='display:none'>"
++"</div>"+"<p class='muted'>"+x.ti.nombre+"</p><button onclick=\"add("+idx+")\">"+t("add")+"</button><a href='https://wa.me/"+(x.ti.whatsapp||"")+"'><button class='wa'>📲 WhatsApp</button></a></div><div class='box'><h3>"+t("reviews")+"</h3>"+(x.ti.resenas||[]).map(function(r){return "<div class='stars' style='padding:6px 0'>"+"★".repeat(r.estrellas||5)+" <span style='color:#333'>"+(r.comentario||"")+"</span></div>";}).join("")+DBR.filter(function(r){return r.product_id===p.id;}).map(function(r){return "<div class='stars' style='padding:6px 0'>"+"★".repeat(r.stars||5)+" <span style='color:#333'>"+(r.comment||"")+" — "+(r.author||"")+"</span></div>";}).join("")+"</div>";}
 function add(idx){var x=allp()[idx],c=gc(),k=x.s+x.i;c[k]=c[k]||{n:x.p.nombre,p:x.p.precio,q:0,w:x.ti.whatsapp};c[k].q++;sc(c);alert("✅ "+x.p.nombre);}
 function cart(){var c=gc(),h="<div class='box'><a class='back' href='#/'>"+t("back")+"</a><h2>"+t("cart")+"</h2>",tot=0,empty=true;
 for(var k in c){empty=false;var it=c[k];tot+=it.q*it.p;h+="<div class='row'><span>"+it.n+" ×"+it.q+"</span><span>Rs. "+(it.q*it.p)+" <a href='#' onclick=\"rm('"+k+"')\">✖</a></span></div>";}
@@ -278,6 +287,99 @@ el.innerHTML=o?("<p><b>"+o.id+"</b> · "+o.status+"</p>"
 +"<p class='muted'>"+o.ts+"</p>"
 +"<a href='#/invoice/"+o.id+"'>🧾 "+t("invoice")+"</a>")
 :"<p>—</p>";}).catch(function(){});}
+function storeFormHTML(sid){
+return "<input id='q_name' placeholder='"+t("pName")+"'>"
++"<input id='q_price' type='number' placeholder='"+t("pPrice")+"'>"
++"<input id='q_desc' placeholder='"+t("pDesc")+"'>"
++"<textarea id='q_specs' rows='3' placeholder='"
++t("specs")+": Color: Negro&#10;Material: Cuero'></textarea>"
++"<input id='q_file' type='file' accept='image/*' multiple>"
++"<input id='q_img' placeholder='"+t("pImg")+" (URL)'>"
++"<input id='q_video' placeholder='Video URL (YouTube)'>"
++"<input id='q_emoji' placeholder='"+t("pEmoji")+"'>"
++"<input id='q_stock' type='number' value='10'>"
++"<button onclick='qAdd(\""+sid+"\")'>"
++t("publish")+" 🚀</button>";}
+function parseSpecs(v){var o={};
+(v||"").split("\n").forEach(function(ln){
+var kv=ln.split(":");
+if(kv.length>=2&&kv[0].trim())
+o[kv[0].trim()]=kv.slice(1).join(":").trim();});
+return o;}
+function ytEmbed(u){var m=u.match(/v=([\w-]+)/);
+if(m)return "https://www.youtube.com/embed/"+m[1];
+m=u.match(/youtu\.be\/([\w-]+)/);
+if(m)return "https://www.youtube.com/embed/"+m[1];
+return u;}
+function qAdd(sid){var n=document.getElementById("q_name").value;
+var pr=Number(document.getElementById("q_price").value);
+if(!n||!pr){alert(t("pName")+" + "+t("pPrice"));return;}
+var imgs=[];var fu=document.getElementById("q_file");
+var vu=document.getElementById("q_img").value.trim();
+if(vu)imgs.push(vu);
+var vids=document.getElementById("q_video").value.trim();
+function done(){var row={
+id:"pd-"+Math.random().toString(16).slice(2,8),
+store_id:sid,name:n,price:pr,
+description:document.getElementById("q_desc").value,
+emoji:document.getElementById("q_emoji").value||"🛍️",
+images:imgs,video:vids||null,
+specs:parseSpecs(document.getElementById("q_specs").value),
+payments:["COD","Card"],
+stock:Number(document.getElementById("q_stock").value)||10,
+active:true};
+fetch(SUPA_URL+"/rest/v1/products",{method:"POST",
+headers:{apikey:SUPA_KEY,Authorization:"Bearer "+SUPA_KEY,
+"Content-Type":"application/json"},
+body:JSON.stringify([row])}).then(function(){
+alert("OK 🚀");loadDB();render();
+}).catch(function(){alert(t("mBad"));});}
+if(fu.files&&fu.files.length){var pend=fu.files.length;
+for(var i=0;i<fu.files.length;i++){(function(f){
+var rd=new FileReader();
+rd.onload=function(){var im=new Image();
+im.onload=function(){var c=document.createElement("canvas");
+var w=800,h=800*im.height/im.width;
+if(im.width<800){w=im.width;h=im.height;}
+c.width=w;c.height=h;
+c.getContext("2d").drawImage(im,0,0,w,h);
+imgs.push(c.toDataURL("image/jpeg",0.7));
+pend--;if(pend===0)done();};
+im.src=rd.result;};
+rd.readAsDataURL(f);})(fu.files[i]);}
+}else{done();}}
+function loadRev(pid){
+fetch(SUPA_URL+"/rest/v1/reviews?product_id=eq."+pid
++"&select=*&order=ts.desc",{
+headers:{apikey:SUPA_KEY,Authorization:"Bearer "+SUPA_KEY}})
+.then(function(r){return r.json();}).then(function(rows){
+var el=document.getElementById("revlist");if(!el)return;
+el.innerHTML=(rows||[]).map(function(r){
+return "<div class='row'><span>"+r.author+" · "
++"★".repeat(r.rating||5)+"</span><b>"+(r.text||"")
++"</b></div>";}).join("")||"<p class='muted'>—</p>";
+}).catch(function(){});}
+function rvPost(pid){
+var nm=document.getElementById("rv_name").value.trim()
+||localStorage.getItem("nx_user")||"";
+if(!nm){alert(t("name"));return;}
+localStorage.setItem("nx_user",nm);
+var row={id:"rv-"+Math.random().toString(16).slice(2,8),
+product_id:pid,author:nm,
+rating:Number(document.getElementById("rv_rating").value),
+text:document.getElementById("rv_text").value,
+ts:new Date().toISOString()};
+fetch(SUPA_URL+"/rest/v1/reviews",{method:"POST",
+headers:{apikey:SUPA_KEY,Authorization:"Bearer "+SUPA_KEY,
+"Content-Type":"application/json"},
+body:JSON.stringify([row])}).then(function(){
+document.getElementById("rv_text").value="";
+loadRev(pid);}).catch(function(){alert(t("mBad"));});}
+window.addEventListener("deviceorientation",function(e){
+var l=document.querySelector("#splash > div");
+if(!l)return;
+l.style.transform="rotateY("+(e.gamma||0)/3+"deg) "
++"rotateX("+(-(e.beta||0))/3+"deg)";});
 function terms(){return "<div class='box'><h2>Terms & Conditions</h2><p class='muted'>Last updated: Sep 2026</p><p>1. NexusShop is a marketplace platform connecting independent merchants with customers. Each merchant is responsible for their products, prices and fulfillment.</p><p>2. Orders are confirmed via WhatsApp with the merchant. Payment methods: Cash on Delivery, JazzCash/Easypaisa, card/PayPal and bank transfer.</p><p>3. Refunds and returns are handled by each merchant according to their published policy.</p><p>4. Partner links (?ref=) tag orders for commission purposes only and do not affect prices.</p><p>5. By using NexusShop you accept these terms.</p></div>";}
 function privacy(){return "<div class='box'><h2>Privacy Policy</h2><p class='muted'>Last updated: Sep 2026</p><p>1. Your cart and orders are stored locally on your device until confirmed with the merchant via WhatsApp.</p><p>2. We only collect checkout data (name, WhatsApp, address, city) to process your order.</p><p>3. We do not sell personal data to third parties.</p><p>4. Request deletion of your data anytime via support.</p></div>";}
 function render(){var h=location.hash||"#/";var app=document.getElementById("app");
