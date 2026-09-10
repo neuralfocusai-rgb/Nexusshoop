@@ -103,7 +103,7 @@ h+="</div><div class='cta' onclick=\"go('sell')\">"+t("sell")+"<br><span class='
 allp().forEach(function(x,idx){if(Q&&x.p.nombre.toLowerCase().indexOf(Q.toLowerCase())<0)return;h+="<div class='card' onclick=\"go('p/"+idx+"')\">"+"<span class='bdg'>"+pbadge(x.p)+"</span>"+img(x.p)+"<h3>"+x.p.nombre+"</h3><div class='stars'>★ "+prating(x.p)+"</div><div class='p'>Rs. "+x.p.precio+"</div></div>";});
 return h+"</div>";}
 function store(s){var ti=storeObj(s);var mine=(sessionStorage.getItem("nx_merchant")===s);
-var h=(mine?"<div class='box'><button class='btn' onclick=\"toggleSF()\">+ "+t("addProd")+"</button><div id='sform' style='display:none'>""+storeFormHTML(s)+"</div></div>":"")+"<div class='box'><a class='back' href='#/'>"+t("back")+"</a><h2>"+(ti.emoji||"🏪")+" "+ti.nombre+"</h2>"+stars(ti.resenas)+"</div><div class='grid'>";
+var h=(mine?'<div class="box"><button class="btn" onclick="toggleSF()">+ '+t("addProd")+'</button><div id="sform" style="display:none">'+storeFormHTML(s)+'</div></div>':'')+"<div class='box'><a class='back' href='#/'>"+t("back")+"</a><h2>"+(ti.emoji||"🏪")+" "+ti.nombre+"</h2>"+stars(ti.resenas)+"</div><div class='grid'>";
 allp().forEach(function(x,idx){if(x.s===s)h+="<div class='card' onclick=\"go('p/"+idx+"')\">"+"<span class='bdg'>"+pbadge(x.p)+"</span>"+img(x.p)+"<h3>"+x.p.nombre+"</h3><div class='stars'>★ "+prating(x.p)+"</div><div class='p'>Rs. "+x.p.precio+"</div></div>";});
 return h+"</div>";}
 function prod(idx){var x=allp()[idx];if(!x)return home();var p=x.p;
