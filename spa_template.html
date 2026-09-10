@@ -168,7 +168,24 @@ fetch(SUPA_URL+"/rest/v1/orders?w=eq."+(sessionStorage.getItem("nx_merchant_wa")
 function panel(){if(!SUPA_KEY)return "<div class='box'>"+t("mBad")+"</div>";
 if(!mId())return "<div class='box'><h2>🔐 "+t("mLogin")+"</h2><input id='m_id' placeholder='"+t("mId")+"'><input id='m_wa' placeholder='"+t("mWa")+"'><button onclick='mLogin()'>"+t("mEnter")+"</button><p class='muted'>"+t("mHint")+"</p></div>";
 return "<div class='box'><h2>🧑‍💼 "+(sessionStorage.getItem("nx_merchant_name")||mId())+"</h2><button onclick='sessionStorage.removeItem(\"nx_merchant\");render()'>"+t("logout")+"</button></div>"
-+"<div class='box'><h3>+ "+t("addProd")+"</h3><input id='p_name' placeholder='"+t("pName")+"'><input id='p_price' type='number' placeholder='"+t("pPrice")+"'><input id='p_compare' type='number' placeholder='"+t("compare")+"'><input id='p_desc' placeholder='"+t("pDesc")+"'><textarea id='p_specs' placeholder='"+t("specs")+": Color: Negro&#10;Material: Cuero' rows='3'></textarea><input id='p_img' placeholder='"+t("pImg")+" 1"><input id='p_img2' placeholder='"+t("pImg")+" 2"><input id='p_img3' placeholder='"+t("pImg")+" 3"><input id='p_emoji' placeholder='"+t("pEmoji")+"'><input id='p_stock' type='number' value='10'><div class='muted' style='margin:6px 0'>"+t("payM")+":</div>"+["COD","JazzCash","Easypaisa","Card","PayPal"].map(function(m){return "<label style='margin-right:10px'><input type='checkbox' id='pay_"+m+"' checked> "+m+"</label>";}).join("")+"<button onclick='pAdd()'>"+t("publish")+" 🚀</button></div>"
++"<div class='box'><h3>+ "+t("addProd")+"</h3>"
++"<input id='p_name' placeholder='"+t("pName")+"'>"
++"<input id='p_price' type='number' placeholder='"+t("pPrice")+"'>"
++"<input id='p_compare' type='number' placeholder='"+t("compare")+"'>"
++"<input id='p_desc' placeholder='"+t("pDesc")+"'>"
++"<textarea id='p_specs' rows='3' placeholder='"
++t("specs")+": Color: Negro&#10;Material: Cuero'></textarea>"
++"<input id='p_img' placeholder='"+t("pImg")+" 1'>"
++"<input id='p_img2' placeholder='"+t("pImg")+" 2'>"
++"<input id='p_img3' placeholder='"+t("pImg")+" 3'>"
++"<input id='p_emoji' placeholder='"+t("pEmoji")+"'>"
++"<input id='p_stock' type='number' value='10'>"
++"<div class='muted' style='margin:6px 0'>"+t("payM")+":</div>"
++["COD","JazzCash","Easypaisa","Card","PayPal"].map(function(m){
+return "<label style='margin-right:10px'>"
++"<input type='checkbox' id='pay_"+m+"' checked> "
++m+"</label>";}).join("")
++"<button onclick='pAdd()'>"+t("publish")+" 🚀</button></div>"
 +"<div class='box'><h3>"+t("myProds")+"</h3><div id='myprods'>…</div></div>"
 +"<div class='box'><h3>"+t("myOrders")+"</h3><div id='myorders'>…</div></div>";}
 function invoice(id){setTimeout(function(){fetch(SUPA_URL+"/rest/v1/orders?id=eq."+id+"&select=*",{headers:{apikey:SUPA_KEY,Authorization:"Bearer "+SUPA_KEY}}).then(function(r){return r.json();}).then(function(rows){var el=document.getElementById("invbox");if(!el)return;var o=rows&&rows[0];
