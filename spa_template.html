@@ -44,7 +44,7 @@ footer{background:var(--pkd);color:#cfe8d8;padding:18px 16px;font-size:13px;marg
 footer a{color:#fff;text-decoration:none;margin-right:12px}
 .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee}
 a.back{color:var(--pk);text-decoration:none;font-weight:700}
-.bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:6px 0 8px;box-shadow:0 -2px 8px rgba(0,0,0,.15);z-index:9}.bnav a{color:#01411C;text-decoration:none;font-size:20px;text-align:center}.bnav a span{display:block;font-size:10px;font-weight:700}.bdg{position:absolute;top:8px;left:8px;background:#046A38;color:#fff;font-size:10px;padding:3px 8px;border-radius:10px;font-weight:700;z-index:2}.card{position:relative}.stores{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;overflow:visible}.store{min-width:0}@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}@keyframes grad{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}#splash{background:linear-gradient(120deg,#064e3b,#059669,#064e3b);background-size:200% 200%;animation:grad 6s ease infinite}#splash > div:first-of-type{animation:float 3s ease-in-out infinite}#splash h1,#splash p,#splash button{animation:fadeUp .8s ease both}#splash p{animation-delay:.2s}#splash button{animation-delay:.4s}</style></head><body>
+.bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;display:flex;justify-content:space-around;padding:6px 0 8px;box-shadow:0 -2px 8px rgba(0,0,0,.15);z-index:9}.bnav a{color:#01411C;text-decoration:none;font-size:20px;text-align:center}.bnav a span{display:block;font-size:10px;font-weight:700}.bdg{position:absolute;top:8px;left:8px;background:#046A38;color:#fff;font-size:10px;padding:3px 8px;border-radius:10px;font-weight:700;z-index:2}.card{position:relative}.stores{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;overflow:visible}.store{min-width:0}@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}@keyframes grad{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}#splash{background:linear-gradient(120deg,#064e3b,#059669,#064e3b);background-size:200% 200%;animation:grad 6s ease infinite}#splash > div:first-of-type{animation:float 3s ease-in-out infinite}#splash h1,#splash p,#splash button{animation:fadeUp .8s ease both}#splash p{animation-delay:.2s}#splash button{animation-delay:.4s}.card img{width:100%;height:160px;object-fit:cover;border-radius:12px}.card .em{height:160px;display:flex;align-items:center;justify-content:center;font-size:64px;margin:0}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.card h3{font-size:15px;margin:8px 0 4px}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}.box{border-radius:16px;box-shadow:0 1px 4px rgba(0,0,0,.08)}button,.btn{border-radius:12px}input,select,textarea{border-radius:10px;border:1px solid #ddd;padding:10px;margin:4px 0;width:100%}#topnav{display:none}@media(min-width:700px){#topnav{display:flex;gap:14px;justify-content:center;padding:8px 0;background:#064e3b}#topnav a{color:#fff;text-decoration:none;font-weight:600}.bnav{display:none}}</style></head><body>
 <div id="splash"><div class="sp-in">
 <svg viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#fff"/><path d="M14 18h6l6 24h20l6-16H24" fill="none" stroke="#046A38" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="30" cy="50" r="4" fill="#ffd166"/><circle cx="44" cy="50" r="4" fill="#ffd166"/></svg>
 <h1>Nexus<span>Shop</span></h1>
@@ -54,7 +54,7 @@ a.back{color:var(--pk);text-decoration:none;font-weight:700}
 </div></div>
 <header><div class="logo"><svg viewBox="0 0 64 64" width="26"><rect width="64" height="64" rx="14" fill="#fff"/><path d="M14 18h6l6 24h20l6-16H24" fill="none" stroke="#046A38" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="30" cy="50" r="5" fill="#ffd166"/><circle cx="44" cy="50" r="5" fill="#ffd166"/></svg>Nexus<span>Shop</span></div>
 <div class="hdr"><a href="#/track">📦</a><a href="#/sell">🏪</a><a href="#" onclick="setLang('en')">EN</a><a href="#" onclick="setLang('es')">ES</a><a href="#" onclick="setLang('ur')">اردو</a></div></header>
-<div id="app"></div>
+<div id="topnav"><a href="#/home">Home</a><a href="#/sell">Sell</a><a href="#/cart">Cart</a><a href="#/orders">Orders</a><a href="#/panel">Merchant</a></div><div id="app"></div>
 <nav class='bnav'><a href='#/'>🏠<span>Home</span></a><a href='#/sell'>🏪<span>Sell</span></a><a href='#/cart'>🛒<span id='bartxt'>Cart</span></a><a href='#/track'>📦<span>Orders</span></a></nav>
 <footer style="margin-top:40px;padding:32px 16px;background:#111;color:#ccc;text-align:center;font-size:13px;line-height:1.8">
 <div style="font-size:20px;font-weight:700;color:#fff;letter-spacing:1px">NexusShop</div>
@@ -71,6 +71,8 @@ a.back{color:var(--pk);text-decoration:none;font-weight:700}
 </footer>
 <script>
 var DATA=__DATA__;
+window.onerror=function(m,u,l){alert("ERR: "+m+" (linea "+l+")");};
+var PAY_LINKS={Freemium:"",Premium:"",Gold:"",Platinum:""};
 window.onerror=function(m,u,l){alert("ERR: "+m+" (linea "+l+")");};
 var PAY_LINKS={Freemium:"",Premium:"",Gold:"",Platinum:""};
 var SUPA_URL="https://sewdrblynwoyjizugafj.supabase.co",SUPA_KEY="sb_publishable_ldSNvO3bvM-PSI7essB6TQ_0bJOJZPk";
@@ -158,9 +160,19 @@ document.getElementById("t_out").innerHTML="<p class='muted'>⏳ …</p>";
 fetch(SUPA_URL+"/rest/v1/orders?id=eq."+id+"&select=id,status,total,ts",{headers:{apikey:SUPA_KEY,Authorization:"Bearer "+SUPA_KEY}}).then(function(r){return r.json();}).then(function(rows){showTrack(rows&&rows[0]?rows[0]:null);}).catch(function(){showTrack(null);});}
 function sell(){return "<div class='box'><h2>"+t("sell")+"</h2><p class='muted'>"+t("sellSub")+"</p>"+
 "<input id='s_name' placeholder='"+t("sName")+"'><input id='s_owner' placeholder='"+t("sOwner")+"'><input id='s_wa' placeholder='"+t("sWa")+"'>"+
-"+ctrySel()+"+"<div class='box'><h3>Plan</h3>"+planOpt("Freemium","Rs. 0","Tienda basica")+planOpt("Premium","Rs. 999/mo","Badges + stats")+planOpt("Gold","Rs. 2499/mo","Top search + video")+planOpt("Platinum","Rs. 4999/mo","Full suite + AR")+"</div>"+
+"+ctrySel()+"+"<div class='box'><h3>Plan</h3>"+planOpt("Freemium","Rs. 0","Store + 10 products")+planOpt("Premium","Rs. 999/mo","Badges + stats + 50 products")+planOpt("Gold","Rs. 2499/mo","Top search + video + 200 products")+planOpt("Platinum","Rs. 4999/mo","Full suite + AR + unlimited")+"<p class='muted'>Upgrade = more visibility, badges and unlimited catalog.</p></div>"+"<div class='box'><h3>Plan</h3>"+planOpt("Freemium","Rs. 0","Tienda basica")+planOpt("Premium","Rs. 999/mo","Badges + stats")+planOpt("Gold","Rs. 2499/mo","Top search + video")+planOpt("Platinum","Rs. 4999/mo","Full suite + AR")+"</div>"+
 "<select id='s_plan'><option value='growth'>Growth — $49/mes</option><option value='pro'>Pro — $99/mes</option></select>"+
 "<button onclick='sellStore()'>"+t("sSubmit")+" 🚀</button></div>";}
+function val(i){var e=document.getElementById(i);
+return e?e.value.trim():"";}
+function goPanel(){go("panel");}
+function goStoreMe(){go("store/"
++sessionStorage.getItem("nx_merchant"));}
+function planOpt(n,p,d){
+return "<label style='display:block;margin:8px 0'>"
++"<input type='radio' name='plan' value='"+n+"'"
++(n==="Freemium"?" checked":"")+" > <b>"+n+"</b> · "+p
++" <span class='muted'>"+d+"</span></label>";}
 function val(i){var e=document.getElementById(i);
 return e?e.value.trim():"";}
 function goPanel(){go("panel");}
@@ -197,7 +209,7 @@ app.innerHTML="<div class='box' style='text-align:center'>"
 +"<h2>✅ "+t("reqOK")+"</h2>"
 +"<p class='muted'>"+t("req")+": "+id+"</p>"
 +"<p><b>Plan: "+pl+"</b></p>"
-+"<button onclick='goPanel()'>🧑‍ Panel</button> "
++"<button onclick='goPanel()'>🧑 Panel</button> "
 +"<button onclick='goStoreMe()'>🛍️ Tienda</button></div>";
 }).catch(function(e){alert("ERR red: "+e);});
 }catch(e){alert("ERR2: "+e);}}
