@@ -1,0 +1,14 @@
+{
+  "Header": {
+    "searchPlaceholder": "Buscar productos, marcas y más...",
+    "login": "Ingresar",
+    "sell": "Vender",
+    "cart": "Carrito",
+    "languages": "Idiomas"
+  },
+  "Home": {
+    "title": "Tu tienda. Tu país. Tu ingreso.",
+    "subtitle": "Compra y vende en NexusShop",
+    "products": "Productos destacados"
+  }
+}

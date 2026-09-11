@@ -1,0 +1,14 @@
+{
+  "Header": {
+    "searchPlaceholder": "Search products, brands and more...",
+    "login": "Login",
+    "sell": "Sell",
+    "cart": "Cart",
+    "languages": "Languages"
+  },
+  "Home": {
+    "title": "Your store. Your country. Your income.",
+    "subtitle": "Buy and sell on NexusShop",
+    "products": "Featured products"
+  }
+}
