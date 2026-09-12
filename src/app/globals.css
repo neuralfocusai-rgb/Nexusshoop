@@ -1,8 +1,16 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-nexusGreen: #00A650;
+  --color-nexusGreenDark: #008a42;
+  --color-nexusGreenLight: #e6f7ed;
+  --color-nexusBlue: #3483FA;
+  --color-nexusBlueDark: #2968c8;
+  --color-nexusYellow: #FFE600;
+  --color-nexusGray: #EBEBEB;
+}
 
 body {
-  background-color: #EBEBEB;
+  background-color: var(--color-nexusGray);
   font-family: 'Segoe UI', Roboto, sans-serif;
 }
