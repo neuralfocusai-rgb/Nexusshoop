@@ -5,74 +5,142 @@
 <link rel="icon" href="/icon.svg">
 <title>NexusShop</title>
 <style>
-:root{--v1:#00e5a0;--v2:#00916e;--dk:#06281f;--acc:#ff9f1c;--bg:#f2f6f5}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:var(--bg);color:#122;
+body{margin:0;background:#ebebeb;color:#333;
 font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-#app{max-width:1100px;margin:0 auto;padding:12px 14px 90px}
-header{background:linear-gradient(100deg,var(--dk),var(--v2) 60%,var(--v1));
-padding:14px 16px;display:flex;align-items:center;gap:10px;
-box-shadow:0 4px 20px rgba(0,229,160,.25)}
-header .logo{font-size:22px;font-weight:800;color:#fff;letter-spacing:.5px}
-header .logo b{color:var(--acc)}
-.box{background:#fff;border-radius:20px;padding:16px;
-margin:12px 0;box-shadow:0 6px 24px rgba(6,40,31,.07)}
-.hero{background:linear-gradient(130deg,var(--dk),var(--v2));
-border-radius:24px;padding:26px 18px;text-align:center;color:#fff;
-box-shadow:0 10px 30px rgba(0,229,160,.3)}
-.hero h1,.hero h2{margin:6px 0;color:#fff}
-.hero p{color:#c9ffe9}
-.hero input{border:none;border-radius:999px;padding:14px 18px;
-font-size:16px;width:100%;margin-top:12px;outline:none}
-h2{font-size:22px;margin:10px 0}h3{font-size:17px;margin:8px 0}
-.muted{color:#68786f;font-size:13px}
-.pill{display:inline-block;background:linear-gradient(90deg,var(--acc),#ffd166);
-color:#4a2b00;border-radius:999px;padding:3px 12px;font-size:12px;
-font-weight:700;margin-left:8px}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+#app{max-width:1100px;margin:0 auto;padding:0 0 130px}
+header{background:linear-gradient(100deg,#00916e,#00b37a);
+padding:10px 14px;display:flex;align-items:center;gap:10px}
+header .logo{font-size:20px;font-weight:800;color:#fff}
+header .logo b{color:#ffe66d}
+.mhero{background:linear-gradient(180deg,#00b37a,#00a650);
+padding:10px 14px 0}
+.msearch input{width:100%;border:none;border-radius:999px;
+padding:13px 18px;font-size:15px;outline:none;
+box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.mloc{color:#e8fff3;font-size:13px;padding:8px 2px}
+.mtabs{display:flex;overflow-x:auto;gap:20px;padding:4px 2px 0;
+scrollbar-width:none}
+.mtabs b{color:#e8fff3;font-size:14px;font-weight:600;
+padding:6px 2px 9px;border-bottom:3px solid transparent;
+white-space:nowrap;cursor:pointer}
+.mtabs b.on{color:#fff;border-color:#fff}
+.mbanner{margin:12px 14px 0;border-radius:14px;padding:20px 16px;
+background:linear-gradient(100deg,#06281f,#00916e 70%,#00e5a0);
+color:#fff;box-shadow:0 6px 20px rgba(0,145,110,.35)}
+.mbanner b{font-size:26px;font-style:italic;display:block}
+.mbanner span{background:#ffe66d;color:#06281f;border-radius:999px;
+padding:4px 12px;font-weight:800;font-size:13px;display:inline-block;
+margin-top:8px}
+.mbanner i{display:block;font-style:normal;color:#c9ffe9;
+font-size:12px;margin-top:6px}
+.mplus{margin:12px 14px 0;border-radius:999px;padding:11px 16px;
+background:linear-gradient(90deg,#ff9f1c,#ff5252);color:#fff;
+font-weight:700;font-size:14px;box-shadow:0 4px 14px rgba(255,82,82,.3)}
+.mcirc{display:flex;overflow-x:auto;gap:16px;padding:14px;
+scrollbar-width:none}
+.mcirc div{min-width:74px;text-align:center;font-size:12px;color:#444}
+.mcirc .ci{width:62px;height:62px;border-radius:50%;background:#fff;
+display:flex;align-items:center;justify-content:center;font-size:28px;
+margin:0 auto 6px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.box{background:#fff;border-radius:12px;margin:12px 14px;
+padding:14px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.row{display:flex;justify-content:space-between;align-items:center;
+padding:7px 0;font-size:14px;border-bottom:1px solid #f0f4f2}
+.muted{color:#8a9a92;font-size:12px}
+.green{color:#00a650;font-weight:700;font-size:12px}
+.flash{margin:12px 14px;border:2px solid #ffe66d;border-radius:14px;
+background:#fff;padding:12px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.flash h3{margin:0 0 8px;font-size:16px}
+.cd{background:#222;color:#ffe66d;border-radius:6px;padding:2px 7px;
+font-weight:800;font-size:13px;margin-left:4px}
+.frow{display:flex;gap:10px;align-items:center;padding:7px 0;
+border-bottom:1px solid #f4f7f5}
+.frow img{width:64px;height:64px;object-fit:cover;border-radius:8px}
+.off{background:#00a650;color:#fff;border-radius:4px;padding:2px 6px;
+font-size:11px;font-weight:800;margin-right:6px}
+s{color:#999;font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;
+padding:12px 14px}
 @media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}}
-.card{background:#fff;border-radius:18px;padding:10px;text-align:center;
-box-shadow:0 4px 16px rgba(6,40,31,.06);transition:transform .15s}
-.card:active{transform:scale(.97)}
-.card img{width:100%;height:150px;object-fit:cover;border-radius:14px}
+.card{background:#fff;border-radius:10px;padding:0;overflow:hidden;
+position:relative;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.card img{width:100%;height:150px;object-fit:cover;display:block}
 .card .em{height:150px;display:flex;align-items:center;
-justify-content:center;font-size:60px}
-.card h3{font-size:14px;margin:8px 0 2px;line-height:1.3}
-.price{color:var(--v2);font-weight:800}
-.store{background:#fff;border-radius:18px;padding:14px;text-align:center;
-box-shadow:0 4px 16px rgba(6,40,31,.06)}
-.store .em{font-size:44px}
-.store b{display:block;font-size:14px;margin-top:6px}
-.stars{color:var(--acc);font-size:13px}
+justify-content:center;font-size:56px;background:#f7f7f7}
+.card .ci2{padding:10px 12px 14px}
+.card h3{font-size:13px;font-weight:400;color:#333;margin:4px 0;
+line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;
+-webkit-box-orient:vertical;overflow:hidden}
+.card .pr{font-size:20px;font-weight:500;color:#333}
+.card .fab{position:absolute;top:120px;right:8px;width:38px;height:38px;
+border-radius:50%;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.18);
+display:flex;align-items:center;justify-content:center;font-size:17px}
+.pillg{display:inline-block;background:#e6f7ee;color:#00a650;
+border-radius:4px;padding:2px 6px;font-size:11px;margin-top:4px}
+.store{background:#fff;border-radius:10px;padding:14px;text-align:center;
+box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.store .em{font-size:40px}
+.store b{display:block;font-size:13px;margin-top:6px}
+.stars{color:#00a650;font-size:12px}
+.crow{display:flex;gap:10px;padding:10px 0;
+border-bottom:1px solid #f0f4f2;align-items:flex-start}
+.cimg{width:88px;height:88px;border-radius:8px;overflow:hidden;
+background:#f7f7f7;flex:none}
+.cimg img{width:100%;height:100%;object-fit:cover}
+.crow select{width:70px;border:1px solid #ddd;border-radius:6px;
+padding:6px;margin:6px 0}
+.bar{height:6px;background:#e5e5e5;border-radius:99px;margin:6px 0}
+.bar i{display:block;height:6px;border-radius:99px;
+background:linear-gradient(90deg,#00a650,#00e5a0)}
+.cbar{position:fixed;left:0;right:0;bottom:62px;background:#fff;
+padding:10px 16px;display:flex;justify-content:space-between;
+align-items:center;box-shadow:0 -4px 16px rgba(0,0,0,.1);z-index:40}
+.cbar button{width:auto;padding:13px 28px;margin:0;border-radius:8px;
+background:#00a650;color:#fff;font-weight:700;border:none;font-size:15px}
 button,.btn{display:block;width:100%;border:none;cursor:pointer;
-background:linear-gradient(90deg,var(--v2),var(--v1));color:#fff;
-font-size:16px;font-weight:700;padding:14px;border-radius:999px;
-margin:10px 0;box-shadow:0 6px 18px rgba(0,229,160,.35);
-transition:transform .12s}
-button:active{transform:scale(.97)}
+background:linear-gradient(90deg,#00916e,#00b37a);color:#fff;
+font-size:15px;font-weight:700;padding:14px;border-radius:10px;
+margin:10px 0;box-shadow:0 4px 14px rgba(0,166,80,.3)}
+button:active{transform:scale(.98)}
 a.btn{display:block;text-align:center;text-decoration:none;color:#fff}
-input,select,textarea{width:100%;border:2px solid #e2eae6;border-radius:14px;
-padding:12px;font-size:15px;margin:5px 0;outline:none;background:#fbfdfc}
-input:focus,select:focus,textarea:focus{border-color:var(--v1)}
-.row{display:flex;justify-content:space-between;padding:6px 0;
-border-bottom:1px solid #eef4f1;font-size:14px}
-.bnav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.92);
-backdrop-filter:blur(12px);display:flex;justify-content:space-around;
-padding:6px 0;border-top:1px solid #e4ece8}
-.bnav a{text-decoration:none;color:#5a6b62;font-size:11px;text-align:center}
+input,select,textarea{width:100%;border:1px solid #ddd;border-radius:8px;
+padding:12px;font-size:15px;margin:5px 0;outline:none;background:#fff}
+input:focus{border-color:#00a650}
+.bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;
+display:flex;justify-content:space-around;padding:6px 0 8px;
+border-top:1px solid #e4e4e4;z-index:50}
+.bnav a{text-decoration:none;color:#8a9a92;font-size:10px;
+text-align:center;position:relative}
+.bnav a span{display:block;font-size:20px}
+.bnav a.on{color:#00a650}
+.bnav b{position:absolute;top:-4px;right:50%;margin-right:-16px;
+background:#2196f3;color:#fff;border-radius:99px;font-size:10px;
+padding:1px 5px}
 #topnav{display:none}
-@media(min-width:700px){#topnav{display:flex;gap:16px;justify-content:center;
-padding:10px 0;background:var(--dk)}
-#topnav a{color:#d8ffe f0;text-decoration:none;font-weight:600}
-.bnav{display:none}}
-.grid:empty{min-height:140px;border-radius:14px;
-background:linear-gradient(90deg,#e8efe c 25%,#f6faf8 50%,#e8efec 75%);
+@media(min-width:700px){#topnav{display:flex;gap:16px;
+justify-content:center;padding:10px 0;background:#06281f}
+#topnav a{color:#d8fff0;text-decoration:none;font-weight:600}
+.bnav{display:none}#app{padding-bottom:40px}.cbar{bottom:0}}
+.mhead{display:flex;gap:12px;align-items:center;padding:18px 16px;
+background:linear-gradient(100deg,#00916e,#00b37a);color:#fff}
+.ava{width:56px;height:56px;border-radius:50%;background:#fff;
+display:flex;align-items:center;justify-content:center;font-size:30px}
+.mrow{display:flex;align-items:center;gap:14px;padding:13px 4px;
+border-bottom:1px solid #f0f4f2;text-decoration:none;color:#222;
+font-size:15px}
+.mic{font-size:22px}
+.nue{margin-left:auto;background:#2196f3;color:#fff;border-radius:999px;
+padding:2px 10px;font-size:10px;font-style:normal;font-weight:700}
+.grid:empty{min-height:140px;border-radius:10px;
+background:linear-gradient(90deg,#e8e8e8 25%,#f6f6f6 50%,#e8e8e8 75%);
 background-size:200% 100%;animation:sh 1.2s infinite}
 @keyframes sh{to{background-position:-200% 0}}
-footer{background:var(--dk);color:#9fb8ac;text-align:center;
-padding:30px 16px;font-size:13px;margin-top:30px;border-radius:24px 24px 0 0}
-footer a{color:var(--v1);text-decoration:none;margin:0 10px}
-</style></head><body>
+footer{background:#06281f;color:#9fb8ac;text-align:center;
+padding:28px 16px;font-size:13px;margin-top:24px}
+footer a{color:#00e5a0;text-decoration:none;margin:0 10px}
+</style>
+</head><body>
 <div id="splash"><div class="sp-in">
 <svg viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#fff"/><path d="M14 18h6l6 24h20l6-16H24" fill="none" stroke="#046A38" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="30" cy="50" r="4" fill="#ffd166"/><circle cx="44" cy="50" r="4" fill="#ffd166"/></svg>
 <h1>Nexus<span>Shop</span></h1>
@@ -126,14 +194,76 @@ function img(p){var u=photo(p);return u?"<img src='"+u+"' loading='lazy' data-e=
 function stars(r){var n=(r||[]).length;if(!n)return"";var s=0;r.forEach(function(x){s+=(x.estrellas||5);});return "<div class='stars'>"+"★".repeat(Math.round(s/n))+" "+(s/n).toFixed(1)+"</div>";}
 function prating(p){var n=p.nombre||"",s=0;for(var i=0;i<n.length;i++)s+=n.charCodeAt(i);var r=4+(s%11)/10;if(r>5)r=5;return r.toFixed(1);}
 function pbadge(p){var n=p.nombre||"",s=0;for(var i=0;i<n.length;i++)s+=n.charCodeAt(i);return ["🔥 Top rated","✨ New","⭐ Best seller","🚚 Fast delivery"][s%4];}
-function home(){var h="<div class='hero'><h2>🛍️ NexusShop 🇵🇰</h2><p>"+t("stores")+" · "+t("all")+"</p><input placeholder='"+t("search")+"' oninput='srch(this.value)' value='"+Q+"' oninput='Q=this.value;render()'></div><div class='sec'>"+t("stores")+"</div><div class='stores'>";
-DBS.slice().reverse().forEach(function(st){h+="<div class='store' onclick=\"go('store/"+st.id+"')\"><div class='em'>🏪</div><b>"+st.name+(st.plan&&st.plan!=="Freemium"?" 👑":"")+"</b><div class='stars'>✨ New</div></div>";});
-for(var s in DATA.tiendas){var ti=DATA.tiendas[s];h+="<div class='store' onclick=\"go('store/"+s+"')\"><div class='em'>"+(ti.emoji||"🏪")+"</div><b>"+ti.nombre+"</b>"+stars(ti.resenas)+"</div>";}
-h+="</div><div class='sec'>"+t("offers")+"</div><div class='grid'>";
-allp().slice(0,4).forEach(function(x,idx){h+="<div class='card' onclick=\"go('p/"+idx+"')\">"+"<span class='bdg'>"+pbadge(x.p)+"</span>"+img(x.p)+"<h3>"+x.p.nombre+"</h3><div class='stars'>★ "+prating(x.p)+"</div><div class='p'>Rs. "+x.p.precio+"</div></div>";});
-h+="</div><div class='cta' onclick=\"go('sell')\">"+t("sell")+"<br><span class='muted' style='color:#01411C'>"+t("sellSub")+"</span></div><div class='sec'>"+t("all")+"</div><div class='grid'>";
-allp().forEach(function(x,idx){if(Q&&x.p.nombre.toLowerCase().indexOf(Q.toLowerCase())<0)return;h+="<div class='card' onclick=\"go('p/"+idx+"')\">"+"<span class='bdg'>"+pbadge(x.p)+"</span>"+img(x.p)+"<h3>"+x.p.nombre+"</h3><div class='stars'>★ "+prating(x.p)+"</div><div class='p'>Rs. "+x.p.precio+"</div></div>";});
-return h+"</div>";}
+var CATS={"Tecnologia":["speaker","phone","watch","auricular",
+"tv","pc","teclado"],"Hogar":["heladera","sillon","lamp","organizador",
+"colchon"],"Moda":["remera","zapat","campera","vestido"],
+"Electro":["anafe","torno","martillo","tenaza","taladro"]};
+window.nxCat=window.nxCat||"Todo";
+var flashEnd=Date.now()+7200000;
+setInterval(function(){var e=document.getElementById("flashcd");
+if(!e)return;var d=Math.max(0,flashEnd-Date.now());
+var h=Math.floor(d/3600000),m=Math.floor(d/60000)%60,
+x=Math.floor(d/1000)%60;
+e.innerHTML="<span class='cd'>"+h+"</span>:<span class='cd'>"+m
++"</span>:<span class='cd'>"+x+"</span>";},1000);
+function catOK(p,c){if(c==="Todo")return true;
+if(c==="Ofertas")return (p.discount||0)>0;
+var ks=CATS[c]||[];var n=(p.name||"").toLowerCase();
+for(var i=0;i<ks.length;i++){if(n.indexOf(ks[i])>=0)return true;}
+return false;}
+function setCat(c){window.nxCat=c;render();}
+function home(){var A=allp();
+var h="<div class='mhero'>"
++"<div class='msearch'><input placeholder='Buscar en NexusShop' "
++"oninput='srch(this.value)'></div>"
++"<div class='mloc'>📍 Enviar a mi dirección ›</div>"
++"<div class='mtabs'>";
+var ts=["Todo","Ofertas","Tecnologia","Hogar","Moda","Electro"];
+for(var i=0;i<ts.length;i++){
+h+="<b class='"+(window.nxCat===ts[i]?"on":"")+"' "
++"onclick='setCat(\""+ts[i]+"\")'>"+ts[i]+"</b>";}
+h+="</div></div>"
++"<div class='mbanner'><b>NEXUS FEST</b>"
++"<span>HASTA 40% OFF</span>"
++"<i>Hasta 12 cuotas sin interés · Cupón BIENVENIDA</i></div>"
++"<div class='mplus'>nexus+ · Beneficios que se pagan solos ›</div>"
++"<div class='mcirc'>"
++"<div><div class='ci'>🔥</div>Ofertazo</div>"
++"<div><div class='ci'>🎟️</div>Cupones</div>"
++"<div><div class='ci'>🌍</div>Internacional</div>"
++"<div><div class='ci'>🏪</div>Tiendas</div>"
++"<div><div class='ci'>⭐</div>Top</div></div>";
+var off=A.filter(function(p){return (p.discount||0)>0;});
+if(off.length){h+="<div class='flash'><h3>⚡ OFERTAS RELÁMPAGO "
++"<span id='flashcd'></span></h3>";
+for(var i=0;i<Math.min(3,off.length);i++){var p=off[i];
+var pf=Math.round(p.price*(1-p.discount/100));
+h+="<div class='frow' onclick=\"go('p/"+p.id+"')\">"
++"<div class='cimg'>"+img(p)+"</div><div>"
++"<span class='off'>"+p.discount+"% OFF</span><s>Rs. "+p.price
++"</s><div class='pr'>Rs. "+pf+"</div></div></div>";}
+h+="</div>";}
+h+="<div class='box'><div class='row'><b>Tiendas oficiales</b>"
++"<span class='muted'>Ver más ›</span></div>"
++"<div class='grid' style='padding:8px 0 0'>";
+var S=window.DBS||[];
+for(var i=0;i<Math.min(4,S.length);i++){var st=S[i];
+h+="<div class='store' onclick=\"go('store/"+st.id+"')\">"
++"<div class='em'>🏪</div><b>"+st.name+"</b></div>";}
+h+="</div></div>";
+h+="<div class='grid'>";
+for(var i=0;i<A.length;i++){var p=A[i];
+if(!catOK(p,window.nxCat))continue;
+var d=p.discount||0;var pf=Math.round(p.price*(1-d/100));
+h+="<div class='card' onclick=\"go('p/"+p.id+"')\">"+img(p)
++"<div class='fab'>🛒</div><div class='ci2'><h3>"+p.name+"</h3>"
++(d?"<span class='off'>"+d+"% OFF</span><s>Rs. "+p.price+"</s>":"")
++"<div class='pr'>Rs. "+pf+"</div>"
++"<div class='muted'>+100 vendidos</div>"
++"<span class='pillg'>Llega gratis mañana</span>"
++"</div></div>";}
+h+="</div>";
+return h;}
 function store(s){var ti=storeObj(s);
 var mine=(sessionStorage.getItem("nx_merchant")===s);
 var h="<div class='box'><a class='muted' href='#/'>← "
@@ -743,6 +873,46 @@ n.onclick=function(){var id=h.slice(4);var c={};c[id]=1;
 localStorage.setItem("nx_cart",JSON.stringify(c));
 location.hash="#/checkout";};
 b.parentNode.insertBefore(n,b.nextSibling);}}},900);
+setInterval(function(){var b=document.querySelector('.bnav');if(b&&b.getAttribute('data-nx5')!=='1'){b.setAttribute('data-nx5','1');b.innerHTML="<a href='#/home'><span>🏠</span>Inicio</a><a href='#/ofertas'><span>🔥</span>Ofertas</a><a href='#/cart'><span>🛒</span>Carrito<b id='bbdg'></b></a><a href='#/myorders'><span>📦</span>Pedidos</a><a href='#/menu'><span>☰</span>Más</a>";}},800);
+function mrow(ic,tx,hr,bg){
+return "<a class='mrow' href='"+hr+"'><span class='mic'>"+ic
++"</span><span>"+tx+"</span>"
++(bg?"<i class='nue'>"+bg+"</i>":"")+"</a>";}
+function menuPage(){var mn=sessionStorage.getItem("nx_merchant_name");
+return "<div class='mhead'><div class='ava'>🧑</div>"
++"<div><b>"+(mn||"Invitado")+"</b>"
++"<div style='color:#c9ffe9;font-size:13px'>Mi perfil ›</div></div></div>"
++"<div class='mplus'>nexus+ · Beneficios que se pagan solos ›</div>"
++"<div class='box'>"
++mrow("🏪","Central de vendedores","#/panel","NUEVO")
++mrow("🛍️","Mis compras","#/myorders","")
++mrow("📦","Seguir mi pedido","#/track","")
++mrow("⭐","Mis opiniones","#/home","NUEVO")
++mrow("🏬","Tiendas que sigo","#/home","NUEVO")
++mrow("🎟️","Cupones","#/cupones","")
++mrow("🔥","Ofertazo","#/ofertas","")
++mrow("🌍","Internacional","#/home","NUEVO")
++mrow("📈","Más vendidos","#/ofertas","")
++mrow("🎧","Ayuda y soporte","https://wa.me/542257550650","")
++"</div><div class='box'>"
++"<div class='row'><span>Idioma</span><span>"
++"<button style='width:auto;padding:6px 12px' "
++"onclick='setLang(\"en\")'>EN</button> "
++"<button style='width:auto;padding:6px 12px' "
++"onclick='setLang(\"es\")'>ES</button> "
++"<button style='width:auto;padding:6px 12px' "
++"onclick='setLang(\"ur\")'>اردو</button>"
++"</span></div></div>";}
+function cupPage(){var h="<div class='box'><h2>🎟️ Cupones</h2>";
+h+="<div class='row'><span>BIENVENIDA</span><b>-10%</b></div>";
+h+="<div class='row'><span>SAIRA20</span><b>-20%</b></div>";
+h+="<div class='row'><span>GOLD15</span><b>-15%</b></div>";
+h+="<p class='muted'>Ingresá el código en el checkout.</p></div>";
+return h;}
+setInterval(function(){var c=gci(),n=0;
+for(var k in c)n+=c[k];
+var b=document.getElementById("bbdg");
+if(b)b.textContent=n||"";},800);
 function terms(){return "<div class='box'><h2>Terms & Conditions</h2><p class='muted'>Last updated: Sep 2026</p><p>1. NexusShop is a marketplace platform connecting independent merchants with customers. Each merchant is responsible for their products, prices and fulfillment.</p><p>2. Orders are confirmed via WhatsApp with the merchant. Payment methods: Cash on Delivery, JazzCash/Easypaisa, card/PayPal and bank transfer.</p><p>3. Refunds and returns are handled by each merchant according to their published policy.</p><p>4. Partner links (?ref=) tag orders for commission purposes only and do not affect prices.</p><p>5. By using NexusShop you accept these terms.</p></div>";}
 function privacy(){return "<div class='box'><h2>Privacy Policy</h2><p class='muted'>Last updated: Sep 2026</p><p>1. Your cart and orders are stored locally on your device until confirmed with the merchant via WhatsApp.</p><p>2. We only collect checkout data (name, WhatsApp, address, city) to process your order.</p><p>3. We do not sell personal data to third parties.</p><p>4. Request deletion of your data anytime via support.</p></div>";}
 function render(){var h=location.hash||"#/";var app=document.getElementById("app");
@@ -758,6 +928,9 @@ else if(h.indexOf("#/invoice/")===0)app.innerHTML=invoice(h.slice(10));
 else if(h.indexOf("#/search/")===0)app.innerHTML=searchPage(decodeURIComponent(h.slice(9)));
 else if(h==="#/track")app.innerHTML=trackPage();
 else if(h==="#/myorders")app.innerHTML=myOrdersPage();
+else if(h==="#/menu")app.innerHTML=menuPage();
+else if(h==="#/cupones")app.innerHTML=cupPage();
+else if(h==="#/ofertas"){window.nxCat="Ofertas";app.innerHTML=home();}
 else if(h==="#/terms")app.innerHTML=terms();
 else if(h==="#/privacy")app.innerHTML=privacy();
 else app.innerHTML=home();
