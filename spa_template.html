@@ -140,6 +140,11 @@ footer{background:#06281f;color:#9fb8ac;text-align:center;
 padding:28px 16px;font-size:13px;margin-top:24px}
 footer a{color:#00e5a0;text-decoration:none;margin:0 10px}
 </style>
+
+body.nxur{direction:rtl;font-family:'Noto Nastaliq Urdu',system-ui,sans-serif}
+body.nxur input{direction:rtl}
+.pcard{position:relative}.poff{position:absolute;top:6px;left:6px;background:#ff7733;color:#fff;border-radius:6px;padding:1px 6px;font-size:11px;font-weight:700}
+
 </head><body>
 <div id="splash"><div class="sp-in">
 <svg viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#fff"/><path d="M14 18h6l6 24h20l6-16H24" fill="none" stroke="#046A38" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="30" cy="50" r="4" fill="#ffd166"/><circle cx="44" cy="50" r="4" fill="#ffd166"/></svg>
@@ -212,58 +217,39 @@ var ks=CATS[c]||[];var n=(p.name||"").toLowerCase();
 for(var i=0;i<ks.length;i++){if(n.indexOf(ks[i])>=0)return true;}
 return false;}
 function setCat(c){window.nxCat=c;render();}
-function home(){var A=allp();
-var h="<div class='mhero'>"
-+"<div class='msearch'><input placeholder='Buscar en NexusShop' "
-+"oninput='srch(this.value)'></div>"
-+"<div class='mloc'>📍 Enviar a mi dirección ›</div>"
-+"<div class='mtabs'>";
-var ts=["Todo","Ofertas","Tecnologia","Hogar","Moda","Electro"];
-for(var i=0;i<ts.length;i++){
-h+="<b class='"+(window.nxCat===ts[i]?"on":"")+"' "
-+"onclick='setCat(\""+ts[i]+"\")'>"+ts[i]+"</b>";}
-h+="</div></div>"
-+"<div class='mbanner'><b>NEXUS FEST</b>"
-+"<span>HASTA 40% OFF</span>"
-+"<i>Hasta 12 cuotas sin interés · Cupón BIENVENIDA</i></div>"
-+"<div class='mplus'>nexus+ · Beneficios que se pagan solos ›</div>"
-+"<div class='mcirc'>"
-+"<div><div class='ci'>🔥</div>Ofertazo</div>"
-+"<div><div class='ci'>🎟️</div>Cupones</div>"
-+"<div><div class='ci'>🌍</div>Internacional</div>"
-+"<div><div class='ci'>🏪</div>Tiendas</div>"
-+"<div><div class='ci'>⭐</div>Top</div></div>";
-var off=A.filter(function(p){return (p.discount||0)>0;});
-if(off.length){h+="<div class='flash'><h3>⚡ OFERTAS RELÁMPAGO "
-+"<span id='flashcd'></span></h3>";
-for(var i=0;i<Math.min(3,off.length);i++){var p=off[i];
-var pf=Math.round(p.price*(1-p.discount/100));
-h+="<div class='frow' onclick=\"go('p/"+p.id+"')\">"
-+"<div class='cimg'>"+img(p)+"</div><div>"
-+"<span class='off'>"+p.discount+"% OFF</span><s>Rs. "+p.price
-+"</s><div class='pr'>Rs. "+pf+"</div></div></div>";}
-h+="</div>";}
-h+="<div class='box'><div class='row'><b>Tiendas oficiales</b>"
-+"<span class='muted'>Ver más ›</span></div>"
-+"<div class='grid' style='padding:8px 0 0'>";
-var S=window.DBS||[];
-for(var i=0;i<Math.min(4,S.length);i++){var st=S[i];
-h+="<div class='store' onclick=\"go('store/"+st.id+"')\">"
-+"<div class='em'>🏪</div><b>"+st.name+"</b></div>";}
-h+="</div></div>";
-h+="<div class='grid'>";
-for(var i=0;i<A.length;i++){var p=A[i];
-if(!catOK(p,window.nxCat))continue;
-var d=p.discount||0;var pf=Math.round(p.price*(1-d/100));
-h+="<div class='card' onclick=\"go('p/"+p.id+"')\">"+img(p)
-+"<div class='fab'>🛒</div><div class='ci2'><h3>"+p.name+"</h3>"
-+(d?"<span class='off'>"+d+"% OFF</span><s>Rs. "+p.price+"</s>":"")
-+"<div class='pr'>Rs. "+pf+"</div>"
-+"<div class='muted'>+100 vendidos</div>"
-+"<span class='pillg'>Llega gratis mañana</span>"
-+"</div></div>";}
-h+="</div>";
-return h;}
+function home(){
+var L=nxL();
+var CAT=[
+{id:1,en:'Wireless Earbuds Pro',ur:'وائرلیس ائربڈز پرو',p:4999,o:7999,e:'🎧',s:412,r:4.8},
+{id:2,en:'Smart Watch X2',ur:'سمارٹ واچ X2',p:6499,o:9999,e:'⌚',s:287,r:4.6},
+{id:3,en:'Power Bank 20000mAh',ur:'پاور بینک 20000mAh',p:3999,o:5499,e:'🔋',s:530,r:4.7},
+{id:4,en:'Bluetooth Speaker Mini',ur:'بلوٹوتھ اسپیکر منی',p:2499,o:3999,e:'🔊',s:198,r:4.5},
+{id:5,en:'Phone Case Armor',ur:'فون کیس آرمر',p:899,o:1499,e:'📱',s:640,r:4.4},
+{id:6,en:'LED Ring Light 10in',ur:'ایل ای ڈی رنگ لائٹ 10',p:2999,o:4499,e:'💡',s:154,r:4.6},
+{id:7,en:'Gaming Mouse RGB',ur:'گیمنگ ماؤس RGB',p:1999,o:2999,e:'🖱️',s:322,r:4.7},
+{id:8,en:'USB-C Fast Charger',ur:'یو ایس بی سی فاسٹ چارجر',p:1499,o:2499,e:'⚡',s:476,r:4.8},
+{id:9,en:'Kitchen Blender 2L',ur:'کچن بلینڈر 2 لیٹر',p:5499,o:7999,e:'🥤',s:121,r:4.3},
+{id:10,en:'Cotton Bedsheet King',ur:'کاٹن بیڈ شیٹ کنگ',p:3499,o:4999,e:'🛏️',s:89,r:4.5},
+{id:11,en:'Kurta Premium Men',ur:'مردانہ پریمیم کرتہ',p:2799,o:3999,e:'👔',s:203,r:4.6},
+{id:12,en:'Hijab Silk Premium',ur:'سلک حجاب پریمیم',p:1299,o:1999,e:'🧕',s:367,r:4.9}];
+var T={search:['Search in NexusShop','NexusShop میں تلاش کریں'],send:['Send to my address','میرے پتے پر بھیجیں'],flash:['FLASH SALE','فلیش سیل'],ends:['Ends in','ختم ہوگی'],sold:['sold','فروخت شدہ'],del:['Free delivery tomorrow','کل مفت ڈیلیوری'],stores:['Official stores','سرکاری اسٹورز'],all:['See all','سب دیکھیں'],cats:['All','Offers','Tech','Home','Fashion','Electro'],catsu:['سب','آفرز','ٹیکنالوجی','گھر','فیشن','الیکٹرانکس']};
+var k=function(i){return L==='ur'?T[i][1]:T[i][0];};
+var cats=L==='ur'?T.catsu:T.cats;
+var h='<div class="mhero"><input placeholder="'+k('search')+'" /><div class="mloc">📍 '+k('send')+' ›</div><div class="mtabs">';
+for(var c=0;c<cats.length;c++){h+='<span class="mtab'+(c===0?' on':'')+'">'+cats[c]+'</span>';}
+h+='</div></div>';
+h+='<div class="mbanner"><b>'+k('flash')+' · NEXUS FEST −40%</b><div>'+k('ends')+': <b id="nxcd">00:00:00</b></div></div>';
+h+='<div class="mplus">nexus+ · '+(L==='ur'?'فائدے جو خود ادا ہوتے ہیں':'Beneficios que se pagan solos')+' ›</div>';
+h+='<div class="mcats">';
+var cir=['🔥','🎟️','🌍','','⭐'];
+var cirn=L==='ur'?['آفرز','کوپنز','بین الاقوامی','دکانیں','ٹاپ']:['Ofertazo','Cupones','Internacional','Tiendas','Top'];
+for(c=0;c<5;c++){h+='<div class="mcirc"><div class="mbol">'+cir[c]+'</div><span>'+cirn[c]+'</span></div>';}
+h+='</div><div class="mstores"><div class="msthead"><b>'+k('stores')+'</b><span>'+k('all')+' ›</span></div><div class="mstrow"><div class="mst">🏪 Demo Bazaar 👑</div><div class="mst">🏪 Nalldo 👑</div></div></div><div class="mgrid">';
+for(c=0;c<CAT.length;c++){var p=CAT[c];var off=Math.round((1-p.p/p.o)*100);
+h+='<div class="pcard"><div class="pimg">'+p.e+'</div><span class="poff">-'+off+'%</span><div class="pname">'+(L==='ur'?p.ur:p.en)+'</div><div class="pprice">Rs. '+p.p.toLocaleString('en-PK')+'</div><div class="pold">Rs. '+p.o.toLocaleString('en-PK')+'</div><div class="prate">★ '+p.r+' · '+p.s+' '+k('sold')+'</div><div class="pdel">'+k('del')+'</div><button class="padd" onclick="nxA('+p.id+')">🛒</button></div>';}
+h+='</div>';
+return h;
+}
 function store(s){var ti=storeObj(s);
 var mine=(sessionStorage.getItem("nx_merchant")===s);
 var h="<div class='box'><a class='muted' href='#/'>← "
@@ -913,7 +899,53 @@ setInterval(function(){var c=gci(),n=0;
 for(var k in c)n+=c[k];
 var b=document.getElementById("bbdg");
 if(b)b.textContent=n||"";},800);
-function gci(){try{var v=JSON.parse(localStorage.getItem('nx_cart')||'{}');if(typeof v!=='object'||!v)v={};return v;}catch(e){return {};}}
+function gci(){try{var v=JSON.parse(localStorage.getItem('nx_cart')||'null');if(Array.isArray(v))return v;if(v&&typeof v==='object'){var a=[];for(var k2 in v){var it=v[k2];if(it&&typeof it==='object'){it.id=it.id||k2;a.push(it);}else{a.push({id:k2,qty:it});}}return a;}return [];}catch(e){return [];}}
+function gcn(){return gci().length;}
+function nxL(){return localStorage.getItem('nx_lang')==='ur'?'ur':'en';}
+function setNxLang(l){localStorage.setItem('nx_lang',l);location.reload();}
+function nxA(id){var a=gci();var f=null;for(var i=0;i<a.length;i++){if(String(a[i].id)===String(id))f=a[i];}if(f){f.qty=(f.qty||1)+1;}else{a.push({id:id,qty:1});}localStorage.setItem('nx_cart',JSON.stringify(a));var b=document.querySelector('.bnav .badge,.bnav .bcount,.bnav [id*=bad]');if(b)b.textContent=a.length;}
+setInterval(function(){document.querySelectorAll('a,button,span').forEach(function(e){if(e.children.length===0&&e.textContent.trim()==='Español')e.remove();});document.querySelectorAll('a').forEach(function(a){var tx=a.textContent.trim();if(tx==='English'||tx==='اردو'){a.onclick=function(ev){ev.preventDefault();setNxLang(tx==='English'?'en':'ur');};};});document.body.classList.toggle('nxur',nxL()==='ur');},900);
+setInterval(function(){var e=document.getElementById('nxcd');if(e){var d=new Date();var m=new Date(d);m.setHours(24,0,0,0);var s2=Math.floor((m-d)/1000);var hh=Math.floor(s2/3600),mm=Math.floor(s2%3600/60),ss=s2%60;e.textContent=(hh<10?'0':'')+hh+':'+(mm<10?'0':'')+mm+':'+(ss<10?'0':'')+ss;}},1000);
+setInterval(function(){var b=document.querySelector('.bnav');if(b&&b.getAttribute('data-nx5')!=='1'){b.setAttribute('data-nx5','1');b.innerHTML="<a href='#/home'><span>🏠</span>Inicio</a><a href='#/ofertas'><span>🔥</span>Ofertas</a><a href='#/cart'><span>🛒</span>Carrito<b id='bbdg'></b></a><a href='#/myorders'><span>📦</span>Pedidos</a><a href='#/menu'><span>☰</span>Más</a>";}},800);
+function mrow(ic,tx,hr,bg){
+return "<a class='mrow' href='"+hr+"'><span class='mic'>"+ic
++"</span><span>"+tx+"</span>"
++(bg?"<i class='nue'>"+bg+"</i>":"")+"</a>";}
+function menuPage(){var mn=sessionStorage.getItem("nx_merchant_name");
+return "<div class='mhead'><div class='ava'>🧑</div>"
++"<div><b>"+(mn||"Invitado")+"</b>"
++"<div style='color:#c9ffe9;font-size:13px'>Mi perfil ›</div></div></div>"
++"<div class='mplus'>nexus+ · Beneficios que se pagan solos ›</div>"
++"<div class='box'>"
++mrow("🏪","Central de vendedores","#/panel","NUEVO")
++mrow("🛍️","Mis compras","#/myorders","")
++mrow("📦","Seguir mi pedido","#/track","")
++mrow("⭐","Mis opiniones","#/home","NUEVO")
++mrow("🏬","Tiendas que sigo","#/home","NUEVO")
++mrow("🎟️","Cupones","#/cupones","")
++mrow("🔥","Ofertazo","#/ofertas","")
++mrow("🌍","Internacional","#/home","NUEVO")
++mrow("📈","Más vendidos","#/ofertas","")
++mrow("🎧","Ayuda y soporte","https://wa.me/542257550650","")
++"</div><div class='box'>"
++"<div class='row'><span>Idioma</span><span>"
++"<button style='width:auto;padding:6px 12px' "
++"onclick='setLang(\"en\")'>EN</button> "
++"<button style='width:auto;padding:6px 12px' "
++"onclick='setLang(\"es\")'>ES</button> "
++"<button style='width:auto;padding:6px 12px' "
++"onclick='setLang(\"ur\")'>اردو</button>"
++"</span></div></div>";}
+function cupPage(){var h="<div class='box'><h2>🎟️ Cupones</h2>";
+h+="<div class='row'><span>BIENVENIDA</span><b>-10%</b></div>";
+h+="<div class='row'><span>SAIRA20</span><b>-20%</b></div>";
+h+="<div class='row'><span>GOLD15</span><b>-15%</b></div>";
+h+="<p class='muted'>Ingresá el código en el checkout.</p></div>";
+return h;}
+setInterval(function(){var c=gci(),n=0;
+for(var k in c)n+=c[k];
+var b=document.getElementById("bbdg");
+if(b)b.textContent=n||"";},800);
 function terms(){return "<div class='box'><h2>Terms & Conditions</h2><p class='muted'>Last updated: Sep 2026</p><p>1. NexusShop is a marketplace platform connecting independent merchants with customers. Each merchant is responsible for their products, prices and fulfillment.</p><p>2. Orders are confirmed via WhatsApp with the merchant. Payment methods: Cash on Delivery, JazzCash/Easypaisa, card/PayPal and bank transfer.</p><p>3. Refunds and returns are handled by each merchant according to their published policy.</p><p>4. Partner links (?ref=) tag orders for commission purposes only and do not affect prices.</p><p>5. By using NexusShop you accept these terms.</p></div>";}
 function privacy(){return "<div class='box'><h2>Privacy Policy</h2><p class='muted'>Last updated: Sep 2026</p><p>1. Your cart and orders are stored locally on your device until confirmed with the merchant via WhatsApp.</p><p>2. We only collect checkout data (name, WhatsApp, address, city) to process your order.</p><p>3. We do not sell personal data to third parties.</p><p>4. Request deletion of your data anytime via support.</p></div>";}
 function render(){var h=location.hash||"#/";var app=document.getElementById("app");
@@ -929,6 +961,9 @@ else if(h.indexOf("#/invoice/")===0)app.innerHTML=invoice(h.slice(10));
 else if(h.indexOf("#/search/")===0)app.innerHTML=searchPage(decodeURIComponent(h.slice(9)));
 else if(h==="#/track")app.innerHTML=trackPage();
 else if(h==="#/myorders")app.innerHTML=myOrdersPage();
+else if(h==="#/menu")app.innerHTML=menuPage();
+else if(h==="#/cupones")app.innerHTML=cupPage();
+else if(h==="#/ofertas"){window.nxCat="Ofertas";app.innerHTML=home();}
 else if(h==="#/menu")app.innerHTML=menuPage();
 else if(h==="#/cupones")app.innerHTML=cupPage();
 else if(h==="#/ofertas"){window.nxCat="Ofertas";app.innerHTML=home();}
