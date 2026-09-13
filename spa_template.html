@@ -4,6 +4,7 @@
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" href="/icon.svg">
 <title>NexusShop</title>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:#ebebeb;color:#333;
@@ -140,6 +141,52 @@ footer{background:#06281f;color:#9fb8ac;text-align:center;
 padding:28px 16px;font-size:13px;margin-top:24px}
 footer a{color:#00e5a0;text-decoration:none;margin:0 10px}
 </style>
+
+body.nxur{direction:rtl;font-family:'Noto Nastaliq Urdu',system-ui,sans-serif}
+body.nxur input{direction:rtl}
+.pcard{position:relative}.poff{position:absolute;top:6px;left:6px;background:#ff7733;color:#fff;border-radius:6px;padding:1px 6px;font-size:11px;font-weight:700}
+
+:root{--nx-50:#e8f7ee;--nx-100:#c9ecd8;--nx-200:#a3ddb9;--nx-300:#6fc795;--nx-400:#33b071;--nx-500:#00A650;--nx-600:#008a42;--nx-700:#006d34;--nx-800:#005228;--nx-900:#003d1e;--nx-yel:#FFE600;--nx-blue:#3483FA;--terra:#B45309;--turq:#14B8A6;--pink:#EC4899;--g0:#fbfdfc;--g50:#f4f8f5;--g100:#e7ede9;--g300:#c3d0c8;--g600:#5a6b62;--g900:#12281c;--ok:#00A650;--warn:#f59e0b;--err:#e11d48;--info:#3483FA;--rc:16px;--rb:10px;--sh1:0 2px 10px rgba(0,166,80,.10);--sh2:0 6px 22px rgba(0,166,80,.16);--ease:cubic-bezier(.4,0,.2,1)}
+@media (prefers-color-scheme: dark){:root{--g0:#0b1512;--g50:#101c17;--g100:#16241d;--g300:#2a3b32;--g600:#9db4a8;--g900:#e8fff3;--sh1:0 2px 10px rgba(0,0,0,.4)}body{background:var(--g0)}.pcard,.mstores,.mhero input{background:var(--g50);color:var(--g900)}.pname{color:var(--g900)}}
+body{font-family:Inter,system-ui,sans-serif;background:var(--g0);color:var(--g900)}
+body.nxur{font-family:'Noto Nastaliq Urdu',Inter,system-ui;direction:rtl}
+.pprice,.pold,#nxcd{font-variant-numeric:tabular-nums}
+.mhero{background:linear-gradient(135deg,var(--nx-700),var(--nx-500) 55%,var(--turq));padding:14px 14px 12px;border-radius:0 0 20px 20px}
+.mhero input{width:100%;border:0;border-radius:999px;padding:13px 18px;font-size:14px;box-shadow:var(--sh1);outline:none}
+.mloc{color:#eafff3;font-size:12px;margin:9px 2px 0}
+.mtabs{display:flex;gap:8px;overflow-x:auto;margin-top:10px;padding-bottom:2px}
+.mtab{flex:0 0 auto;background:rgba(255,255,255,.16);color:#fff;border-radius:999px;padding:7px 15px;font-size:12px}
+.mtab.on{background:#fff;color:var(--nx-600);font-weight:700}
+.mbanner{margin:12px;border-radius:var(--rc);padding:15px;background:linear-gradient(120deg,var(--nx-900),var(--nx-500));color:#fff;box-shadow:var(--sh2)}
+.mbanner b{font-size:16px;letter-spacing:.3px}
+.mbanner div{font-size:12px;opacity:.92;margin-top:5px}
+#nxcd{background:rgba(255,255,255,.16);border-radius:8px;padding:2px 8px}
+.mplus{margin:0 12px 12px;border-radius:14px;padding:12px 15px;background:linear-gradient(90deg,#ff7733,#ff4d6d);color:#fff;font-weight:600;font-size:13px;box-shadow:var(--sh1)}
+.mcats{display:flex;gap:14px;overflow-x:auto;padding:4px 14px 10px}
+.mcirc{flex:0 0 auto;text-align:center;width:66px}
+.mbol{width:56px;height:56px;margin:0 auto;border-radius:50%;background:var(--g50);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:var(--sh1)}
+.mcirc span{font-size:11px;color:var(--g600);display:block;margin-top:5px}
+.mstores{margin:0 12px 12px;background:var(--g50);border-radius:var(--rc);padding:13px;box-shadow:var(--sh1)}
+.msthead{display:flex;justify-content:space-between;font-size:14px}
+.msthead span{color:var(--nx-blue);font-size:12px}
+.mstrow{display:flex;gap:10px;margin-top:9px}
+.mst{flex:1;background:var(--nx-50);border-radius:12px;padding:15px;text-align:center;font-size:13px;font-weight:600}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 12px 95px}
+.pcard{position:relative;background:var(--g50);border-radius:var(--rc);padding:10px;box-shadow:var(--sh1);transition:transform .2s var(--ease)}
+.pcard:active{transform:scale(.96)}
+.pimg{height:112px;display:flex;align-items:center;justify-content:center;font-size:52px;background:var(--nx-50);border-radius:12px}
+.poff{position:absolute;top:16px;left:16px;background:var(--pink);color:#fff;border-radius:7px;padding:2px 7px;font-size:10.5px;font-weight:800}
+.pname{font-size:13px;font-weight:600;margin:9px 0 4px;line-height:1.4;min-height:34px}
+.pprice{font-size:15px;font-weight:800;color:var(--nx-600)}
+.pold{font-size:11px;color:var(--g600);text-decoration:line-through}
+.prate{font-size:11px;color:var(--g600);margin:4px 0}
+.pdel{font-size:10.5px;color:var(--nx-600);background:var(--nx-50);border-radius:6px;padding:3px 7px;display:inline-block}
+.padd{position:absolute;right:10px;bottom:10px;width:44px;height:44px;border-radius:12px;border:0;background:var(--nx-500);color:#fff;font-size:18px;box-shadow:0 4px 14px rgba(0,166,80,.35);transition:transform .2s var(--ease)}
+.padd:active{transform:scale(.9)}
+.bnav a{min-height:46px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.skel{background:linear-gradient(90deg,var(--g100) 25%,var(--g50) 50%,var(--g100) 75%);background-size:200% 100%;animation:shimmer 1.2s infinite}
+@keyframes shimmer{to{background-position:-200% 0}}
+
 
 body.nxur{direction:rtl;font-family:'Noto Nastaliq Urdu',system-ui,sans-serif}
 body.nxur input{direction:rtl}
