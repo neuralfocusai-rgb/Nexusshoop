@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexusShop — Design v3</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet">
+<script>
+tailwind.config = { theme: { extend: {
+  colors: { nx:{green:'#00654E',greend:'#004C3B',blue:'#0052FF'}, ok:'#00A650', warn:'#FF9900', err:'#F3123A', bgp:'#EBEBEB' },
+  boxShadow: { card:'0 1px 2px rgba(0,0,0,.08)' }
+}}}
+</script>
+<style>
+  html[dir="rtl"] body{font-family:'Noto Nastaliq Urdu','Inter',sans-serif;line-height:2.1}
+  .no-sb::-webkit-scrollbar{display:none}
+</style>
+</head>
+<body class="bg-bgp font-['Inter'] text-gray-800 pb-16 md:pb-0">
+
+<!-- HEADER -->
+<header class="bg-nx-green text-white sticky top-0 z-40">
+  <div class="max-w-6xl mx-auto px-4 py-2 flex items-center gap-3">
+    <button onclick="show('home')" class="text-xl font-bold tracking-tight">Nexus<span class="text-lime-300">Shop</span> <span class="text-sm font-normal opacity-80" data-en="🇵 Pakistan" data-ur="🇵🇰 پاکستان">🇵 Pakistan</span></button>
+    <form onsubmit="event.preventDefault();show('srp')" class="flex-1">
+      <input class="w-full rounded-md px-4 py-2 text-gray-700 shadow-sm outline-none" placeholder="Search products, brands and more…" data-en="Search products, brands and more…" data-ur="مصنوعات، برانڈز اور مزید تلاش کریں…">
+    </form>
+    <button onclick="lang()" class="rounded-md bg-white/15 px-3 py-2 text-sm font-semibold">اردو / EN</button>
+  </div>
+  <div class="max-w-6xl mx-auto px-4 pb-2 flex items-center gap-4 text-sm">
+    <span class="flex items-center gap-1">📍 <span data-en="Ship to Lahore" data-ur="لاہور بھیجیں">Ship to Lahore</span> ▾</span>
+    <button onclick="show('srp')" class="opacity-90 hover:opacity-100" data-en="Categories" data-ur="زمرہ جات">Categories</button>
+    <button onclick="show('home')" class="opacity-90 hover:opacity-100" data-en="Offers" data-ur="آفرز">Offers</button>
+    <span class="opacity-90 hidden sm:inline" data-en="History" data-ur="ہسٹری">History</span>
+    <span class="opacity-90 ms-auto" data-en="My account" data-ur="میرا اکاؤنٹ">My account</span>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-4">
+
+<!-- ============ HOME ============ -->
+<section id="home">
+  <div class="mt-3 flex gap-2 overflow-x-auto no-sb snap-x rounded-lg">
+    <div class="min-w-full snap-center rounded-lg bg-gradient-to-r from-nx-green to-emerald-500 p-8 text-white"><p class="text-2xl font-bold" data-en="Eid Mega Sale" data-ur="عید میگا سیل">Eid Mega Sale</p><p class="opacity-90" data-en="Up to 60% off · Free delivery" data-ur="60% تک رعایت · مفت ڈیلیوری">Up to 60% off · Free delivery</p></div>
+    <div class="min-w-full snap-center rounded-lg bg-gradient-to-r from-nx-blue to-sky-500 p-8 text-white"><p class="text-2xl font-bold" data-en="Tech Week" data-ur="ٹیک ویک">Tech Week</p><p class="opacity-90" data-en="Phones & audio from ₨9,999" data-ur="₨9,999 سے فون اور آڈیو">Phones & audio from ₨9,999</p></div>
+  </div>
+
+  <div class="mt-4 grid grid-cols-6 gap-2 rounded-lg bg-white p-4 shadow-card">
+    <button onclick="show('srp')" class="flex flex-col items-center gap-1 text-[11px]"><span class="grid h-12 w-12 place-items-center rounded-full bg-nx-green/10 text-xl">🗂️</span><span data-en="Categories" data-ur="زمرہ جات">Categories</span></button>
+    <button class="flex flex-col items-center gap-1 text-[11px]"><span class="grid h-12 w-12 place-items-center rounded-full bg-nx-blue/10 text-xl">🎟️</span><span data-en="Coupons" data-ur="کوپن">Coupons</span></button>
+    <button class="flex flex-col items-center gap-1 text-[11px]"><span class="grid h-12 w-12 place-items-center rounded-full bg-ok/10 text-xl">💸</span><span data-en="Refunds" data-ur="واپسی">Refunds</span></button>
+    <button class="flex flex-col items-center gap-1 text-[11px]"><span class="grid h-12 w-12 place-items-center rounded-full bg-warn/10 text-xl">📦</span><span data-en="Orders" data-ur="آرڈرز">Orders</span></button>
+    <button class="flex flex-col items-center gap-1 text-[11px]"><span class="grid h-12 w-12 place-items-center rounded-full bg-err/10 text-xl">💬</span><span data-en="Support" data-ur="مدد">Support</span></button>
+    <button class="flex flex-col items-center gap-1 text-[11px]"><span class="grid h-12 w-12 place-items-center rounded-full bg-gray-100 text-xl">⋯</span><span data-en="More" data-ur="مزید">More</span></button>
+  </div>
+
+  <div class="mt-4 rounded-lg bg-white p-4 shadow-card">
+    <h2 class="mb-3 font-semibold" data-en="Today's offers" data-ur="آج کی آفرز">Today's offers</h2>
+    <div class="flex gap-3 overflow-x-auto no-sb">
+      <button onclick="show('pdp')" class="min-w-[150px] rounded-md border border-gray-100 p-3 text-start hover:shadow-card"><div class="grid h-24 place-items-center rounded bg-gray-50 text-4xl">📱</div><p class="mt-2 text-lg font-semibold text-nx-blue">₨24,999 <span class="text-xs text-ok">-32%</span></p><p class="text-xs text-ok font-semibold" data-en="Free shipping" data-ur="مفت شپنگ">Free shipping</p><p class="mt-1 text-xs text-gray-500">Infinix Note 40 8/256</p></button>
+      <button onclick="show('pdp')" class="min-w-[150px] rounded-md border border-gray-100 p-3 text-start hover:shadow-card"><div class="grid h-24 place-items-center rounded bg-gray-50 text-4xl">🎧</div><p class="mt-2 text-lg font-semibold text-nx-blue">₨6,499 <span class="text-xs text-ok">-45%</span></p><p class="text-xs text-ok font-semibold" data-en="Free shipping" data-ur="مفت شپنگ">Free shipping</p><p class="mt-1 text-xs text-gray-500">AirPods Pro ANC</p></button>
+      <button onclick="show('pdp')" class="min-w-[150px] rounded-md border border-gray-100 p-3 text-start hover:shadow-card"><div class="grid h-24 place-items-center rounded bg-gray-50 text-4xl">👗</div><p class="mt-2 text-lg font-semibold text-nx-blue">₨3,299 <span class="text-xs text-ok">-28%</span></p><p class="text-xs text-ok font-semibold" data-en="Free shipping" data-ur="مفت شپنگ">Free shipping</p><p class="mt-1 text-xs text-gray-500">Sadaqat Lawn 3pc</p></button>
+    </div>
+  </div>
+
+  <div class="mt-4 rounded-lg bg-white p-4 shadow-card">
+    <h2 class="mb-3 font-semibold" data-en="Inspired by your visits" data-ur="آپ کی.visits سے متاثر">Inspired by your visits</h2>
+    <div class="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <button onclick="show('pdp')" class="rounded-md border border-gray-100 p-3 text-start hover:shadow-card"><div class="grid h-28 place-items-center rounded bg-gray-50 text-4xl">⌚</div><p class="mt-2 font-semibold text-nx-blue">₨11,999</p><p class="text-xs text-gray-500">Smart Watch X2</p><p class="text-xs text-warn">★★★★☆</p></button>
+      <button onclick="show('pdp')" class="rounded-md border border-gray-100 p-3 text-start hover:shadow-card"><div class="grid h-28 place-items-center rounded bg-gray-50 text-4xl"></div><p class="mt-2 font-semibold text-nx-blue">₨5,499</p><p class="text-xs text-gray-500">Servis Shoes Classic</p><p class="text-xs text-warn">★★★★★</p></button>
+      <button onclick="show('pdp')" class="rounded-md border border-gray-100 p-3 text-start hover:shadow-card"><div class="grid h-28 place-items-center rounded bg-gray-50 text-4xl"></div><p class="mt-2 font-semibold text-nx-blue">₨2,199</p><p class="text-xs text-gray-500">Chai Cozy Kit</p><p class="text-xs text-warn">★★★★☆</p></button>
+      <button onclick="show('pdp')" class="rounded-md border border-gray-100 p-3 text-start hover:shadow-card"><div class="grid h-28 place-items-center rounded bg-gray-50 text-4xl">💻</div><p class="mt-2 font-semibold text-nx-blue">₨89,999</p><p class="text-xs text-gray-500">Core i5 12th Gen</p><p class="text-xs text-warn">★★★★★</p></button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SRP ============ -->
+<section id="srp" class="hidden">
+  <div class="mt-3 grid gap-4 lg:grid-cols-[230px,1fr]">
+    <aside class="hidden lg:block rounded-lg bg-white p-4 shadow-card h-fit">
+      <h3 class="mb-2 font-semibold" data-en="Filters" data-ur="فلٹرز">Filters</h3>
+      <p class="mb-1 text-xs font-semibold text-gray-500" data-en="CATEGORIES" data-ur="زمرہ جات">CATEGORIES</p>
+      <label class="flex gap-2 text-sm"><input type="checkbox" checked> Mobiles</label>
+      <label class="flex gap-2 text-sm"><input type="checkbox"> Fashion</label>
+      <label class="flex gap-2 text-sm"><input type="checkbox"> Home & Kitchen</label>
+      <p class="mt-3 mb-1 text-xs font-semibold text-gray-500" data-en="SHIPPING COST" data-ur="شپنگ لاگت">SHIPPING COST</p>
+      <label class="flex gap-2 text-sm"><input type="checkbox" checked> <span data-en="Free shipping" data-ur="مفت شپنگ">Free shipping</span></label>
+      <p class="mt-3 mb-1 text-xs font-semibold text-gray-500" data-en="CONDITION" data-ur="حالت">CONDITION</p>
+      <label class="flex gap-2 text-sm"><input type="checkbox" checked> <span data-en="New" data-ur="نیا">New</span></label>
+      <p class="mt-3 mb-1 text-xs font-semibold text-gray-500" data-en="LOCATION" data-ur="مقام">LOCATION</p>
+      <label class="flex gap-2 text-sm"><input type="checkbox"> Lahore</label>
+      <label class="flex gap-2 text-sm"><input type="checkbox"> Karachi</label>
+    </aside>
+    <div>
+      <div class="mb-2 flex gap-2 overflow-x-auto no-sb lg:hidden">
+        <span class="rounded-full bg-white px-3 py-1 text-xs shadow-card" data-en="Filters" data-ur="فلٹرز">Filters</span>
+        <span class="rounded-full bg-white px-3 py-1 text-xs shadow-card" data-en="Free shipping" data-ur="مفت شپنگ">Free shipping</span>
+        <span class="rounded-full bg-white px-3 py-1 text-xs shadow-card" data-en="Arrives tomorrow" data-ur="کل پہنچے گا">Arrives tomorrow</span>
+      </div>
+      <p class="mb-2 text-sm text-gray-500" data-en="Results for “attire” · 1,240 items" data-ur="“attire” کے نتائج · 1,240 اشیاء">Results for “attire” · 1,240 items</p>
+      <div class="space-y-3">
+        <button onclick="show('pdp')" class="flex w-full gap-4 rounded-lg bg-white p-4 text-start shadow-card hover:shadow-md"><div class="grid h-28 w-28 shrink-0 place-items-center rounded bg-gray-50 text-4xl">👗</div><div><p class="text-sm text-gray-600">Sadaqat Lawn 3pc — unstitched, summer '26</p><p class="mt-1 text-xl font-semibold text-nx-blue">₨3,299</p><p class="text-xs text-ok font-semibold" data-en="Free shipping · Arrives tomorrow" data-ur="مفت شپنگ · کل پہنچے گا">Free shipping · Arrives tomorrow</p><p class="text-xs text-warn">★★★★☆ <span class="text-gray-400">(212)</span></p></div></button>
+        <button onclick="show('pdp')" class="flex w-full gap-4 rounded-lg bg-white p-4 text-start shadow-card hover:shadow-md"><div class="grid h-28 w-28 shrink-0 place-items-center rounded bg-gray-50 text-4xl">📱</div><div><p class="text-sm text-gray-600">Infinix Note 40 8/256 — 45W charging</p><p class="mt-1 text-xl font-semibold text-nx-blue">₨24,999 <span class="text-xs text-ok">-32%</span></p><p class="text-xs text-ok font-semibold" data-en="Free shipping" data-ur="مفت شپنگ">Free shipping</p><p class="text-xs text-warn">★★★★★ <span class="text-gray-400">(1,043)</span></p></div></button>
+        <button onclick="show('pdp')" class="flex w-full gap-4 rounded-lg bg-white p-4 text-start shadow-card hover:shadow-md"><div class="grid h-28 w-28 shrink-0 place-items-center rounded bg-gray-50 text-4xl">🎧</div><div><p class="text-sm text-gray-600">AirPods Pro ANC — USB-C, 2025</p><p class="mt-1 text-xl font-semibold text-nx-blue">₨6,499 <span class="text-xs text-ok">-45%</span></p><p class="text-xs text-ok font-semibold" data-en="Arrives tomorrow" data-ur="کل پہنچے گا">Arrives tomorrow</p><p class="text-xs text-warn">★★★★☆ <span class="text-gray-400">(587)</span></p></div></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PDP ============ -->
+<section id="pdp" class="hidden">
+  <button onclick="show('srp')" class="mt-3 text-sm text-nx-blue" data-en="← Back to results" data-ur="← نتائج پر واپس">← Back to results</button>
+  <div class="mt-2 grid gap-4 lg:grid-cols-[1fr,340px]">
+    <div class="rounded-lg bg-white p-4 shadow-card">
+      <div class="flex gap-3">
+        <div class="flex flex-col gap-2"><span class="grid h-14 w-14 place-items-center rounded border-2 border-nx-blue bg-gray-50 text-xl"></span><span class="grid h-14 w-14 place-items-center rounded border border-gray-200 bg-gray-50 text-xl">📦</span><span class="grid h-14 w-14 place-items-center rounded border border-gray-200 bg-gray-50 text-xl">🔌</span></div>
+        <div class="grid flex-1 place-items-center rounded bg-gray-50 py-16 text-8xl">📱</div>
+      </div>
+      <h2 class="mt-4 font-semibold" data-en="Description" data-ur="تفصیل">Description</h2>
+      <p class="mt-1 text-sm text-gray-600" data-en="Infinix Note 40 — 8GB RAM, 256GB storage, 45W fast charging, AMOLED 120Hz. Official warranty 12 months, COD available nationwide." data-ur="انفینکس نوٹ 40 — 8GB ریم، 256GB اسٹوریج، 45W فاسٹ چارجنگ، AMOLED 120Hz۔ سرکاری وارنٹی 12 ماہ، ملک گیر COD دستیاب۔">Infinix Note 40 — 8GB RAM, 256GB storage, 45W fast charging, AMOLED 120Hz. Official warranty 12 months, COD available nationwide.</p>
+    </div>
+    <aside class="h-fit rounded-lg bg-white p-4 shadow-card lg:sticky lg:top-24">
+      <p class="text-xs text-gray-500" data-en="New · 500+ sold" data-ur="نیا · 500+ فروخت">New · 500+ sold</p>
+      <h1 class="mt-1 font-bold text-gray-900">Infinix Note 40 8/256</h1>
+      <p class="mt-1 text-xs text-warn">★★★★★ <span class="text-gray-400">(1,043)</span></p>
+      <p class="mt-3 text-3xl font-semibold text-nx-blue">₨24,999 <span class="text-sm text-ok">-32%</span></p>
+      <p class="mt-2 flex items-center gap-2 text-sm text-ok font-semibold">🚚 <span data-en="Free shipping · arrives tomorrow" data-ur="مفت شپنگ · کل پہنچے گا">Free shipping · arrives tomorrow</span></p>
+      <p class="mt-1 text-sm text-gray-600" data-en="Stock available: 14 units" data-ur="دستیاب اسٹاک: 14 یونٹس">Stock available: 14 units</p>
+      <button class="mt-4 w-full rounded-md bg-nx-blue py-3 font-semibold text-white hover:opacity-90" data-en="Buy now" data-ur="ابھی خریدیں">Buy now</button>
+      <button class="mt-2 w-full rounded-md border border-nx-blue py-3 font-semibold text-nx-blue hover:bg-nx-blue/5" data-en="Add to cart" data-ur="کارٹ میں شامل کریں">Add to cart</button>
+      <button class="mt-2 w-full rounded-md border border-ok py-3 font-semibold text-ok hover:bg-ok/5">💬 <span data-en="Order via WhatsApp (COD)" data-ur="واٹس ایپ پر آرڈر کریں (COD)">Order via WhatsApp (COD)</span></button>
+      <p class="mt-3 text-xs text-gray-500" data-en="Cash on Delivery available nationwide" data-ur="ملک گیر کیش آن ڈیلیوری دستیاب">Cash on Delivery available nationwide</p>
+    </aside>
+  </div>
+</section>
+</main>
+
+<!-- BOTTOM NAV (mobile) -->
+<nav class="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-gray-200 bg-white md:hidden">
+  <button onclick="show('home')" class="py-2 text-[10px] text-nx-green">🏠<br><span data-en="Home" data-ur="ہوم">Home</span></button>
+  <button class="py-2 text-[10px] text-gray-500">❤️<br><span data-en="Favorites" data-ur="پسندیدہ">Favorites</span></button>
+  <button class="py-2 text-[10px] text-gray-500">📦<br><span data-en="Purchases" data-ur="خریداری">Purchases</span></button>
+  <button class="py-2 text-[10px] text-gray-500">🔔<br><span data-en="Alerts" data-ur="اطلاعات">Alerts</span></button>
+  <button class="py-2 text-[10px] text-gray-500">⋯<br><span data-en="More" data-ur="مزید">More</span></button>
+</nav>
+
+<script>
+function show(id){['home','srp','pdp'].forEach(s=>document.getElementById(s).classList.toggle('hidden',s!==id));window.scrollTo(0,0)}
+let ur=false;
+function lang(){ur=!ur;document.documentElement.dir=ur?'rtl':'ltr';document.querySelectorAll('[data-ur]').forEach(e=>e.textContent=ur?e.dataset.ur:e.dataset.en)}
+</script>
+</body>
+</html>
