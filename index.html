@@ -3,8 +3,9 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-<title>NexusShop</title>
+<title>NexusShop — Multi-vendor marketplace</title>
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://esm.sh/@supabase/supabase-js@2"></script>
 <script>
 tailwind.config={darkMode:'media',theme:{extend:{colors:{nx:{50:'#e8f7ee',100:'#c9ecd8',300:'#a3ddb9',500:'#00A650',600:'#008a42',700:'#006d34',900:'#003d1e',yel:'#FFE600',pink:'#EC4899',blue:'#3483FA'}},fontFamily:{sans:['Inter','system-ui','sans-serif'],ur:['Noto Nastaliq Urdu','serif']}}}};
 </script>
@@ -12,6 +13,7 @@ tailwind.config={darkMode:'media',theme:{extend:{colors:{nx:{50:'#e8f7ee',100:'#
 <style>.ur,.ur *{font-family:'Noto Nastaliq Urdu',serif!important;line-height:2.1}</style>
 </head>
 <body class="bg-zinc-100 dark:bg-[#0b1512] text-zinc-900 dark:text-zinc-100 font-sans pb-20">
+
 <div id="splash" class="fixed inset-0 z-50 flex flex-col items-center justify-center text-center px-6 bg-gradient-to-b from-nx-500 via-nx-600 to-nx-700 dark:from-[#0b1512] dark:to-[#12281c]">
 <style>@keyframes pop{from{transform:scale(.5) rotate(-6deg);opacity:0}to{transform:scale(1);opacity:1}}@keyframes up{from{transform:translateY(14px);opacity:0}to{transform:none;opacity:1}}</style>
 <div class="w-24 h-24 rounded-3xl bg-white shadow-2xl flex items-center justify-center text-5xl animate-[pop_.7s_cubic-bezier(.2,.8,.2,1)_both]">🛒</div>
@@ -23,88 +25,265 @@ tailwind.config={darkMode:'media',theme:{extend:{colors:{nx:{50:'#e8f7ee',100:'#
 </div>
 <button onclick="enterShop()" id="sp-enter" class="mt-7 w-full max-w-sm py-4 rounded-2xl bg-white text-nx-700 font-extrabold shadow-lg animate-[up_.6s_.45s_both]">Enter · <span class="ur">داخل کریں</span></button>
 </div>
+
 <header class="sticky top-0 z-40 bg-nx-600 dark:bg-[#12281c] text-white shadow">
 <div class="max-w-5xl mx-auto flex items-center gap-3 px-4 py-3">
 <span class="text-xl">🛒</span><span class="font-extrabold text-lg">NexusShop</span>
 <span class="flex-1"></span>
 <button onclick="setL(LAN==='ur'?'en':'ur')" id="langbtn" class="px-3 py-1 rounded-full bg-white/15 font-bold text-sm">اردو</button>
+<button onclick="location.hash='#/wish'" class="px-3 py-1 rounded-full bg-white/15 text-sm">♥</button>
 <button onclick="location.hash='#/cart'" class="relative px-3 py-1 rounded-full bg-white/15 text-sm">🛒<span id="badge" class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-nx-pink text-white text-[10px] font-bold items-center justify-center" style="display:none">0</span></button>
+<button onclick="userAction()" id="userbtn" class="px-3 py-1 rounded-full bg-white/15 text-sm">👤</button>
 </div>
 </header>
+
 <main id="view" class="max-w-5xl mx-auto px-4"></main>
+
+<footer class="max-w-5xl mx-auto px-4 py-6 mt-8 border-t border-zinc-200 dark:border-zinc-800 text-center text-xs text-zinc-500">
+<div class="flex flex-wrap justify-center gap-4 mb-3">
+<a href="policies.html" class="hover:text-nx-500">Refund & Privacy</a>
+<a href="https://wa.me/542257550650" class="hover:text-nx-500">💬 Support</a>
+<a href="mailto:neuralfocusia@gmail.com" class="hover:text-nx-500">✉ Email</a>
+</div>
+<p>Integrations: Supabase (Auth · DB · Storage) · Vercel · WhatsApp Commerce · PWA</p>
+<p class="mt-2">© 2026 NexusShop · Nexus Ventures Studio · COD live today · JazzCash/Easypaisa/Stripe in Phase 3</p>
+</footer>
+
 <nav class="fixed bottom-0 inset-x-0 z-40 bg-white dark:bg-[#12281c] border-t border-zinc-200 dark:border-zinc-800 pb-[env(safe-area-inset-bottom)]">
-<div class="max-w-5xl mx-auto grid grid-cols-4 text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
+<div class="max-w-5xl mx-auto grid grid-cols-5 text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
 <button onclick="location.hash='#/'" class="py-2 flex flex-col items-center gap-1"><span class="text-lg">🏠</span><span id="nv-home">Home</span></button>
-<button onclick="location.hash='#/offers'" class="py-2 flex flex-col items-center gap-1"><span class="text-lg">🔥</span><span id="nv-off">Offers</span></button>
+<button onclick="location.hash='#/wish'" class="py-2 flex flex-col items-center gap-1"><span class="text-lg">♥</span><span id="nv-wish">Wishlist</span></button>
 <button onclick="location.hash='#/cart'" class="py-2 flex flex-col items-center gap-1"><span class="text-lg">🛒</span><span id="nv-cart">Cart</span></button>
-<button onclick="toast(t('coming'))" class="py-2 flex flex-col items-center gap-1"><span class="text-lg">📦</span><span id="nv-ord">Orders</span></button>
+<button onclick="location.hash='#/orders'" class="py-2 flex flex-col items-center gap-1"><span class="text-lg">📦</span><span id="nv-ord">Orders</span></button>
+<button onclick="location.hash='#/seller'" class="py-2 flex flex-col items-center gap-1"><span class="text-lg">🏪</span><span id="nv-sell">Sell</span></button>
 </div>
 </nav>
+
 <div id="toast" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-full bg-zinc-900/90 text-white text-sm font-semibold" style="display:none"></div>
+
 <script>
+const SUPA_URL='https://iafofzwxkzwliisvstfy.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhZm9mend4a3p3bGlpc3ZzdGZ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4ODg4NzAsImV4cCI6MjEwNTQ2NDg3MH0.azD-XVPjQ1COT8_bnk1mdTo51dalR4FyzC-Qs4tEp8o';
+const SB=supabase.createClient(SUPA_URL,SUPA_KEY);
+
 var LAN=localStorage.getItem('nx2_lang')||'en';
-var T={en:{home:'Home',offers:'Offers',cart:'Cart',orders:'Orders',search:'Search in NexusShop',add:'Add',buy:'Order on WhatsApp',qty:'Quantity',details:'Details',sold:'sold',delivery:'Free delivery tomorrow',cod:'Cash on Delivery',ret:'7-day returns',total:'Total',empty:'Your cart is empty',checkout:'Checkout on WhatsApp',coming:'Coming soon'},
-ur:{home:'ہوم',offers:'آفرز',cart:'کارٹ',orders:'آرڈرز',search:'NexusShop میں تلاش',add:'شامل کریں',buy:'واٹس ایپ پر آرڈر',qty:'تعداد',details:'تفصیل',sold:'فروخت شدہ',delivery:'کل مفت ڈیلیوری',cod:'کیش آن ڈیلیوری',ret:'7 دن واپسی',total:'کل',empty:'آپ کا کارٹ خالی ہے',checkout:'واٹس ایپ پر چیک آؤٹ',coming:'جلد آرہا ہے'}};
+var USER=null;
+var T={en:{home:'Home',wish:'Wishlist',cart:'Cart',orders:'Orders',sell:'Sell',search:'Search in NexusShop',add:'Add',buy:'Order on WhatsApp',qty:'Quantity',details:'Details',sold:'sold',delivery:'Free delivery tomorrow',cod:'Cash on Delivery',ret:'7-day returns',total:'Total',empty:'Your cart is empty',checkout:'Checkout',coming:'Coming soon',login:'Log in',signup:'Sign up',email:'Email',pass:'Password',logout:'Log out',reviews:'Reviews',wrev:'Write review',send:'Send',stock:'in stock',shop:'Shop',create:'Create shop',addprod:'Add product',myprods:'My products',myords:'My orders',stats:'Stats',pending:'Pending',confirmed:'Confirmed',shipped:'Shipped',delivered:'Delivered',cancelled:'Cancelled',cancel:'Cancel order',dispute:'Open dispute',coupon:'Coupon code',apply:'Apply',sub:'Subtotal',disc:'Discount'},
+ur:{home:'ہوم',wish:'پسندیدہ',cart:'کارٹ',orders:'آرڈرز',sell:'بیچیں',search:'NexusShop میں تلاش',add:'شامل کریں',buy:'واٹس ایپ پر آرڈر',qty:'تعداد',details:'تفصیل',sold:'فروخت شدہ',delivery:'کل مفت ڈیلیوری',cod:'کیش آن ڈیلیوری',ret:'7 دن واپسی',total:'کل',empty:'آپ کا کارٹ خالی ہے',checkout:'چیک آؤٹ',coming:'جلد آرہا ہے',login:'لاگ ان',signup:'سائن اپ',email:'ای میل',pass:'پاس ورڈ',logout:'لاگ آؤٹ',reviews:'جائزے',wrev:'جائزہ لکھیں',send:'بھیجیں',stock:'اسٹاک میں',shop:'دکان',create:'دکان بنائیں',addprod:'پروڈکٹ شامل کریں',myprods:'میری مصنوعات',myords:'میرے آرڈرز',stats:'اعداد و شمار',pending:'زیر التوا',confirmed:'تصدیق شدہ',shipped:'بھیج دیا',delivered:'پہنچا دیا',cancelled:'منسوخ',cancel:'آرڈر منسوخ',dispute:'جھگڑا کھولیں',coupon:'کوپن کوڈ',apply:'لاگو کریں',sub:'ذیلی کل',disc:'رعایت'}};
+
 function t(k){return (T[LAN]&&T[LAN][k])||T.en[k]||k;}
 function setL(l){LAN=l;localStorage.setItem('nx2_lang',l);applyL();render();}
-function applyL(){document.documentElement.dir=(LAN==='ur')?'rtl':'ltr';document.documentElement.lang=LAN;document.body.classList.toggle('ur',LAN==='ur');var lb=document.getElementById('langbtn');if(lb)lb.textContent=(LAN==='ur'?'EN':'اردو');var nv=[['nv-home','home'],['nv-off','offers'],['nv-cart','cart'],['nv-ord','orders']];for(var i=0;i<nv.length;i++){var e=document.getElementById(nv[i][0]);if(e)e.textContent=t(nv[i][1]);}}
+function applyL(){document.documentElement.dir=(LAN==='ur')?'rtl':'ltr';document.documentElement.lang=LAN;document.body.classList.toggle('ur',LAN==='ur');var lb=document.getElementById('langbtn');if(lb)lb.textContent=(LAN==='ur'?'EN':'اردو');var nv=[['nv-home','home'],['nv-wish','wish'],['nv-cart','cart'],['nv-ord','orders'],['nv-sell','sell']];for(var i=0;i<nv.length;i++){var e=document.getElementById(nv[i][0]);if(e)e.textContent=t(nv[i][1]);}}
 function enterShop(){sessionStorage.setItem('nx2_in','1');var s=document.getElementById('splash');if(s)s.style.display='none';render();}
 function money(n){return 'Rs. '+Number(n||0).toLocaleString('en-PK');}
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function toast(m){var e=document.getElementById('toast');if(!e)return;e.textContent=m;e.style.display='block';clearTimeout(e._t);e._t=setTimeout(function(){e.style.display='none';},1800);}
-var DB={prods:[],stores:[]};
-var FALLBACK=[{nombre:'Wireless Earbuds Pro',precio:4999,old:7999,img:'🎧',rating:4.8,sold:412},{nombre:'Smart Watch X2',precio:6499,old:9999,img:'⌚',rating:4.6,sold:287},{nombre:'Power Bank 20000mAh',precio:3999,old:5499,img:'🔋',rating:4.7,sold:198},{nombre:'Bluetooth Speaker Mini',precio:2499,old:3999,img:'🔊',rating:4.5,sold:154}];
-fetch('nexus_db.json').then(function(r){return r.json();}).then(function(j){var P=j.prods||j.products||j.items||j.catalog||(Array.isArray(j)?j:[]);if(P&&!Array.isArray(P))P=Object.values(P);var S=j.stores||j.tiendas||j.shops||[];if(S&&!Array.isArray(S))S=Object.values(S);DB.prods=(P&&P.length)?P:FALLBACK;DB.stores=S||[];render();}).catch(function(){DB.prods=FALLBACK;render();});
-function P(i){return DB.prods[i];}
-function nm(p){return p.nombre||p.name||'Product';}
-function pr(p){return p.precio||p.price||0;}
-function old(p){return p.old||p.mrp||p.precio_old||0;}
-function em(p){return (typeof p.img==='string'&&p.img.length<=4)?p.img:'🛍️';}
-function wa(p){return p.whatsapp||p.wa||'924257550650';}
+
+async function session(){const{data}=await SB.auth.getSession();USER=data.session?.user||null;document.getElementById('userbtn').textContent=USER?'✅':'👤';}
+SB.auth.onAuthStateChange(()=>{session();render();});
+
+function userAction(){if(USER){SB.auth.signOut();}else{location.hash='#/login';}}
+
+var DB={prods:[],cats:[],shops:[]};
+
+async function loadDB(){
+  const{data:cats}=await SB.from('ns_categories').select('*');
+  const{data:prods}=await SB.from('ns_products').select('*,ns_shops(name,whatsapp)').eq('status','active').order('created_at',{ascending:false}).limit(60);
+  DB.cats=cats||[];
+  DB.prods=prods||[];
+  render();
+}
+
+function P(i){return DB.prods.find(p=>p.id===i);}
+function nm(p){return LAN==='ur'&&p.title_ur?p.title_ur:p.title_en;}
+function pr(p){return (p.price_cents||0)/100;}
+function old(p){return (p.old_price_cents||0)/100;}
+function em(p){return p.image_url||'🛍️';}
+function wa(p){return p.ns_shops?.whatsapp||'923000000000';}
+
 function cart(){try{return JSON.parse(localStorage.getItem('nx2_cart')||'[]');}catch(e){return[];}}
 function saveCart(c){localStorage.setItem('nx2_cart',JSON.stringify(c));badge();}
 function badge(){var c=cart(),n=0;for(var i=0;i<c.length;i++)n+=c[i].q;var e=document.getElementById('badge');if(!e)return;e.textContent=n;e.style.display=(n>0)?'flex':'none';}
-function add(i,q){var c=cart(),f=null;for(var k=0;k<c.length;k++){if(c[k].i===i)f=c[k];}if(f){f.q+=(q||1);}else{c.push({i:i,q:(q||1)});}saveCart(c);toast('✅ '+t('add'));}
+
+function add(i,q){if(!USER){location.hash='#/login';return;}var c=cart(),f=null;for(var k=0;k<c.length;k++){if(c[k].i===i)f=c[k];}if(f){f.q+=(q||1);}else{var p=P(i);c.push({i:i,q:(q||1),title:p.title_en,title_ur:p.title_ur,price:p.price_cents,image:p.image_url,shop:p.ns_shops});}saveCart(c);toast('✅ '+t('add'));}
 function setQ(i,d){var c=cart();for(var k=0;k<c.length;k++){if(c[k].i===i){c[k].q+=d;if(c[k].q<1)c.splice(k,1);}}saveCart(c);render();}
+
 function waLink(p){var msg=(LAN==='ur')?('السلام علیکم! مجھے اس پروڈکٹ میں دلچسپی ہے: '+nm(p)+' ('+money(pr(p))+') — NexusShop'):('Hi! I\'m interested in '+nm(p)+' ('+money(pr(p))+') from NexusShop. Is it available?');return 'https://wa.me/'+wa(p)+'?text='+encodeURIComponent(msg);}
 function stars(r){var n=Math.round(r||0),s='';for(var i=1;i<=5;i++)s+=(i<=n?'★':'☆');return '<span class="text-nx-yel text-sm">'+s+'</span>';}
-function card(p,i){var d=old(p)?Math.round((1-pr(p)/old(p))*100):0;return '<div onclick="location.hash=\'#/p/'+i+'\'" class="bg-white dark:bg-[#16241d] rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden cursor-pointer active:opacity-80"><div class="relative bg-zinc-50 dark:bg-[#1d2b24] h-32 flex items-center justify-center text-5xl">'+em(p)+(d?'<span class="absolute top-2 left-2 bg-nx-pink text-white text-[10px] font-bold px-2 py-1 rounded-full">-'+d+'%</span>':'')+'</div><div class="p-3"><div class="text-sm font-semibold leading-snug line-clamp-2 min-h-[36px]">'+esc(nm(p))+'</div><div class="mt-1 text-nx-500 font-extrabold">'+money(pr(p))+'</div>'+(old(p)?'<div class="text-xs text-zinc-400 line-through">'+money(old(p))+'</div>':'')+'<div class="mt-1 text-xs text-zinc-500">'+stars(p.rating||p.r)+' · '+(p.sold||p.vendidos||0)+' '+t('sold')+'</div><div class="mt-2 flex items-center justify-between"><span class="text-[10px] font-semibold text-nx-600 dark:text-nx-300">'+t('delivery')+'</span><button onclick="event.stopPropagation();add('+i+',1)" class="bg-nx-500 text-white text-xs font-bold px-3 py-2 rounded-lg">+ '+t('add')+'</button></div></div></div>';}
+
+function card(p,i){var d=p.old_price_cents?Math.round((1-p.price_cents/p.old_price_cents)*100):0;return '<div onclick="location.hash=\'#/p/'+p.id+'\'" class="bg-white dark:bg-[#16241d] rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden cursor-pointer active:opacity-80"><div class="relative bg-zinc-50 dark:bg-[#1d2b24] h-32 flex items-center justify-center text-5xl"><img src="'+esc(em(p))+'" class="w-full h-full object-cover" onerror="this.style.display=\'none\';this.parentElement.innerHTML=\'🛍️\'" />'+
+(d?'<span class="absolute top-2 left-2 bg-nx-pink text-white text-[10px] font-bold px-2 py-1 rounded-full">-'+d+'%</span>':'')+'</div><div class="p-3"><div class="text-sm font-semibold leading-snug line-clamp-2 min-h-[36px]">'+esc(nm(p))+'</div><div class="mt-1 text-nx-500 font-extrabold">'+money(pr(p))+'</div>'+(p.old_price_cents?'<div class="text-xs text-zinc-400 line-through">'+money(old(p))+'</div>':'')+'<div class="mt-1 text-xs text-zinc-500">'+(p.stock||0)+' '+t('stock')+'</div><div class="mt-2 flex items-center justify-between"><span class="text-[10px] font-semibold text-nx-600 dark:text-nx-300">'+t('delivery')+'</span><button onclick="event.stopPropagation();add(\''+p.id+'\',1)" class="bg-nx-500 text-white text-xs font-bold px-3 py-2 rounded-lg" '+(p.stock>0?'':'disabled')+'>+ '+t('add')+'</button></div></div></div>';}
+
 function home(filter){var h='<div class="mt-4"><input placeholder="'+t('search')+'" class="w-full py-3 px-4 rounded-xl bg-white dark:bg-[#16241d] border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:ring-2 focus:ring-nx-500" oninput="search(this.value)"></div>';
 h+='<div class="mt-4 rounded-2xl bg-gradient-to-r from-nx-700 to-nx-500 text-white p-5"><div class="font-extrabold italic text-lg">FLASH SALE · NEXUS FEST −40%</div><div class="text-xs mt-1 opacity-90">'+(LAN==='ur'?'ختم ہونے میں':'Ends in')+'</div><div id="cd" class="mt-1 text-2xl font-extrabold tabular-nums bg-white/15 rounded-lg px-3 py-1 inline-block">--:--:--</div></div>';
-var list=DB.prods||[];if(filter==='offers'){list=list.filter(function(p){return old(p)>pr(p);});}
-h+='<div class="mt-5 grid grid-cols-2 gap-3" id="grid">';for(var i=0;i<list.length;i++)h+=card(list[i],DB.prods.indexOf(list[i]));h+='</div>';
+h+='<div class="mt-4 flex gap-2 overflow-x-auto pb-2"><button class="chip px-4 py-2 rounded-full bg-nx-500 text-white text-sm font-bold" onclick="filterCat(\'\')">'+t('all')+'</button>';
+DB.cats.forEach(c=>{h+='<button class="chip px-4 py-2 rounded-full bg-zinc-200 dark:bg-zinc-800 text-sm font-bold" onclick="filterCat('+c.id+')">'+esc(LAN==='ur'&&c.name_ur?c.name_ur:c.name_en)+'</button>';});
+h+='</div>';
+var list=DB.prods||[];if(filter==='offers'){list=list.filter(p=>p.old_price_cents>p.price_cents);}
+h+='<div class="mt-5 grid grid-cols-2 gap-3" id="grid">';for(var i=0;i<list.length;i++)h+=card(list[i],i);h+='</div>';
 if(!list.length)h+='<div class="text-center text-zinc-500 py-10">'+(LAN==='ur'?'ابھی کوئی پروڈکٹ نہیں':'No products yet')+'</div>';
 return h;}
-function search(v){var g=document.getElementById('grid');if(!g)return;v=(v||'').toLowerCase();var out='';for(var i=0;i<DB.prods.length;i++){if(!v||nm(DB.prods[i]).toLowerCase().indexOf(v)>=0)out+=card(DB.prods[i],i);}g.innerHTML=out||'<div class="col-span-2 text-center text-zinc-500 py-10">No results</div>';}
-window._q=1;function dq(d){window._q=Math.max(1,Math.min(9,window._q+d));var e=document.getElementById('dq');if(e)e.textContent=window._q;}
-function detail(i){var p=P(i);if(!p)return home();var d=old(p)?Math.round((1-pr(p)/old(p))*100):0;var h='<div class="py-4">';
-h+='<div class="bg-white dark:bg-[#16241d] rounded-2xl border border-zinc-200 dark:border-zinc-800 p-6 text-center text-7xl">'+em(p)+'</div>';
-h+='<div class="mt-3 flex gap-2 justify-center text-2xl"><button class="px-3 py-1 rounded-lg bg-zinc-200 dark:bg-zinc-800">'+em(p)+'</button><button class="px-3 py-1 rounded-lg bg-zinc-200 dark:bg-zinc-800">📦</button><button class="px-3 py-1 rounded-lg bg-zinc-200 dark:bg-zinc-800">✅</button></div>';
+
+window.filterCat=function(cid){var g=document.getElementById('grid');if(!g)return;var list=cid?DB.prods.filter(p=>p.category_id===cid):DB.prods;g.innerHTML=list.map(card).join('')||'<div class="col-span-2 text-center text-zinc-500 py-10">No products</div>';};
+window.search=function(v){var g=document.getElementById('grid');if(!g)return;v=(v||'').toLowerCase();var out='';for(var i=0;i<DB.prods.length;i++){var p=DB.prods[i];if(!v||nm(p).toLowerCase().indexOf(v)>=0||(p.title_en||'').toLowerCase().indexOf(v)>=0)out+=card(p,i);}g.innerHTML=out||'<div class="col-span-2 text-center text-zinc-500 py-10">No results</div>';};
+
+async function detail(id){var p=P(id);if(!p)return home();var d=p.old_price_cents?Math.round((1-p.price_cents/p.old_price_cents)*100):0;
+const{data:revs}=await SB.from('ns_reviews').select('*').eq('product_id',id).order('created_at',{ascending:false});
+var h='<div class="py-4">';
+h+='<div class="bg-white dark:bg-[#16241d] rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden"><img src="'+esc(em(p))+'" class="w-full h-64 object-cover" onerror="this.parentElement.innerHTML=\'<div class=\\\'h-64 flex items-center justify-center text-7xl\\\'>🛍️</div>\'" /></div>';
 h+='<h1 class="mt-4 text-xl font-extrabold">'+esc(nm(p))+'</h1>';
-h+='<div class="mt-1 text-sm text-zinc-500">'+stars(p.rating||p.r)+' · '+(p.sold||p.vendidos||0)+' '+t('sold')+'</div>';
+h+='<div class="mt-1 text-sm text-zinc-500">'+t('shop')+': '+esc(p.ns_shops?.name||'')+'</div>';
 h+='<div class="mt-2 text-2xl font-extrabold text-nx-500">'+money(pr(p))+(d?' <span class="align-middle text-xs font-bold bg-nx-pink text-white px-2 py-1 rounded-full">-'+d+'%</span>':'')+'</div>';
-if(old(p))h+='<div class="text-sm text-zinc-400 line-through">'+money(old(p))+'</div>';
+if(p.old_price_cents)h+='<div class="text-sm text-zinc-400 line-through">'+money(old(p))+'</div>';
 h+='<div class="mt-3 flex flex-wrap gap-2"><span class="text-[11px] font-bold px-3 py-1 rounded-full bg-zinc-200 dark:bg-zinc-800">'+t('cod')+'</span><span class="text-[11px] font-bold px-3 py-1 rounded-full bg-zinc-200 dark:bg-zinc-800">'+t('delivery')+'</span><span class="text-[11px] font-bold px-3 py-1 rounded-full bg-zinc-200 dark:bg-zinc-800">'+t('ret')+'</span></div>';
 h+='<div class="mt-4 flex items-center gap-3"><span class="text-sm font-semibold">'+t('qty')+'</span><button onclick="dq(-1)" class="w-9 h-9 rounded-lg bg-nx-500 text-white font-extrabold">−</button><span id="dq" class="w-7 text-center font-extrabold">1</span><button onclick="dq(1)" class="w-9 h-9 rounded-lg bg-nx-500 text-white font-extrabold">+</button></div>';
-h+='<div class="mt-5 flex gap-3"><a href="'+waLink(p)+'" target="_blank" rel="noopener" class="flex-[1.2] text-center py-3 rounded-xl bg-[#25D366] text-white font-extrabold">💬 '+t('buy')+'</a><button onclick="add('+i+',window._q||1)" class="flex-1 py-3 rounded-xl bg-nx-500 text-white font-extrabold">'+t('add')+' 🛒</button></div>';
-var de=p.desc||p.description||'';if(de){h+='<div class="mt-5 text-sm font-extrabold">'+t('details')+'</div><div class="mt-1 text-sm text-zinc-600 dark:text-zinc-300 bg-white dark:bg-[#16241d] border border-zinc-200 dark:border-zinc-800 rounded-xl p-3">'+esc(de)+'</div>';}
-h+='</div>';return h;}
+h+='<div class="mt-5 flex gap-3"><a href="'+waLink(p)+'" target="_blank" rel="noopener" class="flex-[1.2] text-center py-3 rounded-xl bg-[#25D366] text-white font-extrabold">💬 '+t('buy')+'</a><button onclick="add(\''+id+'\',window._q||1)" class="flex-1 py-3 rounded-xl bg-nx-500 text-white font-extrabold">'+t('add')+' 🛒</button><button onclick="wish(\''+id+'\')" class="px-4 py-3 rounded-xl bg-zinc-200 dark:bg-zinc-800 text-xl">♥</button></div>';
+if(p.description)h+='<div class="mt-5 text-sm font-extrabold">'+t('details')+'</div><div class="mt-1 text-sm text-zinc-600 dark:text-zinc-300 bg-white dark:bg-[#16241d] border border-zinc-200 dark:border-zinc-800 rounded-xl p-3">'+esc(p.description)+'</div>';
+h+='<div class="mt-5"><h3 class="font-bold mb-2">'+t('reviews')+' ('+(revs||[]).length+')</h3>';
+(revs||[]).forEach(r=>{h+='<div class="bg-white dark:bg-[#16241d] border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 mb-2">'+stars(r.rating)+'<p class="text-sm text-zinc-600 dark:text-zinc-300 mt-1">'+esc(r.comment||'')+'</p></div>';});
+if(USER){h+='<div class="mt-3"><select id="rr" class="w-full py-2 px-3 rounded-lg bg-white dark:bg-[#16241d] border border-zinc-200 dark:border-zinc-800"><option value="5">★★★★★</option><option value="4">★★★★</option><option value="3">★★★</option><option value="2">★★</option><option value="1">★</option></select><input id="rc" placeholder="Your review..." class="w-full mt-2 py-2 px-3 rounded-lg bg-white dark:bg-[#16241d] border border-zinc-200 dark:border-zinc-800"><button onclick="postReview(\''+id+'\')" class="w-full mt-2 py-2 rounded-lg bg-nx-500 text-white font-bold">'+t('send')+'</button></div>';}
+h+='</div></div>';return h;}
+
+window._q=1;window.dq=function(d){window._q=Math.max(1,Math.min(9,window._q+d));var e=document.getElementById('dq');if(e)e.textContent=window._q;};
+window.wish=async function(id){if(!USER){location.hash='#/login';return;}await SB.from('ns_wishlists').upsert({user_id:USER.id,product_id:id});toast('♥ '+t('add'));};
+window.postReview=async function(id){if(!USER)return;const rating=+document.getElementById('rr').value;const comment=document.getElementById('rc').value;await SB.from('ns_reviews').insert({product_id:id,user_id:USER.id,rating,comment});render();};
+
 function cartView(){var c=cart();if(!c.length)return '<div class="py-16 text-center text-zinc-500">'+t('empty')+'</div>';var h='<div class="py-4">';var tot=0;
-for(var k=0;k<c.length;k++){var p=P(c[k].i);if(!p)continue;tot+=pr(p)*c[k].q;h+='<div class="flex items-center gap-3 bg-white dark:bg-[#16241d] border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 mb-2"><div class="text-3xl">'+em(p)+'</div><div class="flex-1"><div class="text-sm font-semibold">'+esc(nm(p))+'</div><div class="text-nx-500 font-bold text-sm">'+money(pr(p))+'</div></div><div class="flex items-center gap-2"><button onclick="setQ('+c[k].i+',-1)" class="w-8 h-8 rounded-lg bg-zinc-200 dark:bg-zinc-800 font-bold">−</button><span class="w-6 text-center font-bold">'+c[k].q+'</span><button onclick="setQ('+c[k].i+',1)" class="w-8 h-8 rounded-lg bg-nx-500 text-white font-bold">+</button></div></div>';}
-var msg=(LAN==='ur')?('السلام علیکم! میں NexusShop پر آرڈر کرنا چاہتا ہوں۔ کل: '+money(tot)):('Hi! I\'d like to place an order on NexusShop. Total: '+money(tot));
-h+='<div class="mt-4 flex items-center justify-between text-lg font-extrabold"><span>'+t('total')+'</span><span class="text-nx-500">'+money(tot)+'</span></div>';
-h+='<a href="https://wa.me/924257550650?text='+encodeURIComponent(msg)+'" target="_blank" rel="noopener" class="mt-4 block text-center py-4 rounded-xl bg-[#25D366] text-white font-extrabold">💬 '+t('checkout')+'</a></div>';return h;}
+for(var k=0;k<c.length;k++){var p=P(c[k].i);if(!p)continue;tot+=p.price_cents*c[k].q/100;h+='<div class="flex items-center gap-3 bg-white dark:bg-[#16241d] border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 mb-2"><img src="'+esc(c[k].image||'')+'" class="w-16 h-16 object-cover rounded-lg" onerror="this.outerHTML=\'<div class=\\\'text-3xl\\\'>🛍️</div>\'"><div class="flex-1"><div class="text-sm font-semibold">'+esc(LAN==='ur'&&c[k].title_ur?c[k].title_ur:c[k].title)+'</div><div class="text-nx-500 font-bold text-sm">'+money(c[k].price/100)+'</div></div><div class="flex items-center gap-2"><button onclick="setQ(\''+c[k].i+'\',-1)" class="w-8 h-8 rounded-lg bg-zinc-200 dark:bg-zinc-800 font-bold">−</button><span class="w-6 text-center font-bold">'+c[k].q+'</span><button onclick="setQ(\''+c[k].i+'\',1)" class="w-8 h-8 rounded-lg bg-nx-500 text-white font-bold">+</button></div></div>';}
+h+='<div class="mt-4"><input id="cp" placeholder="'+t('coupon')+'" class="w-full py-2 px-3 rounded-lg bg-white dark:bg-[#16241d] border border-zinc-200 dark:border-zinc-800"><button onclick="applyCoupon()" class="w-full mt-2 py-2 rounded-lg bg-zinc-200 dark:bg-zinc-800 font-bold">'+t('apply')+'</button></div>';
+h+='<div id="tot" class="mt-4 flex items-center justify-between text-lg font-extrabold"><span>'+t('total')+'</span><span class="text-nx-500">'+money(tot)+'</span></div>';
+h+='<a href="#/checkout" class="mt-4 block text-center py-4 rounded-xl bg-nx-500 text-white font-extrabold">'+t('checkout')+' →</a></div>';return h;}
+
+window.COUPON=null;
+window.applyCoupon=async function(){var code=document.getElementById('cp').value.trim().toUpperCase();const{data}=await SB.from('ns_coupons').select('*').eq('code',code).eq('active',true).maybeSingle();
+if(!data){toast('Invalid coupon');return;}if(data.expires_at&&new Date(data.expires_at)<new Date()){toast('Expired');return;}
+var c=cart();var sub=c.reduce((a,i)=>{var p=P(i.i);return a+(p?p.price_cents*i.q:0);},0);if(sub<data.min_order_cents){toast('Min order: '+money(data.min_order_cents/100));return;}
+window.COUPON={code,off:data.kind==='percent'?Math.round(sub*data.value/100):data.value*100};
+var tot=sub-window.COUPON.off;document.getElementById('tot').innerHTML='<span>'+t('sub')+'</span><span>'+money(sub/100)+'</span><br><span class="text-sm text-nx-500">'+t('disc')+' ('+code+')</span><span class="text-sm text-nx-500">-'+money(window.COUPON.off/100)+'</span><br><span class="text-lg font-extrabold">'+t('total')+'</span><span class="text-lg font-extrabold text-nx-500">'+money(tot/100)+'</span>';
+toast('✅ '+code);};
+
+async function checkout(){if(!USER){location.hash='#/login';return home();}var c=cart();if(!c.length)return cartView();var sub=c.reduce((a,i)=>{var p=P(i.i);return a+(p?p.price_cents*i.q:0);},0);var off=window.COUPON?window.COUPON.off:0;var tot=sub-off;
+var h='<div class="py-4"><h2 class="text-xl font-extrabold mb-4">'+t('checkout')+'</h2>';
+h+='<input id="ph" placeholder="'+t('phone')+'" class="w-full py-3 px-4 rounded-xl bg-white dark:bg-[#16241d] border border-zinc-200 dark:border-zinc-800 mb-2">';
+h+='<textarea id="ad" placeholder="'+t('addr')+'" rows="2" class="w-full py-3 px-4 rounded-xl bg-white dark:bg-[#16241d] border border-zinc-200 dark:border-zinc-800 mb-2"></textarea>';
+h+='<input id="ci" placeholder="'+t('city')+'" class="w-full py-3 px-4 rounded-xl bg-white dark:bg-[#16241d] border border-zinc-200 dark:border-zinc-800 mb-4">';
+h+='<div class="bg-white dark:bg-[#16241d] border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 mb-4"><div class="flex justify-between mb-1"><span>'+t('sub')+'</span><span>'+money(sub/100)+'</span></div>';
+if(off)h+='<div class="flex justify-between mb-1 text-nx-500"><span>'+t('disc')+'</span><span>-'+money(off/100)+'</span></div>';
+h+='<div class="flex justify-between text-lg font-extrabold mt-2 pt-2 border-t border-zinc-200 dark:border-zinc-800"><span>'+t('total')+'</span><span class="text-nx-500">'+money(tot/100)+'</span></div></div>';
+h+='<button onclick="placeOrder()" class="w-full py-4 rounded-xl bg-nx-500 text-white font-extrabold">'+t('cod')+' · '+money(tot/100)+'</button></div>';return h;}
+
+window.placeOrder=async function(){var ph=document.getElementById('ph').value;var ad=document.getElementById('ad').value;var ci=document.getElementById('ci').value;
+if(!ph||!ad||!ci){toast('Complete all fields');return;}
+var c=cart();var by={};c.forEach(i=>{var p=P(i.i);if(!p)return;var k=p.shop_id;(by[k]=by[k]||{shop:p.ns_shops,items:[]}).items.push({...i,product:p});});
+var links=[];
+for(var k of Object.keys(by)){var g=by[k];var gross=g.items.reduce((a,i)=>a+i.product.price_cents*i.q,0);var total=Math.round(gross-(window.COUPON?(window.COUPON.off*(gross/(c.reduce((a,i)=>{var p=P(i.i);return a+(p?p.price_cents*i.q:0);},0)))):0));
+var code='NS-'+Date.now().toString().slice(-6)+Math.floor(Math.random()*9);
+const{data:o,error}=await SB.from('ns_orders').insert({code,buyer_id:USER.id,shop_id:k,total_cents:total,status:'pending',payment_method:'cod',phone:ph,address:ad,city:ci}).select().single();
+if(error){toast('Error: '+error.message);return;}
+await SB.from('ns_order_items').insert(g.items.map(i=>({order_id:o.id,product_id:i.i,title_snapshot:i.title,price_cents:i.product.price_cents,qty:i.q})));
+await SB.from('ns_commissions').insert({order_id:o.id,shop_id:k,gross_cents:total,fee_cents:Math.round(total*0.02)});
+await SB.from('ns_order_events').insert({order_id:o.id,status:'pending',actor_id:USER.id,note:'Order placed (COD)'});
+var msg=encodeURIComponent('New NexusShop order '+code+'\n'+g.items.map(i=>i.q+'x '+i.title+' = '+money(i.product.price_cents*i.q/100)).join('\n')+'\nTotal: '+money(total/100)+'\nAddress: '+ad+', '+ci+'\nPhone: '+ph+'\nPayment: COD');
+links.push({code,wa:g.shop?.whatsapp?'https://wa.me/'+g.shop.whatsapp+'?text='+msg:null});}
+saveCart([]);window.COUPON=null;
+var h='<div class="py-4 text-center"><div class="text-5xl mb-4">✅</div><h2 class="text-2xl font-extrabold mb-2">'+t('orders')+' placed!</h2>';
+links.forEach(l=>{h+='<div class="bg-white dark:bg-[#16241d] border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 mb-3"><div class="font-bold">'+l.code+'</div>'+(l.wa?'<a href="'+l.wa+'" target="_blank" class="mt-2 inline-block px-4 py-2 rounded-lg bg-[#25D366] text-white font-bold text-sm">💬 '+t('buy')+'</a>':'')+'</div>';});
+h+='<a href="#/orders" class="mt-4 inline-block px-6 py-3 rounded-xl bg-nx-500 text-white font-bold">'+t('orders')+'</a></div>';
+document.getElementById('view').innerHTML=h;};
+
+async function orders(){if(!USER){location.hash='#/login';return home();}const{data:os}=await SB.from('ns_orders').select('*,ns_order_items(*),ns_order_events(*),ns_shops(name),ns_disputes(*)').eq('buyer_id',USER.id).order('created_at',{ascending:false});
+var h='<div class="py-4"><h2 class="text-xl font-extrabold mb-4">'+t('orders')+'</h2>';
+(os||[]).forEach(o=>{h+='<div class="bg-white dark:bg-[#16241d] border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 mb-3"><div class="flex justify-between items-center mb-2"><div class="font-bold">'+o.code+'</div><span class="text-xs font-bold px-3 py-1 rounded-full bg-nx-500 text-white">'+o.status+'</span></div>';
+h+='<div class="text-sm text-zinc-500 mb-2">'+esc(o.ns_shops?.name||'')+' · '+new Date(o.created_at).toLocaleString()+'</div>';
+o.ns_order_items.forEach(i=>{h+='<div class="text-sm">'+i.qty+'x '+esc(i.title_snapshot)+' — '+money(i.price_cents*i.qty/100)+'</div>';});
+h+='<div class="mt-2 flex justify-between items-center"><div class="font-extrabold text-nx-500">'+money(o.total_cents/100)+'</div><div class="flex gap-2">';
+if(o.status==='pending')h+='<button onclick="cancelOrd(\''+o.id+'\')" class="px-3 py-1 rounded-lg bg-red-500 text-white text-sm font-bold">'+t('cancel')+'</button>';
+if(o.status==='delivered')h+='<button onclick="openDisp(\''+o.id+'\')" class="px-3 py-1 rounded-lg bg-zinc-200 dark:bg-zinc-800 text-sm font-bold">'+t('dispute')+'</button>';
+h+='</div></div>';
+if(o.ns_disputes&&o.ns_disputes.length)h+='<div class="mt-2 text-xs text-nx-yel">⚠ Dispute: '+o.ns_disputes[0].status+'</div>';
+h+='</div>';});
+if(!os||!os.length)h+='<div class="text-center text-zinc-500 py-10">No orders yet</div>';
+h+='</div>';return h;}
+
+window.cancelOrd=async function(id){await SB.from('ns_orders').update({status:'cancelled'}).eq('id',id);await SB.from('ns_order_events').insert({order_id:id,status:'cancelled',actor_id:USER.id,note:'Cancelled by buyer'});render();};
+window.openDisp=async function(id){var r=prompt('Reason for dispute/refund:');if(!r)return;await SB.from('ns_disputes').insert({order_id:id,opened_by:USER.id,reason:r});render();};
+
+async function wish(){if(!USER){location.hash='#/login';return home();}const{data:w}=await SB.from('ns_wishlists').select('*,ns_products(*)').eq('user_id',USER.id);
+var h='<div class="py-4"><h2 class="text-xl font-extrabold mb-4">'+t('wish')+'</h2><div class="grid grid-cols-2 gap-3">';
+(w||[]).filter(x=>x.ns_products).forEach(x=>{h+=card(x.ns_products,0);});
+h+='</div></div>';return h;}
+
+async function seller(){if(!USER){location.hash='#/login';return home();}const{data:sh}=await SB.from('ns_shops').select('*').eq('owner_id',USER.id);
+if(!sh||!sh.length){var h='<div class="py-4"><h2 class="text-xl font-extrabold mb-4">'+t('shop')+'</h2>';
+h+='<input id="sn" placeholder="'+t('shop')+' name" class="w-full py-3 px-4 rounded-xl bg-white dark:bg-[#16241d] border border-zinc-200 dark:border-zinc-800 mb-2">';
+h+='<input id="sw" placeholder="WhatsApp (country code)" class="w-full py-3 px-4 rounded-xl bg-white dark:bg-[#16241d] border border-zinc-200 dark:border-zinc-800 mb-2">';
+h+='<input id="sc" placeholder="'+t('city')+'" class="w-full py-3 px-4 rounded-xl bg-white dark:bg-[#16241d] border border-zinc-200 dark:border-zinc-800 mb-4">';
+h+='<button onclick="createShop()" class="w-full py-4 rounded-xl bg-nx-500 text-white font-extrabold">'+t('create')+'</button></div>';return h;}
+var shop=sh[0];
+const{data:ps}=await SB.from('ns_products').select('*').eq('shop_id',shop.id).order('created_at',{ascending:false});
+const{data:os}=await SB.from('ns_orders').select('*,ns_order_items(*)').eq('shop_id',shop.id).order('created_at',{ascending:false});
+var del=(os||[]).filter(o=>o.status==='delivered');
+var h='<div class="py-4"><h2 class="text-xl font-extrabold mb-2">🏪 '+esc(shop.name)+'</h2><p class="text-sm text-zinc-500 mb-4">'+esc(shop.city||'')+' · '+esc(shop.whatsapp||'')+'</p>';
+h+='<div class="bg-white dark:bg-[#16241d] border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 mb-4"><div class="text-sm font-bold mb-2">'+t('stats')+'</div><div class="grid grid-cols-2 gap-2 text-center"><div><div class="text-2xl font-extrabold text-nx-500">'+(os||[]).length+'</div><div class="text-xs text-zinc-500">'+t('orders')+'</div></div><div><div class="text-2xl font-extrabold text-nx-500">'+money(del.reduce((a,o)=>a+o.total_cents,0)/100)+'</div><div class="text-xs text-zinc-500">'+t('delivered')+'</div></div></div></div>';
+h+='<div class="bg-white dark:bg-[#16241d] border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 mb-4"><h3 class="font-bold mb-2">'+t('addprod')+'</h3>';
+h+='<input id="te" placeholder="Title (EN)" class="w-full py-2 px-3 rounded-lg bg-zinc-100 dark:bg-zinc-800 mb-2">';
+h+='<input id="tu" placeholder="Title (UR)" class="w-full py-2 px-3 rounded-lg bg-zinc-100 dark:bg-zinc-800 mb-2">';
+h+='<input id="pr" type="number" placeholder="Price (PKR)" class="w-full py-2 px-3 rounded-lg bg-zinc-100 dark:bg-zinc-800 mb-2">';
+h+='<input id="op" type="number" placeholder="Old price (optional)" class="w-full py-2 px-3 rounded-lg bg-zinc-100 dark:bg-zinc-800 mb-2">';
+h+='<input id="st" type="number" value="10" placeholder="Stock" class="w-full py-2 px-3 rounded-lg bg-zinc-100 dark:bg-zinc-800 mb-2">';
+h+='<select id="cat" class="w-full py-2 px-3 rounded-lg bg-zinc-100 dark:bg-zinc-800 mb-2">';
+DB.cats.forEach(c=>{h+='<option value="'+c.id+'">'+esc(c.name_en)+'</option>';});
+h+='</select>';
+h+='<input id="iu" placeholder="Image URL" class="w-full py-2 px-3 rounded-lg bg-zinc-100 dark:bg-zinc-800 mb-2">';
+h+='<textarea id="de" placeholder="Description" rows="2" class="w-full py-2 px-3 rounded-lg bg-zinc-100 dark:bg-zinc-800 mb-2"></textarea>';
+h+='<button onclick="addProd(\''+shop.id+'\')" class="w-full py-3 rounded-lg bg-nx-500 text-white font-bold">'+t('addprod')+'</button></div>';
+h+='<h3 class="font-bold mb-2">'+t('myprods')+' ('+(ps||[]).length+')</h3>';
+(ps||[]).forEach(p=>{h+='<div class="bg-white dark:bg-[#16241d] border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 mb-2 flex items-center gap-3"><img src="'+esc(p.image_url||'')+'" class="w-16 h-16 object-cover rounded-lg" onerror="this.outerHTML=\'<div class=\\\'text-3xl\\\'>🛍️</div>\'"><div class="flex-1"><div class="text-sm font-bold">'+esc(p.title_en)+'</div><div class="text-nx-500 font-bold text-sm">'+money(p.price_cents/100)+'</div></div><button onclick="toggleProd(\''+p.id+'\')" class="px-3 py-1 rounded-lg bg-zinc-200 dark:bg-zinc-800 text-xs font-bold">'+(p.status==='active'?'Pause':'Activate')+'</button></div>';});
+h+='<h3 class="font-bold mb-2 mt-4">'+t('myords')+' ('+(os||[]).length+')</h3>';
+(os||[]).forEach(o=>{h+='<div class="bg-white dark:bg-[#16241d] border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 mb-2"><div class="flex justify-between items-center mb-1"><div class="font-bold text-sm">'+o.code+'</div><span class="text-xs font-bold px-2 py-1 rounded-full bg-nx-500 text-white">'+o.status+'</span></div><div class="text-xs text-zinc-500 mb-1">'+esc(o.address||'')+', '+esc(o.city||'')+'</div>';
+o.ns_order_items.forEach(i=>{h+='<div class="text-xs">'+i.qty+'x '+esc(i.title_snapshot)+'</div>';});
+h+='<div class="mt-2 flex justify-between items-center"><div class="font-bold text-nx-500">'+money(o.total_cents/100)+'</div>';
+var NEXT={pending:'confirmed',confirmed:'shipped',shipped:'delivered'};
+if(NEXT[o.status])h+='<button onclick="advOrd(\''+o.id+'\',\''+NEXT[o.status]+'\')" class="px-3 py-1 rounded-lg bg-nx-500 text-white text-xs font-bold">Mark '+NEXT[o.status]+'</button>';
+h+='</div></div>';});
+h+='</div>';return h;}
+
+window.createShop=async function(){await SB.from('ns_shops').insert({owner_id:USER.id,name:document.getElementById('sn').value,whatsapp:document.getElementById('sw').value,city:document.getElementById('sc').value});render();};
+window.addProd=async function(shopId){var url=document.getElementById('iu').value;const{error}=await SB.from('ns_products').insert({shop_id:shopId,title_en:document.getElementById('te').value,title_ur:document.getElementById('tu').value||null,price_cents:Math.round(+document.getElementById('pr').value*100),old_price_cents:document.getElementById('op').value?Math.round(+document.getElementById('op').value*100):null,stock:+document.getElementById('st').value||0,category_id:+document.getElementById('cat').value||null,image_url:url||null,description:document.getElementById('de').value||null});
+if(error){toast('Error: '+error.message);return;}render();};
+window.toggleProd=async function(id){const{data:p}=await SB.from('ns_products').select('status').eq('id',id).single();await SB.from('ns_products').update({status:p.status==='active'?'inactive':'active'}).eq('id',id);render();};
+window.advOrd=async function(id,status){await SB.from('ns_orders').update({status}).eq('id',id);await SB.from('ns_order_events').insert({order_id:id,status,actor_id:USER.id,note:'Advanced by seller'});render();};
+
+function login(){var h='<div class="py-4 max-w-md mx-auto"><h2 class="text-xl font-extrabold mb-4" id="lt">'+t('login')+'</h2>';
+h+='<input id="em" type="email" placeholder="'+t('email')+'" class="w-full py-3 px-4 rounded-xl bg-white dark:bg-[#16241d] border border-zinc-200 dark:border-zinc-800 mb-2">';
+h+='<input id="pw" type="password" placeholder="'+t('pass')+'" class="w-full py-3 px-4 rounded-xl bg-white dark:bg-[#16241d] border border-zinc-200 dark:border-zinc-800 mb-4">';
+h+='<button onclick="doAuth()" id="go" class="w-full py-4 rounded-xl bg-nx-500 text-white font-extrabold">'+t('login')+'</button>';
+h+='<p class="text-center text-sm text-zinc-500 mt-4"><a href="#" onclick="toggleAuth();return false;" id="tg">'+t('signup')+'</a></p></div>';return h;}
+
+window.authMode='in';
+window.toggleAuth=function(){window.authMode=window.authMode==='in'?'up':'in';document.getElementById('lt').textContent=window.authMode==='in'?t('login'):t('signup');document.getElementById('go').textContent=window.authMode==='in'?t('login'):t('signup');document.getElementById('tg').textContent=window.authMode==='in'?t('signup'):t('login');};
+window.doAuth=async function(){var em=document.getElementById('em').value;var pw=document.getElementById('pw').value;
+var r=window.authMode==='in'?await SB.auth.signInWithPassword({email:em,password:pw}):await SB.auth.signUp({email:em,password:pw});
+if(r.error){toast(r.error.message);return;}location.hash='#/';};
+
 function tick(){var e=document.getElementById('cd');if(!e)return;var now=new Date(),end=new Date();end.setHours(23,59,59,999);var s=Math.max(0,Math.floor((end-now)/1000));var hh=Math.floor(s/3600),mm=Math.floor(s%3600/60),ss=s%60;e.textContent=(hh<10?'0':'')+hh+':'+(mm<10?'0':'')+mm+':'+(ss<10?'0':'')+ss;}
 setInterval(tick,1000);
-function render(){var v=document.getElementById('view');if(!v)return;var h=location.hash||'#/';applyL();badge();
-if(h.indexOf('#/p/')===0){v.innerHTML=detail(parseInt(h.slice(4),10)||h.slice(4));}
+
+async function render(){var v=document.getElementById('view');if(!v)return;var h=location.hash||'#/';applyL();badge();
+await session();
+if(h.indexOf('#/p/')===0){v.innerHTML=await detail(h.slice(4));}
 else if(h==='#/cart'){v.innerHTML=cartView();}
-else if(h==='#/offers'){v.innerHTML=home('offers');}
+else if(h==='#/checkout'){v.innerHTML=await checkout();}
+else if(h==='#/orders'){v.innerHTML=await orders();}
+else if(h==='#/wish'){v.innerHTML=await wish();}
+else if(h==='#/seller'){v.innerHTML=await seller();}
+else if(h==='#/login'){v.innerHTML=login();}
 else{v.innerHTML=home();}
 tick();}
+
 window.onhashchange=render;
 if(sessionStorage.getItem('nx2_in')){var s=document.getElementById('splash');if(s)s.style.display='none';}
-applyL();render();
+applyL();loadDB();
 </script>
 </body>
 </html>
