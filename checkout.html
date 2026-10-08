@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NexusShop — Seller Subscription</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,7 +17,6 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);
   min-height:100vh;overflow-x:hidden;padding:24px 16px 80px}
-/* orbes de fondo */
 body::before,body::after{content:'';position:fixed;border-radius:50%;filter:blur(90px);
   opacity:.16;z-index:-1;animation:float 14s ease-in-out infinite alternate}
 body::before{width:420px;height:420px;background:var(--acc1);top:-120px;left:-120px}
@@ -27,7 +27,6 @@ header{text-align:center;margin-bottom:28px}
 .logo{font-size:26px;font-weight:800;letter-spacing:-.5px}
 .logo span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 .tag{color:var(--muted);font-size:13px;margin-top:4px}
-/* stepper */
 .stepper{display:flex;justify-content:space-between;margin:0 auto 28px;max-width:420px;position:relative}
 .stepper::before{content:'';position:absolute;top:14px;left:8%;right:8%;height:2px;background:var(--border)}
 .step{position:relative;z-index:1;text-align:center;width:25%}
@@ -37,7 +36,6 @@ header{text-align:center;margin-bottom:28px}
 .step.on i{background:var(--grad);border-color:transparent;color:#04121a;box-shadow:0 0 18px rgba(34,211,238,.45)}
 .step.on span{color:var(--text)}
 .step.done i{background:var(--acc1);border-color:transparent;color:#04121a}
-/* cards */
 .card{background:var(--glass);backdrop-filter:blur(14px);border:1px solid var(--border);
   border-radius:var(--radius);padding:22px;margin-bottom:16px;animation:up .4s ease both}
 @keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
@@ -55,7 +53,6 @@ input.bad{border-color:var(--err)}
 .btn.ghost{background:transparent;border:1px solid var(--border);color:var(--text);box-shadow:none}
 .row{display:flex;gap:10px}.row .btn{margin-top:14px}
 .hint{font-size:12px;color:var(--muted);margin-top:10px;text-align:center}
-/* planes */
 .plan{border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px;
   cursor:pointer;transition:.2s;position:relative;background:rgba(15,23,42,.35)}
 .plan:hover{transform:translateY(-2px);border-color:rgba(34,211,238,.4)}
@@ -68,7 +65,6 @@ input.bad{border-color:var(--err)}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .chip{font-size:11px;color:var(--muted);background:rgba(148,163,184,.1);border:1px solid var(--border);
   padding:4px 10px;border-radius:99px}
-/* pago */
 .paybox{background:rgba(4,18,26,.6);border:1px solid rgba(34,211,238,.2);border-radius:14px;padding:18px;margin-bottom:14px}
 .qrframe{background:#fff;border-radius:12px;padding:10px;width:200px;margin:0 auto 14px;display:block}
 .qrframe img{width:100%;display:block;border-radius:6px}
@@ -85,7 +81,6 @@ input.bad{border-color:var(--err)}
 .consent{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--muted);
   background:rgba(148,163,184,.06);border:1px solid var(--border);border-radius:10px;padding:12px;margin:14px 0}
 .consent input{width:auto;margin-top:2px;accent-color:var(--acc1)}
-/* éxito */
 .done-ic{width:76px;height:76px;margin:6px auto 14px;display:block}
 .done-ic circle{stroke:var(--acc1);stroke-width:2;fill:none;stroke-dasharray:166;stroke-dashoffset:166;animation:dash .6s ease forwards}
 .done-ic path{stroke:var(--acc1);stroke-width:3;fill:none;stroke-dasharray:48;stroke-dashoffset:48;animation:dash .4s .5s ease forwards}
@@ -95,7 +90,6 @@ input.bad{border-color:var(--err)}
 .sum span{color:var(--muted)}
 .next{font-size:13px;color:var(--muted);line-height:1.7;margin-top:12px}
 .next b{color:var(--text)}
-/* toast */
 #toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,80px);background:#0f172a;
   border:1px solid var(--border);border-left:3px solid var(--acc1);border-radius:12px;padding:13px 18px;
   font-size:13.5px;box-shadow:0 12px 40px rgba(0,0,0,.5);transition:.35s;z-index:50;max-width:90vw}
@@ -119,7 +113,6 @@ footer{text-align:center;color:var(--muted);font-size:11.5px;margin-top:26px}
   <div class="step" data-s="4"><i>4</i><span>Done</span></div>
 </div>
 
-<!-- PASO 1 -->
 <section class="card" id="s1">
   <h2>Seller account</h2>
   <label>Email</label><input id="email" type="email" placeholder="you@shop.pk" autocomplete="email">
@@ -131,13 +124,12 @@ footer{text-align:center;color:var(--muted);font-size:11.5px;margin-top:26px}
   <div class="hint">Your storefront, COD ledger and WhatsApp checkout live behind this login.</div>
 </section>
 
-<!-- PASO 2 -->
 <section class="card" id="s2" hidden>
   <h2>Choose your plan</h2>
   <div id="planList"></div>
+  <p class="hint" style="margin-top:14px">New here? <a href="seller.html" style="color:#34d399;font-weight:700">Start free — open your shop now</a>, upgrade when you sell.</p>
 </section>
 
-<!-- PASO 3 -->
 <section class="card" id="s3" hidden>
   <h2>Complete your payment</h2>
   <div class="paybox">
@@ -153,7 +145,6 @@ footer{text-align:center;color:var(--muted);font-size:11.5px;margin-top:26px}
   <button class="btn" id="btnPay" onclick="submitProof()">I paid — submit for verification</button>
 </section>
 
-<!-- PASO 4 -->
 <section class="card" id="s4" hidden style="text-align:center">
   <svg class="done-ic" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26"/><path d="M17 29l8 8 15-16"/></svg>
   <h2>Payment submitted!</h2>
@@ -211,7 +202,7 @@ async function boot(skip){
   setStep(2); loadPlans();}
 
 async function loadPlans(){
-  const{data}=await sb.from('plans').select('*').eq('active',true).order('price_pkr_monthly');
+  const{data}=await sb.from('plans').select('*').eq('active',true).neq('code','free').order('price_pkr_monthly');
   window.PLANS=data||[];
   $('planList').innerHTML=window.PLANS.map(p=>`
    <div class="plan" id="pl-${p.id}" onclick="choose('${p.id}')">
