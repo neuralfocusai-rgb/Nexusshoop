@@ -3,77 +3,265 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NexusShop — Admin</title>
+<title>NexusShop — Control Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
- body{font-family:system-ui,sans-serif;background:#050816;color:#e2e8f0;margin:0;padding:16px}
- .card{background:#0f172a;border:1px solid #1e293b;border-radius:12px;padding:16px;margin:12px 0}
- button{background:#10b981;color:#052e16;border:0;border-radius:8px;padding:10px 16px;font-weight:700;margin:4px}
- button.red{background:#f87171;color:#450a0a}
- input{background:#1e293b;color:#e2e8f0;border:1px solid #334155;border-radius:8px;padding:10px;width:100%;margin:4px 0}
- .muted{color:#94a3b8;font-size:13px}
+:root{
+  --bg:#04060f; --glass:rgba(15,23,42,.55); --border:rgba(148,163,184,.14);
+  --text:#e6edf7; --muted:#8b98ad; --acc1:#10b981; --acc2:#22d3ee;
+  --grad:linear-gradient(135deg,var(--acc1),var(--acc2));
+  --err:#f87171; --warn:#fbbf24; --radius:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);
+  min-height:100vh;overflow-x:hidden;padding:20px 14px 80px}
+body::before,body::after{content:'';position:fixed;border-radius:50%;filter:blur(90px);
+  opacity:.14;z-index:-1;animation:float 14s ease-in-out infinite alternate}
+body::before{width:420px;height:420px;background:var(--acc2);top:-120px;right:-120px}
+body::after{width:380px;height:380px;background:var(--acc1);bottom:-100px;left:-100px;animation-delay:-7s}
+@keyframes float{to{transform:translate(-40px,30px) scale(1.08)}}
+.wrap{max-width:720px;margin:0 auto}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.logo{font-size:22px;font-weight:800;letter-spacing:-.5px}
+.logo span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.badge{font-size:10px;font-weight:800;letter-spacing:1px;color:var(--acc2);
+  border:1px solid rgba(34,211,238,.35);background:rgba(34,211,238,.08);padding:4px 10px;border-radius:99px}
+.btn{background:var(--grad);color:#04121a;border:0;border-radius:10px;padding:11px 16px;
+  font-size:13.5px;font-weight:700;font-family:inherit;cursor:pointer;transition:.2s;
+  box-shadow:0 4px 18px rgba(16,185,129,.22)}
+.btn:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.btn.ghost{background:transparent;border:1px solid var(--border);color:var(--text);box-shadow:none}
+.btn.red{background:rgba(248,113,113,.14);border:1px solid rgba(248,113,113,.4);color:var(--err);box-shadow:none}
+.card{background:var(--glass);backdrop-filter:blur(14px);border:1px solid var(--border);
+  border-radius:var(--radius);padding:20px;margin-bottom:14px;animation:up .4s ease both}
+@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+h2{font-size:16px;font-weight:700;margin-bottom:12px}
+label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin:10px 0 5px}
+input{width:100%;background:rgba(30,41,59,.7);border:1px solid var(--border);border-radius:10px;
+  padding:12px 13px;color:var(--text);font-size:14.5px;font-family:inherit;outline:none;transition:.2s}
+input:focus{border-color:var(--acc2);box-shadow:0 0 0 3px rgba(34,211,238,.15)}
+/* KPIs */
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.kpi{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:14px;text-align:center}
+.kpi b{display:block;font-size:22px;font-weight:800;background:var(--grad);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.kpi span{font-size:10.5px;color:var(--muted);font-weight:600;letter-spacing:.4px;text-transform:uppercase}
+/* tabs */
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:14px}
+.tab{white-space:nowrap;background:transparent;border:1px solid var(--border);color:var(--muted);
+  border-radius:99px;padding:8px 14px;font-size:12.5px;font-weight:700;font-family:inherit;cursor:pointer;transition:.2s}
+.tab.on{background:var(--grad);color:#04121a;border-color:transparent}
+/* filas */
+.rowitem{border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;
+  background:rgba(15,23,42,.35)}
+.rowitem .top{display:flex;justify-content:space-between;gap:8px;font-size:14px;font-weight:700;margin-bottom:4px}
+.rowitem .meta{font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.5}
+.rowitem .acts{display:flex;gap:8px}
+.rowitem .acts .btn{flex:1;padding:10px}
+.pill{font-size:10px;font-weight:800;padding:3px 9px;border-radius:99px;letter-spacing:.4px}
+.pill.warn{background:rgba(251,191,36,.12);color:var(--warn);border:1px solid rgba(251,191,36,.35)}
+.pill.ok{background:rgba(16,185,129,.12);color:var(--acc1);border:1px solid rgba(16,185,129,.35)}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;color:var(--muted);font-weight:600;padding:7px 8px;border-bottom:1px solid var(--border);
+  text-transform:uppercase;font-size:10px;letter-spacing:.5px}
+td{padding:8px;border-bottom:1px solid rgba(148,163,184,.07);color:var(--text)}
+.muted{color:var(--muted);font-size:12.5px}
+.railrow{display:flex;justify-content:space-between;gap:10px;align-items:center;
+  padding:9px 0;border-bottom:1px solid rgba(148,163,184,.07);font-size:13px}
+.railrow code{color:var(--acc2);font-size:12px}
+.railrow b{word-break:break-all;font-weight:600}
+#toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,80px);background:#0f172a;
+  border:1px solid var(--border);border-left:3px solid var(--acc1);border-radius:12px;padding:13px 18px;
+  font-size:13.5px;box-shadow:0 12px 40px rgba(0,0,0,.5);transition:.35s;z-index:50;max-width:90vw}
+#toast.err{border-left-color:var(--err)}
+#toast.show{transform:translate(-50%,0)}
+[hidden]{display:none!important}
 </style>
 </head>
 <body>
-<h1>NexusShop — Admin</h1>
-<div id="auth" class="card">
-  <input id="email" type="email" placeholder="Admin email">
-  <input id="pass" type="password" placeholder="Password">
-  <button onclick="signIn()">Sign in</button><span id="authMsg" class="muted"></span>
-</div>
+<div class="wrap">
+<header>
+  <div class="logo">Nexus<span>Shop</span></div>
+  <span class="badge">CONTROL ROOM</span>
+  <button class="btn ghost" id="btnOut" onclick="signOut()" hidden>Sign out</button>
+</header>
+
+<section class="card" id="auth">
+  <h2>Admin access</h2>
+  <label>Email</label><input id="email" type="email" placeholder="admin@nexusshop">
+  <label>Password</label><input id="pass" type="password" placeholder="••••••••">
+  <button class="btn" id="btnIn" style="width:100%;margin-top:12px" onclick="signIn()">Enter control room</button>
+</section>
+
+<section class="card" id="denied" hidden style="text-align:center">
+  <h2>⛔ Not authorized</h2>
+  <p class="muted">This area is restricted to NexusShop admins (Lucas & Talal). If you believe this is an error, contact the founding team.</p>
+</section>
+
 <div id="panel" hidden>
-  <div class="card"><h2>Payment queue (under review)</h2><div id="queue"></div></div>
-  <div class="card"><h2>Weekly reconciliation (DB side)</h2><div id="recon"></div></div>
-  <div class="card"><h2>Rails config</h2>
-    <input id="rcKey" placeholder="key (jazzcash_number...)">
-    <input id="rcVal" placeholder="value">
-    <input id="rcOwner" placeholder="owner (talal_collection)">
-    <button onclick="saveRail()">Save rail</button><span id="railMsg" class="muted"></span>
+  <div class="kpis">
+    <div class="kpi"><b id="kPend">0</b><span>Pending review</span></div>
+    <div class="kpi"><b id="kWeek">0</b><span>PKR this week</span></div>
+    <div class="kpi"><b id="kActive">0</b><span>Active subs</span></div>
   </div>
-  <div class="card"><h2>Courier partners (logistics)</h2><div id="couriers"></div></div>
+
+  <div class="tabs">
+    <button class="tab on" onclick="tab('queue')">Queue</button>
+    <button class="tab" onclick="tab('recon')">Reconciliation</button>
+    <button class="tab" onclick="tab('subs')">Subscriptions</button>
+    <button class="tab" onclick="tab('rails')">Rails</button>
+    <button class="tab" onclick="tab('couriers')">Couriers</button>
+    <button class="tab" onclick="tab('audit')">Audit</button>
+  </div>
+
+  <section class="card" id="t-queue">
+    <h2>Payment verification queue</h2>
+    <div id="queue"></div>
+  </section>
+
+  <section class="card" id="t-recon" hidden>
+    <h2>Weekly reconciliation (DB side)</h2>
+    <p class="muted" style="margin-bottom:10px">Cross-check this against Talal's JazzCash / EasyPaisa statement every week. Sweep 50/50 the same day.</p>
+    <div id="recon"></div>
+  </section>
+
+  <section class="card" id="t-subs" hidden>
+    <h2>Active subscriptions</h2>
+    <div id="subs"></div>
+  </section>
+
+  <section class="card" id="t-rails" hidden>
+    <h2>Payment rails</h2>
+    <div id="railList"></div>
+    <label>Key</label><input id="rcKey" placeholder="jazzcash_number / jazzcash_qr_url / easypaisa_number / bank_iban">
+    <label>Value</label><input id="rcVal" placeholder="+92 3XX XXXXXXX or URL">
+    <label>Owner</label><input id="rcOwner" placeholder="talal_collection">
+    <button class="btn" style="width:100%;margin-top:12px" onclick="saveRail()">Save rail</button>
+  </section>
+
+  <section class="card" id="t-couriers" hidden>
+    <h2>Logistics partners (COD)</h2>
+    <div id="couriers"></div>
+  </section>
+
+  <section class="card" id="t-audit" hidden>
+    <h2>Audit log — money movements</h2>
+    <div id="audit"></div>
+  </section>
 </div>
+</div>
+<div id="toast"></div>
+
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
 const sb = createClient('https://iafofzwxkzwliisvstfy.supabase.co','sb_publishable_uXpbSgDe4OXVWibgQ187RA_INLaX0SY');
-const val=id=>document.getElementById(id).value.trim();
+const $=id=>document.getElementById(id);
+const val=id=>$(id).value.trim();
+function toast(t,err){const e=$('toast');e.textContent=t;e.className=err?'err show':'show';
+  clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),4200);}
+function load(btn,on){btn.disabled=on;btn._t=btn._t||btn.textContent;if(on)btn.textContent='Working…';else btn.textContent=btn._t;}
+
+window.tab=name=>{
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('on',
+    ['queue','recon','subs','rails','couriers','audit'][i]===name));
+  ['queue','recon','subs','rails','couriers','audit'].forEach(n=>$('t-'+n).hidden=(n!==name));};
+
 window.signIn=async()=>{
+  load($('btnIn'),true);
   const{error}=await sb.auth.signInWithPassword({email:val('email'),password:val('pass')});
-  if(error){document.getElementById('authMsg').textContent=error.message;return;}
-  document.getElementById('auth').hidden=true;
-  document.getElementById('panel').hidden=false; load();
-};
-async function load(){
+  load($('btnIn'),false);
+  if(error)return toast(error.message,1);
+  await gate();};
+window.signOut=async()=>{await sb.auth.signOut();location.reload();};
+
+async function gate(){
+  const me=(await sb.auth.getUser()).data.user;
+  if(!me)return;
+  const{data:admin}=await sb.rpc('is_admin');
+  $('auth').hidden=true;
+  if(!admin){$('denied').hidden=false;return;}
+  $('btnOut').hidden=false;
+  $('panel').hidden=false;
+  loadAll();}
+
+async function loadAll(){
   const{data:q}=await sb.from('payment_orders')
-    .select('id,amount_pkr,method,transaction_ref,status,created_at')
+    .select('id,amount_pkr,method,transaction_ref,created_at,subscriptions(seller_id)')
     .eq('status','under_review').order('created_at');
-  document.getElementById('queue').innerHTML=(q||[]).map(o=>`
-    <div class="card">PKR ${o.amount_pkr} · ${o.method} · ref: <b>${o.transaction_ref||'-'}</b>
-    <br><span class="muted">${o.created_at}</span>
-    <br><button onclick="confirmOrder('${o.id}')">Confirm & activate</button>
-    <button class="red" onclick="rejectOrder('${o.id}')">Reject</button></div>`).join('')
-    ||'<p class="muted">Queue empty</p>';
-  const{data:r}=await sb.from('v_weekly_reconciliation').select('*');
-  document.getElementById('recon').innerHTML=(r||[]).map(x=>
-    `<p>Week ${x.week} · ${x.method} · ${x.confirmed_orders} orders · PKR ${x.gross_pkr}</p>`).join('')
-    ||'<p class="muted">No confirmed payments yet</p>';
+  $('kPend').textContent=(q||[]).length;
+  $('queue').innerHTML=(q||[]).map(o=>`
+    <div class="rowitem">
+      <div class="top"><span>PKR ${o.amount_pkr.toLocaleString()} · ${o.method}</span><span class="pill warn">REVIEW</span></div>
+      <div class="meta">Ref: <b>${o.transaction_ref||'—'}</b><br>${new Date(o.created_at).toLocaleString()}<br>seller: ${(o.subscriptions?.seller_id||'').slice(0,8)}…</div>
+      <div class="acts">
+        <button class="btn" onclick="confirmOrder('${o.id}')">✓ Confirm & activate</button>
+        <button class="btn red" onclick="rejectOrder('${o.id}')">Reject</button>
+      </div>
+    </div>`).join('')||'<p class="muted">Queue empty. New seller payments land here.</p>';
+
+  const{data:conf}=await sb.from('payment_orders').select('amount_pkr,created_at').eq('status','confirmed');
+  const weekStart=new Date();weekStart.setDate(weekStart.getDate()-weekStart.getDay());weekStart.setHours(0,0,0,0);
+  const wk=(conf||[]).filter(x=>new Date(x.created_at)>=weekStart);
+  $('kWeek').textContent=wk.reduce((s,x)=>s+x.amount_pkr,0).toLocaleString();
+  $('recon').innerHTML=(wk.length?`<table><tr><th>Week</th><th>Orders</th><th>Gross PKR</th></tr>
+    <tr><td>${weekStart.toDateString()}</td><td>${wk.length}</td><td>${wk.reduce((s,x)=>s+x.amount_pkr,0).toLocaleString()}</td></tr></table>`
+    :'<p class="muted">No confirmed payments this week yet.</p>');
+
+  const{data:sub}=await sb.from('subscriptions').select('*,plans(name_en,code)')
+    .eq('status','active').order('created_at',{ascending:false});
+  $('kActive').textContent=(sub||[]).length;
+  $('subs').innerHTML=(sub||[]).map(s=>`
+    <div class="rowitem">
+      <div class="top"><span>${s.plans?.name_en||'—'}</span><span class="pill ok">ACTIVE</span></div>
+      <div class="meta">seller: ${s.seller_id.slice(0,8)}… · until ${new Date(s.current_period_end).toDateString()}</div>
+    </div>`).join('')||'<p class="muted">No active subscriptions yet.</p>';
+
+  const{data:r}=await sb.from('rail_config').select('*');
+  $('railList').innerHTML=(r||[]).map(x=>`
+    <div class="railrow"><code>${x.key}</code><b>${x.value}</b></div>`).join('')||'<p class="muted">No rails yet.</p>';
+
   const{data:c}=await sb.from('courier_partners').select('*');
-  document.getElementById('couriers').innerHTML=(c||[]).map(x=>
-    `<p><b>${x.name}</b> · ${x.contact_whatsapp||''} · remittance: ${x.cod_remittance_cycle||''} · ${x.rate_note||''}</p>`).join('');
-}
+  $('couriers').innerHTML=(c||[]).map(x=>`
+    <div class="rowitem">
+      <div class="top"><span>${x.name}</span><span class="pill ok">${x.active?'ACTIVE':'PAUSED'}</span></div>
+      <div class="meta">${x.contact_whatsapp||'—'} · remittance: ${x.cod_remittance_cycle||'—'}<br>${x.rate_note||''}</div>
+      <div class="acts"><button class="btn ghost" onclick="editCourier('${x.id}','${(x.rate_note||'').replace(/'/g,"\\'")}')">Update rate note</button></div>
+    </div>`).join('')||'<p class="muted">No couriers yet.</p>';
+
+  const{data:a}=await sb.from('audit_log').select('*').order('id',{ascending:false}).limit(20);
+  $('audit').innerHTML=(a||[]).length?`<table><tr><th>When</th><th>Table</th><th>Action</th><th>By</th></tr>
+    ${(a||[]).map(x=>`<tr><td>${new Date(x.changed_at).toLocaleString()}</td><td>${x.table_name}</td>
+    <td>${x.action}</td><td>${(x.changed_by||'system').slice(0,8)}…</td></tr>`).join('')}</table>`
+    :'<p class="muted">No movements yet.</p>';}
+
 window.confirmOrder=async(id)=>{
+  if(!confirm('Confirm this payment against the bank statement and activate the subscription?'))return;
   const{error}=await sb.rpc('confirm_payment_and_activate',{p_order_id:id});
-  alert(error?error.message:'Activated'); load();
-};
+  toast(error?error.message:'Subscription activated ✓',!!error);
+  loadAll();};
 window.rejectOrder=async(id)=>{
-  const note=prompt('Reason:'); if(note===null)return;
+  const note=prompt('Reason for rejection (goes to audit log):');
+  if(note===null)return;
   const{error}=await sb.from('payment_orders')
     .update({status:'rejected',review_note:note,reviewed_at:new Date().toISOString()}).eq('id',id);
-  alert(error?error.message:'Rejected'); load();
-};
+  toast(error?error.message:'Rejected and logged',!!error);
+  loadAll();};
 window.saveRail=async()=>{
+  if(!val('rcKey')||!val('rcVal'))return toast('Key and value required',1);
   const{error}=await sb.from('rail_config')
-    .upsert({key:val('rcKey'),value:val('rcVal'),owner:val('rcOwner')});
-  document.getElementById('railMsg').textContent=error?error.message:'Saved';
-};
+    .upsert({key:val('rcKey'),value:val('rcVal'),owner:val('rcOwner')||'platform'});
+  toast(error?error.message:'Rail saved ✓',!!error);
+  if(!error)loadAll();};
+window.editCourier=async(id,current)=>{
+  const note=prompt('Rate note for this courier:',current);
+  if(note===null)return;
+  const{error}=await sb.from('courier_partners').update({rate_note:note}).eq('id',id);
+  toast(error?error.message:'Courier updated ✓',!!error);
+  if(!error)loadAll();};
+
+gate();
 </script>
 </body>
 </html>
