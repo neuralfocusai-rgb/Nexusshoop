@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NexusShop — Admin</title>
+<style>
+ body{font-family:system-ui,sans-serif;background:#050816;color:#e2e8f0;margin:0;padding:16px}
+ .card{background:#0f172a;border:1px solid #1e293b;border-radius:12px;padding:16px;margin:12px 0}
+ button{background:#10b981;color:#052e16;border:0;border-radius:8px;padding:10px 16px;font-weight:700;margin:4px}
+ button.red{background:#f87171;color:#450a0a}
+ input{background:#1e293b;color:#e2e8f0;border:1px solid #334155;border-radius:8px;padding:10px;width:100%;margin:4px 0}
+ .muted{color:#94a3b8;font-size:13px}
+</style>
+</head>
+<body>
+<h1>NexusShop — Admin</h1>
+<div id="auth" class="card">
+  <input id="email" type="email" placeholder="Admin email">
+  <input id="pass" type="password" placeholder="Password">
+  <button onclick="signIn()">Sign in</button><span id="authMsg" class="muted"></span>
+</div>
+<div id="panel" hidden>
+  <div class="card"><h2>Payment queue (under review)</h2><div id="queue"></div></div>
+  <div class="card"><h2>Weekly reconciliation (DB side)</h2><div id="recon"></div></div>
+  <div class="card"><h2>Rails config</h2>
+    <input id="rcKey" placeholder="key (jazzcash_number...)">
+    <input id="rcVal" placeholder="value">
+    <input id="rcOwner" placeholder="owner (talal_collection)">
+    <button onclick="saveRail()">Save rail</button><span id="railMsg" class="muted"></span>
+  </div>
+  <div class="card"><h2>Courier partners (logistics)</h2><div id="couriers"></div></div>
+</div>
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
+const sb = createClient('https://iafofzwxkzwliisvstfy.supabase.co','sb_publishable_uXpbSgDe4OXVWibgQ187RA_INLaX0SY');
+const val=id=>document.getElementById(id).value.trim();
+window.signIn=async()=>{
+  const{error}=await sb.auth.signInWithPassword({email:val('email'),password:val('pass')});
+  if(error){document.getElementById('authMsg').textContent=error.message;return;}
+  document.getElementById('auth').hidden=true;
+  document.getElementById('panel').hidden=false; load();
+};
+async function load(){
+  const{data:q}=await sb.from('payment_orders')
+    .select('id,amount_pkr,method,transaction_ref,status,created_at')
+    .eq('status','under_review').order('created_at');
+  document.getElementById('queue').innerHTML=(q||[]).map(o=>`
+    <div class="card">PKR ${o.amount_pkr} · ${o.method} · ref: <b>${o.transaction_ref||'-'}</b>
+    <br><span class="muted">${o.created_at}</span>
+    <br><button onclick="confirmOrder('${o.id}')">Confirm & activate</button>
+    <button class="red" onclick="rejectOrder('${o.id}')">Reject</button></div>`).join('')
+    ||'<p class="muted">Queue empty</p>';
+  const{data:r}=await sb.from('v_weekly_reconciliation').select('*');
+  document.getElementById('recon').innerHTML=(r||[]).map(x=>
+    `<p>Week ${x.week} · ${x.method} · ${x.confirmed_orders} orders · PKR ${x.gross_pkr}</p>`).join('')
+    ||'<p class="muted">No confirmed payments yet</p>';
+  const{data:c}=await sb.from('courier_partners').select('*');
+  document.getElementById('couriers').innerHTML=(c||[]).map(x=>
+    `<p><b>${x.name}</b> · ${x.contact_whatsapp||''} · remittance: ${x.cod_remittance_cycle||''} · ${x.rate_note||''}</p>`).join('');
+}
+window.confirmOrder=async(id)=>{
+  const{error}=await sb.rpc('confirm_payment_and_activate',{p_order_id:id});
+  alert(error?error.message:'Activated'); load();
+};
+window.rejectOrder=async(id)=>{
+  const note=prompt('Reason:'); if(note===null)return;
+  const{error}=await sb.from('payment_orders')
+    .update({status:'rejected',review_note:note,reviewed_at:new Date().toISOString()}).eq('id',id);
+  alert(error?error.message:'Rejected'); load();
+};
+window.saveRail=async()=>{
+  const{error}=await sb.from('rail_config')
+    .upsert({key:val('rcKey'),value:val('rcVal'),owner:val('rcOwner')});
+  document.getElementById('railMsg').textContent=error?error.message:'Saved';
+};
+</script>
+</body>
+</html>
