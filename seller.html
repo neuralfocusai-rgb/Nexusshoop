@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NexusShop — Seller Center</title>
+<style>
+:root{--bg:#070b21;--glass:rgba(255,255,255,.07);--border:rgba(255,255,255,.14);--text:#eef2ff;--muted:#9aa7c7;
+--g1:#f472b6;--g2:#a78bfa;--g3:#22d3ee;--ok:#34d399;--grad:linear-gradient(135deg,var(--g1),var(--g2),var(--g3));--r:18px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:16px 16px 60px}
+body::before{content:'';position:fixed;width:420px;height:420px;border-radius:50%;filter:blur(100px);opacity:.2;background:var(--g2);top:-140px;right:-140px;z-index:-1}
+.wrap{max-width:560px;margin:0 auto}
+.logo{font-size:22px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:4px}
+.sub{color:var(--muted);font-size:12.5px;margin-bottom:18px}
+.card{border-radius:var(--r);border:1px solid var(--border);background:var(--glass);backdrop-filter:blur(12px);padding:18px;margin-bottom:14px}
+h2{font-size:16px;font-weight:800;margin-bottom:12px}
+.lbl{font-size:12px;font-weight:700;color:var(--muted);margin:10px 0 5px}
+input,select,textarea{width:100%;padding:13px;border-radius:13px;border:1px solid var(--border);background:rgba(255,255,255,.05);color:var(--text);font-size:14.5px;outline:none;font-family:inherit}
+input:focus,textarea:focus{border-color:var(--g3)}
+textarea{min-height:80px;resize:vertical}
+.btn{width:100%;padding:14px;border:0;border-radius:14px;background:var(--grad);color:#0b1030;font-size:14.5px;font-weight:800;cursor:pointer;font-family:inherit;margin-top:12px}
+.btn.ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn.red{background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.4);color:#fca5a5}
+.btn:disabled{opacity:.5}
+.row{display:flex;gap:8px}.row .btn{margin-top:0}
+.item{border:1px solid var(--border);border-radius:14px;padding:12px;margin-bottom:10px;display:flex;gap:10px;align-items:center}
+.item img{width:52px;height:52px;border-radius:10px;object-fit:cover;background:rgba(255,255,255,.06)}
+.item .inf{flex:1;min-width:0}
+.item .nm{font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .mt{font-size:11.5px;color:var(--muted)}
+.pill{font-size:9.5px;font-weight:800;padding:3px 8px;border-radius:99px;letter-spacing:.4px}
+.pill.on{background:rgba(52,211,153,.15);color:var(--ok);border:1px solid rgba(52,211,153,.4)}
+.pill.draft{background:rgba(251,191,36,.12);color:#fcd34d;border:1px solid rgba(251,191,36,.35)}
+.banner{border-radius:14px;padding:13px 15px;font-size:12.5px;line-height:1.6;margin-bottom:14px}
+.banner.warn{border:1px solid rgba(251,191,36,.4);background:rgba(251,191,36,.08);color:#fcd34d}
+.banner.ok{border:1px solid rgba(52,211,153,.4);background:rgba(52,211,153,.08);color:#a7f3d0}
+.banner a{color:#67e8f9;font-weight:800}
+#toasts{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:70;display:flex;flex-direction:column;gap:8px;align-items:center}
+.toast{padding:12px 20px;border-radius:14px;font-size:13px;font-weight:700;box-shadow:0 14px 40px rgba(0,0,0,.45)}
+.toast.ok{background:rgba(52,211,153,.16);border:1px solid rgba(52,211,153,.5);color:#a7f3d0}
+.toast.err{background:rgba(248,113,113,.16);border:1px solid rgba(248,113,113,.5);color:#fecaca}
+.prev{width:100%;aspect-ratio:1.4;object-fit:cover;border-radius:14px;border:1px solid var(--border);margin-top:8px;background:rgba(255,255,255,.04)}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="logo">NexusShop · Seller Center</div>
+<div class="sub">Create your shop, upload products, sell with COD.</div>
+<div id="toasts"></div>
+<div id="boot" class="card">Loading…</div>
+<div id="loginBox" class="card" hidden>
+<h2>👤 Log in</h2>
+<input id="le" type="email" placeholder="Email">
+<input id="lp" type="password" placeholder="Password" style="margin-top:8px">
+<button class="btn" onclick="doLogin()">Log in</button>
+</div>
+<div id="shopForm" class="card" hidden>
+<h2>🏪 Create your shop</h2>
+<div class="lbl">Shop name</div><input id="sName" placeholder="e.g. Ali Electronics Lahore">
+<div class="lbl">WhatsApp (buyers will chat here)</div><input id="sWa" type="tel" placeholder="+92 3XX XXXXXXX">
+<div class="lbl">City</div><input id="sCity" placeholder="Lahore">
+<button class="btn" onclick="createShop()">Open my shop →</button>
+</div>
+<div id="dash" hidden>
+<div id="subBanner"></div>
+<div class="card">
+<h2>📦 Add product</h2>
+<div class="lbl">Title (English)</div><input id="pEn" placeholder="Bluetooth Speaker Mini">
+<div class="lbl">Title (Urdu)</div><input id="pUr" placeholder="بلوٹوتھ اسپیکر">
+<div class="row" style="margin-top:10px">
+<div style="flex:1"><div class="lbl">Price PKR</div><input id="pPrice" type="number" placeholder="2499"></div>
+<div style="flex:1"><div class="lbl">Old price</div><input id="pOld" type="number" placeholder="3999"></div>
+<div style="flex:1"><div class="lbl">Stock</div><input id="pStock" type="number" placeholder="10"></div>
+</div>
+<div class="lbl">Category</div><select id="pCat"></select>
+<div class="lbl">Description</div><textarea id="pDesc" placeholder="Details, specs, warranty…"></textarea>
+<div class="lbl">Photo</div><input id="pImg" type="file" accept="image/*">
+<img id="pPrev" class="prev" hidden>
+<div class="lbl">Video URL (YouTube, optional)</div><input id="pVid" placeholder="https://youtube.com/…">
+<button class="btn" id="pBtn" onclick="saveProduct()">Publish product →</button>
+</div>
+<div class="card">
+<h2>🏬 My shop</h2>
+<div class="lbl">Shop WhatsApp (edit anytime)</div>
+<div class="row"><input id="eWa"><button class="btn ghost" style="flex:0 0 90px" onclick="saveWa()">Save</button></div>
+<div id="myProds" style="margin-top:14px"></div>
+</div>
+</div>
+</div>
+<script>
+var SB=null,USER=null,SHOP=null,PLAN=null,CATS=[],IMG_URL=null;
+function toast(m,t){var w=document.getElementById('toasts');var e=document.createElement('div');
+e.className='toast '+(t||'ok');e.textContent=m;w.appendChild(e);
+setTimeout(function(){e.style.opacity='0';e.style.transition='.3s';setTimeout(function(){e.remove()},300)},2600)}
+function show(id){['boot','loginBox','shopForm','dash'].forEach(function(k){document.getElementById(k).hidden=(k!==id)})}
+async function boot(){
+ try{var m=await import('https://esm.sh/@supabase/supabase-js@2.45.4');
+ SB=m.createClient('https://iafofzwxkzwliisvstfy.supabase.co','sb_publishable_uXpbSgDe4OXVWibgQ187RA_INLaX0SY');}
+ catch(e){document.getElementById('boot').innerHTML='📡 Offline. Reconnect and reload.';return}
+ var s=await SB.auth.getSession();USER=s.data.session?.user||null;
+ if(!USER){show('loginBox');return}
+ await refresh();}
+async function refresh(){
+ var r=await SB.rpc('my_plan_code');PLAN=r.data||null;
+ var q=await SB.from('ns_shops').select('*').eq('owner_id',USER.id).limit(1);
+ SHOP=(q.data||[])[0]||null;
+ var c=await SB.from('ns_categories').select('*');CATS=c.data||[];
+ if(!SHOP){show('shopForm');return}
+ show('dash');
+ document.getElementById('eWa').value=SHOP.whatsapp||'';
+ document.getElementById('subBanner').innerHTML=PLAN
+  ?'<div class="banner ok">✓ Plan <b>'+PLAN+'</b> active — your products publish live instantly.</div>'
+  :'<div class="banner warn">⚠ No active subscription yet. New products save as <b>draft</b> and go live when you subscribe. <a href="checkout.html">See plans →</a></div>';
+ document.getElementById('pCat').innerHTML='<option value="">— none —</option>'+CATS.map(function(x){return '<option value="'+x.id+'">'+(x.name_en||x.name)+'</option>'}).join('');
+ var mp=await SB.from('ns_products').select('*').eq('shop_id',SHOP.id).order('created_at',{ascending:false});
+ document.getElementById('myProds').innerHTML='<h2>My products ('+(mp.data||[]).length+')</h2>'+
+  (mp.data||[]).map(function(p){return '<div class="item">'+(p.image_url?'<img src="'+p.image_url+'">':'<div style="width:52px;height:52px;border-radius:10px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center">🛍️</div>')+
+   '<div class="inf"><div class="nm">'+(p.title_en||'')+'</div><div class="mt">Rs. '+((p.price_cents||0)/100).toLocaleString()+' · stock '+(p.stock||0)+'</div></div>'+
+   '<span class="pill '+(p.status==='active'?'on':'draft')+'">'+p.status.toUpperCase()+'</span>'+
+   '<button class="btn ghost" style="flex:0 0 74px;margin:0" onclick="toggleProd(\''+p.id+'\',\''+(p.status==='active'?'paused':'active')+'\')">'+(p.status==='active'?'Pause':'Live')+'</button>'+
+   '<button class="btn red" style="flex:0 0 44px;margin:0" onclick="delProd(\''+p.id+'\')">✕</button></div>'}).join('')
+  ||'<p style="color:var(--muted);font-size:12.5px">No products yet — publish your first one above.</p>';}
+window.doLogin=async function(){var r=await SB.auth.signInWithPassword({email:document.getElementById('le').value,password:document.getElementById('lp').value});
+ if(r.error)return toast(r.error.message,'err');USER=r.data.user;await refresh();};
+window.createShop=async function(){
+ var n=document.getElementById('sName').value.trim(),w=document.getElementById('sWa').value.trim();
+ if(!n||!w)return toast('Shop name and WhatsApp required','err');
+ var r=await SB.from('ns_shops').insert({owner_id:USER.id,name:n,whatsapp:w,city:document.getElementById('sCity').value.trim()}).select();
+ if(r.error)return toast(r.error.message,'err');
+ toast('Shop created 🎉');await refresh();};
+window.saveWa=async function(){var r=await SB.from('ns_shops').update({whatsapp:document.getElementById('eWa').value.trim()}).eq('id',SHOP.id);
+ toast(r.error?r.error.message:'WhatsApp updated ✓',r.error?'err':'ok');};
+document.addEventListener('change',async function(e){
+ if(e.target.id!=='pImg')return;var f=e.target.files[0];if(!f)return;
+ var path=USER.id+'/'+Date.now()+'_'+f.name;
+ var up=await SB.storage.from('product-media').upload(path,f);
+ if(up.error)return toast('Upload failed: '+up.error.message,'err');
+ IMG_URL=SB.storage.from('product-media').getPublicUrl(path).data.publicUrl;
+ var pv=document.getElementById('pPrev');pv.src=IMG_URL;pv.hidden=false;toast('Photo uploaded ✓');});
+window.saveProduct=async function(){
+ var name=document.getElementById('pEn').value.trim();
+ var price=parseFloat(document.getElementById('pPrice').value)||0;
+ if(!name||price<=0)return toast('Title and price required','err');
+ var old=parseFloat(document.getElementById('pOld').value)||null;
+ var r=await SB.from('ns_products').insert({
+  shop_id:SHOP.id,
+  category_id:parseInt(document.getElementById('pCat').value)||null,
+  title_en:name,
+  title_ur:document.getElementById('pUr').value.trim()||null,
+  description:document.getElementById('pDesc').value.trim()||null,
+  price_cents:Math.round(price*100),
+  old_price_cents:old?Math.round(old*100):null,
+  image_url:IMG_URL,
+  video_url:document.getElementById('pVid').value.trim()||null,
+  stock:parseInt(document.getElementById('pStock').value)||0,
+  status:PLAN?'active':'draft',
+  is_demo:false}).select();
+ if(r.error)return toast(r.error.message,'err');
+ toast(PLAN?'Product live! 🎉':'Saved as draft — subscribe to go live');
+ IMG_URL=null;document.getElementById('pPrev').hidden=true;document.getElementById('pImg').value='';
+ ['pEn','pUr','pPrice','pOld','pStock','pDesc','pVid'].forEach(function(i){document.getElementById(i).value=''});
+ await refresh();};
+window.toggleProd=async function(id,st){var r=await SB.from('ns_products').update({status:st}).eq('id',id);
+ toast(r.error?r.error.message:'Status: '+st,r.error?'err':'ok');if(!r.error)await refresh();};
+window.delProd=async function(id){if(!confirm('Delete this product?'))return;
+ var r=await SB.from('ns_products').delete().eq('id',id);toast(r.error?r.error.message:'Deleted',r.error?'err':'ok');if(!r.error)await refresh();};
+boot();
+</script>
+</body>
+</html>
