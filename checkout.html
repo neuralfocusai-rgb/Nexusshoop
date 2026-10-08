@@ -3,88 +3,270 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NexusShop — Checkout</title>
+<title>NexusShop — Seller Subscription</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
- body{font-family:system-ui,sans-serif;background:#050816;color:#e2e8f0;margin:0;padding:16px}
- .card{background:#0f172a;border:1px solid #1e293b;border-radius:12px;padding:16px;margin:12px 0}
- button{background:#10b981;color:#052e16;border:0;border-radius:8px;padding:10px 16px;font-weight:700;margin:4px}
- input{background:#1e293b;color:#e2e8f0;border:1px solid #334155;border-radius:8px;padding:10px;width:100%;margin:4px 0}
- .muted{color:#94a3b8;font-size:13px}.ok{color:#34d399}.err{color:#f87171}
- img.qr{width:220px;border-radius:12px;background:#fff;padding:8px}
+:root{
+  --bg:#04060f; --glass:rgba(15,23,42,.55); --border:rgba(148,163,184,.14);
+  --text:#e6edf7; --muted:#8b98ad; --acc1:#10b981; --acc2:#22d3ee;
+  --grad:linear-gradient(135deg,var(--acc1),var(--acc2));
+  --err:#f87171; --radius:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);
+  min-height:100vh;overflow-x:hidden;padding:24px 16px 80px}
+/* orbes de fondo */
+body::before,body::after{content:'';position:fixed;border-radius:50%;filter:blur(90px);
+  opacity:.16;z-index:-1;animation:float 14s ease-in-out infinite alternate}
+body::before{width:420px;height:420px;background:var(--acc1);top:-120px;left:-120px}
+body::after{width:380px;height:380px;background:var(--acc2);bottom:-100px;right:-100px;animation-delay:-7s}
+@keyframes float{to{transform:translate(40px,30px) scale(1.08)}}
+.wrap{max-width:560px;margin:0 auto}
+header{text-align:center;margin-bottom:28px}
+.logo{font-size:26px;font-weight:800;letter-spacing:-.5px}
+.logo span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tag{color:var(--muted);font-size:13px;margin-top:4px}
+/* stepper */
+.stepper{display:flex;justify-content:space-between;margin:0 auto 28px;max-width:420px;position:relative}
+.stepper::before{content:'';position:absolute;top:14px;left:8%;right:8%;height:2px;background:var(--border)}
+.step{position:relative;z-index:1;text-align:center;width:25%}
+.step i{display:flex;align-items:center;justify-content:center;width:28px;height:28px;margin:0 auto 6px;
+  border-radius:50%;background:#0f172a;border:2px solid var(--border);font-style:normal;font-size:12px;font-weight:700;color:var(--muted);transition:.3s}
+.step span{font-size:11px;color:var(--muted);font-weight:600}
+.step.on i{background:var(--grad);border-color:transparent;color:#04121a;box-shadow:0 0 18px rgba(34,211,238,.45)}
+.step.on span{color:var(--text)}
+.step.done i{background:var(--acc1);border-color:transparent;color:#04121a}
+/* cards */
+.card{background:var(--glass);backdrop-filter:blur(14px);border:1px solid var(--border);
+  border-radius:var(--radius);padding:22px;margin-bottom:16px;animation:up .4s ease both}
+@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+h2{font-size:18px;font-weight:700;margin-bottom:14px}
+label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin:12px 0 6px}
+input{width:100%;background:rgba(30,41,59,.7);border:1px solid var(--border);border-radius:10px;
+  padding:13px 14px;color:var(--text);font-size:15px;font-family:inherit;outline:none;transition:.2s}
+input:focus{border-color:var(--acc2);box-shadow:0 0 0 3px rgba(34,211,238,.15)}
+input.bad{border-color:var(--err)}
+.btn{width:100%;margin-top:14px;background:var(--grad);color:#04121a;border:0;border-radius:12px;
+  padding:14px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;transition:.2s;
+  box-shadow:0 6px 24px rgba(16,185,129,.25)}
+.btn:hover{transform:translateY(-1px);box-shadow:0 10px 30px rgba(34,211,238,.35)}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.btn.ghost{background:transparent;border:1px solid var(--border);color:var(--text);box-shadow:none}
+.row{display:flex;gap:10px}.row .btn{margin-top:14px}
+.hint{font-size:12px;color:var(--muted);margin-top:10px;text-align:center}
+/* planes */
+.plan{border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px;
+  cursor:pointer;transition:.2s;position:relative;background:rgba(15,23,42,.35)}
+.plan:hover{transform:translateY(-2px);border-color:rgba(34,211,238,.4)}
+.plan.sel{border-color:var(--acc2);box-shadow:0 0 0 3px rgba(34,211,238,.12)}
+.plan h3{font-size:16px;font-weight:700}
+.plan .price{font-size:22px;font-weight:800;margin:6px 0}
+.plan .price small{font-size:12px;color:var(--muted);font-weight:500}
+.badge{position:absolute;top:14px;right:14px;background:var(--grad);color:#04121a;
+  font-size:10px;font-weight:800;padding:4px 10px;border-radius:99px;letter-spacing:.4px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{font-size:11px;color:var(--muted);background:rgba(148,163,184,.1);border:1px solid var(--border);
+  padding:4px 10px;border-radius:99px}
+/* pago */
+.paybox{background:rgba(4,18,26,.6);border:1px solid rgba(34,211,238,.2);border-radius:14px;padding:18px;margin-bottom:14px}
+.qrframe{background:#fff;border-radius:12px;padding:10px;width:200px;margin:0 auto 14px;display:block}
+.qrframe img{width:100%;display:block;border-radius:6px}
+.qrph{width:200px;height:200px;margin:0 auto 14px;border:2px dashed var(--border);border-radius:12px;
+  display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px;text-align:center;padding:12px}
+.payline{display:flex;justify-content:space-between;align-items:center;gap:10px;
+  background:rgba(30,41,59,.5);border:1px solid var(--border);border-radius:10px;padding:11px 14px;margin-bottom:8px}
+.payline b{font-size:14px;word-break:break-all}
+.payline .lbl{font-size:11px;color:var(--muted);display:block}
+.copy{background:rgba(34,211,238,.12);border:1px solid rgba(34,211,238,.3);color:var(--acc2);
+  border-radius:8px;padding:7px 10px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit}
+.amount{font-size:26px;font-weight:800;text-align:center;margin:6px 0 2px}
+.amount small{font-size:12px;color:var(--muted);font-weight:500}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--muted);
+  background:rgba(148,163,184,.06);border:1px solid var(--border);border-radius:10px;padding:12px;margin:14px 0}
+.consent input{width:auto;margin-top:2px;accent-color:var(--acc1)}
+/* éxito */
+.done-ic{width:76px;height:76px;margin:6px auto 14px;display:block}
+.done-ic circle{stroke:var(--acc1);stroke-width:2;fill:none;stroke-dasharray:166;stroke-dashoffset:166;animation:dash .6s ease forwards}
+.done-ic path{stroke:var(--acc1);stroke-width:3;fill:none;stroke-dasharray:48;stroke-dashoffset:48;animation:dash .4s .5s ease forwards}
+@keyframes dash{to{stroke-dashoffset:0}}
+.sum{background:rgba(30,41,59,.5);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;
+  display:flex;justify-content:space-between;font-size:13.5px}
+.sum span{color:var(--muted)}
+.next{font-size:13px;color:var(--muted);line-height:1.7;margin-top:12px}
+.next b{color:var(--text)}
+/* toast */
+#toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,80px);background:#0f172a;
+  border:1px solid var(--border);border-left:3px solid var(--acc1);border-radius:12px;padding:13px 18px;
+  font-size:13.5px;box-shadow:0 12px 40px rgba(0,0,0,.5);transition:.35s;z-index:50;max-width:90vw}
+#toast.err{border-left-color:var(--err)}
+#toast.show{transform:translate(-50%,0)}
+footer{text-align:center;color:var(--muted);font-size:11.5px;margin-top:26px}
+[hidden]{display:none!important}
 </style>
 </head>
 <body>
-<h1>NexusShop — Seller Subscription</h1>
-<div id="auth" class="card">
-  <input id="email" type="email" placeholder="Email">
-  <input id="pass" type="password" placeholder="Password">
-  <button onclick="signIn()">Sign in</button>
-  <button onclick="signUp()">Create account</button>
-  <span id="authMsg" class="muted"></span>
+<div class="wrap">
+<header>
+  <div class="logo">Nexus<span>Shop</span></div>
+  <div class="tag">Pakistan's COD-first marketplace · Seller subscriptions</div>
+</header>
+
+<div class="stepper" id="stepper">
+  <div class="step on" data-s="1"><i>1</i><span>Account</span></div>
+  <div class="step" data-s="2"><i>2</i><span>Plan</span></div>
+  <div class="step" data-s="3"><i>3</i><span>Payment</span></div>
+  <div class="step" data-s="4"><i>4</i><span>Done</span></div>
 </div>
-<div id="plans" class="card" hidden><h2>Choose your plan</h2><div id="planList"></div></div>
-<div id="pay" class="card" hidden>
-  <h2>Pay with JazzCash / EasyPaisa / Bank</h2>
-  <div id="payInfo"></div>
-  <label class="muted"><input type="checkbox" id="consent" style="width:auto">
-   I agree to receive order updates on WhatsApp at this number. Reply STOP anytime to opt out.</label>
-  <input id="phone" type="tel" placeholder="Your WhatsApp number (+92...)">
-  <input id="txn" placeholder="Transaction ID from your payment app">
-  <button onclick="submitProof()">I paid — submit transaction ID</button>
-  <span id="payMsg" class="muted"></span>
+
+<!-- PASO 1 -->
+<section class="card" id="s1">
+  <h2>Seller account</h2>
+  <label>Email</label><input id="email" type="email" placeholder="you@shop.pk" autocomplete="email">
+  <label>Password</label><input id="pass" type="password" placeholder="Min 6 characters" autocomplete="current-password">
+  <div class="row">
+    <button class="btn" id="btnIn" onclick="signIn()">Sign in</button>
+    <button class="btn ghost" id="btnUp" onclick="signUp()">Create account</button>
+  </div>
+  <div class="hint">Your storefront, COD ledger and WhatsApp checkout live behind this login.</div>
+</section>
+
+<!-- PASO 2 -->
+<section class="card" id="s2" hidden>
+  <h2>Choose your plan</h2>
+  <div id="planList"></div>
+</section>
+
+<!-- PASO 3 -->
+<section class="card" id="s3" hidden>
+  <h2>Complete your payment</h2>
+  <div class="paybox">
+    <div class="amount" id="amt"></div>
+    <div id="qrwrap"></div>
+    <div id="paylines"></div>
+    <div class="hint">Access activates within 24h after admin verification.</div>
+  </div>
+  <label class="consent"><input type="checkbox" id="consent">
+    <span>I agree to receive order updates on WhatsApp at this number. Reply STOP anytime to opt out.</span></label>
+  <label>WhatsApp number</label><input id="phone" type="tel" placeholder="+92 3XX XXXXXXX">
+  <label>Transaction ID from your payment app</label><input id="txn" placeholder="e.g. JC-88231907">
+  <button class="btn" id="btnPay" onclick="submitProof()">I paid — submit for verification</button>
+</section>
+
+<!-- PASO 4 -->
+<section class="card" id="s4" hidden style="text-align:center">
+  <svg class="done-ic" viewBox="0 0 56 56"><circle cx="28" cy="28" r="26"/><path d="M17 29l8 8 15-16"/></svg>
+  <h2>Payment submitted!</h2>
+  <div class="sum"><span>Plan</span><b id="dPlan"></b></div>
+  <div class="sum"><span>Amount</span><b id="dAmt"></b></div>
+  <div class="sum"><span>Reference</span><b id="dRef"></b></div>
+  <div class="next">
+    <b>What happens now:</b><br>
+    1. Our admin verifies your transaction against the JazzCash / EasyPaisa statement.<br>
+    2. Your subscription activates — usually within 24 hours.<br>
+    3. You get a WhatsApp confirmation at the number you provided.
+  </div>
+</section>
+
+<footer>NexusShop · Lahore ↔ Argentina · built in public</footer>
 </div>
+<div id="toast"></div>
+
 <script type="module">
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
 const sb = createClient('https://iafofzwxkzwliisvstfy.supabase.co','sb_publishable_uXpbSgDe4OXVWibgQ187RA_INLaX0SY');
-let me=null, orderId=null;
-const val=id=>document.getElementById(id).value.trim();
-const msg=(id,t,c)=>{const e=document.getElementById(id);e.textContent=t;e.className=c||'muted';};
-window.signIn=async()=>{const{error}=await sb.auth.signInWithPassword({email:val('email'),password:val('pass')});
-  msg('authMsg',error?error.message:'Signed in');if(!error)boot();};
-window.signUp=async()=>{const{error}=await sb.auth.signUp({email:val('email'),password:val('pass')});
-  msg('authMsg',error?error.message:'Check your email, then sign in');};
-async function boot(){
+let me=null, orderId=null, chosen=null;
+const $=id=>document.getElementById(id);
+const val=id=>$(id).value.trim();
+const isEmail=v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+
+function toast(t,err){const e=$('toast');e.textContent=t;e.className=err?'err show':'show';
+  clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),4200);}
+function setStep(n){document.querySelectorAll('.step').forEach(s=>{const k=+s.dataset.s;
+  s.classList.toggle('on',k===n);s.classList.toggle('done',k<n);});
+  ['s1','s2','s3','s4'].forEach((id,i)=>$(id).hidden=(i+1)!==n);
+  window.scrollTo({top:0,behavior:'smooth'});}
+function load(btn,on){btn.disabled=on;btn._t=btn._t||btn.textContent;if(on)btn.textContent='Working…';else btn.textContent=btn._t;}
+function copy(t){navigator.clipboard?.writeText(t).then(()=>toast('Copied: '+t));}
+window.copy=copy;
+
+window.signIn=async()=>{
+  if(!isEmail(val('email'))){$('email').classList.add('bad');return toast('Enter a valid email',1);}
+  load($('btnIn'),true);
+  const{error}=await sb.auth.signInWithPassword({email:val('email'),password:val('pass')});
+  load($('btnIn'),false);
+  if(error)return toast(error.message,1);
+  toast('Welcome back');boot(true);}
+window.signUp=async()=>{
+  if(!isEmail(val('email'))){$('email').classList.add('bad');return toast('Enter a valid email',1);}
+  if(val('pass').length<6){$('pass').classList.add('bad');return toast('Password: min 6 characters',1);}
+  load($('btnUp'),true);
+  const{error}=await sb.auth.signUp({email:val('email'),password:val('pass')});
+  load($('btnUp'),false);
+  if(error)return toast(error.message,1);
+  toast('Account created — signing you in');boot(true);}
+
+async function boot(skip){
   me=(await sb.auth.getUser()).data.user; if(!me)return;
-  document.getElementById('auth').hidden=true;
-  document.getElementById('plans').hidden=false;
-  const{data}=await sb.from('plans').select('*').eq('active',true);
-  window.PLANS=data;
-  document.getElementById('planList').innerHTML=data.map(p=>
-   `<div class="card"><b>${p.name_en}</b> — PKR ${p.price_pkr_monthly}/month
-    <br><span class="muted">${(p.features||[]).join(' · ')}</span>
-    <br><button onclick="choose('${p.id}')">Choose</button></div>`).join('');
-}
+  setStep(2); loadPlans();}
+
+async function loadPlans(){
+  const{data}=await sb.from('plans').select('*').eq('active',true).order('price_pkr_monthly');
+  window.PLANS=data||[];
+  $('planList').innerHTML=window.PLANS.map(p=>`
+   <div class="plan" id="pl-${p.id}" onclick="choose('${p.id}')">
+     ${p.code==='pro'?'<span class="badge">POPULAR</span>':''}
+     <h3>${p.name_en}</h3>
+     <div class="price">PKR ${p.price_pkr_monthly.toLocaleString()}<small>/month</small></div>
+     <div class="chips">${(p.features||[]).map(f=>`<span class="chip">${f.replace(/_/g,' ')}</span>`).join('')}</div>
+   </div>`).join('');}
+
 window.choose=async(planId)=>{
-  const plan=window.PLANS.find(p=>p.id===planId);
+  chosen=window.PLANS.find(p=>p.id===planId); if(!chosen)return;
+  document.querySelectorAll('.plan').forEach(e=>e.classList.remove('sel'));
+  $('pl-'+planId).classList.add('sel');
   const{data:sub,error:e1}=await sb.from('subscriptions')
     .insert({seller_id:me.id,plan_id:planId,period:'monthly'}).select().single();
-  if(e1){msg('authMsg',e1.message,'err');return;}
+  if(e1)return toast(e1.message,1);
   const{data:rails}=await sb.from('rail_config').select('key,value')
     .in('key',['jazzcash_number','jazzcash_qr_url','easypaisa_number','bank_iban']);
   const r=Object.fromEntries((rails||[]).map(x=>[x.key,x.value]));
   const{data:order,error:e2}=await sb.from('payment_orders').insert({
-    subscription_id:sub.id,amount_pkr:plan.price_pkr_monthly,method:'jazzcash',instructions:r
+    subscription_id:sub.id,amount_pkr:chosen.price_pkr_monthly,method:'jazzcash',instructions:r
   }).select().single();
-  if(e2){msg('authMsg',e2.message,'err');return;}
+  if(e2)return toast(e2.message,1);
   orderId=order.id;
-  document.getElementById('plans').hidden=true;
-  document.getElementById('pay').hidden=false;
-  document.getElementById('payInfo').innerHTML=`
-   <img class="qr" src="${r.jazzcash_qr_url||''}" alt="JazzCash QR">
-   <p>1. Scan QR or send to <b>${r.jazzcash_number||''}</b> (EasyPaisa: ${r.easypaisa_number||''})</p>
-   <p>2. Amount: <b>PKR ${plan.price_pkr_monthly}</b> · Bank IBAN: ${r.bank_iban||''}</p>
-   <p class="muted">Access activates within 24h after admin verification.</p>`;
-};
+  $('amt').innerHTML=`PKR ${chosen.price_pkr_monthly.toLocaleString()}<small> / month · ${chosen.name_en}</small>`;
+  $('qrwrap').innerHTML=r.jazzcash_qr_url
+    ?`<div class="qrframe"><img src="${r.jazzcash_qr_url}" alt="JazzCash QR" onerror="this.parentNode.outerHTML='<div class=qrph>QR image coming soon — use the numbers below</div>'"></div>`
+    :`<div class="qrph">QR image coming soon — use the numbers below</div>`;
+  $('paylines').innerHTML=`
+    <div class="payline"><div><span class="lbl">JazzCash</span><b>${r.jazzcash_number||'—'}</b></div>
+      <button class="copy" onclick="copy('${r.jazzcash_number||''}')">Copy</button></div>
+    <div class="payline"><div><span class="lbl">EasyPaisa</span><b>${r.easypaisa_number||'—'}</b></div>
+      <button class="copy" onclick="copy('${r.easypaisa_number||''}')">Copy</button></div>
+    <div class="payline"><div><span class="lbl">Bank IBAN</span><b>${r.bank_iban||'—'}</b></div>
+      <button class="copy" onclick="copy('${r.bank_iban||''}')">Copy</button></div>`;
+  setStep(3);}
+
 window.submitProof=async()=>{
-  if(!document.getElementById('consent').checked){msg('payMsg','Accept the WhatsApp checkbox first.','err');return;}
+  if(!$('consent').checked)return toast('Please accept the WhatsApp updates checkbox',1);
+  if(val('phone').replace(/\D/g,'').length<8){$('phone').classList.add('bad');return toast('Enter a valid WhatsApp number',1);}
+  if(val('txn').length<6){$('txn').classList.add('bad');return toast('Enter the transaction ID from your app',1);}
+  load($('btnPay'),true);
   const{error:e1}=await sb.from('whatsapp_consents')
     .insert({user_id:me.id,phone:val('phone'),purpose:'order_updates'});
-  if(e1&&!e1.message.includes('duplicate')){msg('payMsg',e1.message,'err');return;}
+  if(e1&&!/duplicate|unique/i.test(e1.message)){load($('btnPay'),false);return toast(e1.message,1);}
   const{error:e2}=await sb.from('payment_orders')
     .update({transaction_ref:val('txn'),status:'under_review'})
     .eq('id',orderId).eq('status','awaiting_payment');
-  msg('payMsg',e2?e2.message:'Submitted! Verification within 24h.',e2?'err':'ok');
-};
+  load($('btnPay'),false);
+  if(e2)return toast(e2.message,1);
+  $('dPlan').textContent=chosen.name_en;
+  $('dAmt').textContent='PKR '+chosen.price_pkr_monthly.toLocaleString();
+  $('dRef').textContent=val('txn');
+  setStep(4);}
+
 boot();
 </script>
 </body>
