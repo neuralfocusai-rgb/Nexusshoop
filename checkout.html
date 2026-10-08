@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NexusShop — Checkout</title>
+<style>
+ body{font-family:system-ui,sans-serif;background:#050816;color:#e2e8f0;margin:0;padding:16px}
+ .card{background:#0f172a;border:1px solid #1e293b;border-radius:12px;padding:16px;margin:12px 0}
+ button{background:#10b981;color:#052e16;border:0;border-radius:8px;padding:10px 16px;font-weight:700;margin:4px}
+ input{background:#1e293b;color:#e2e8f0;border:1px solid #334155;border-radius:8px;padding:10px;width:100%;margin:4px 0}
+ .muted{color:#94a3b8;font-size:13px}.ok{color:#34d399}.err{color:#f87171}
+ img.qr{width:220px;border-radius:12px;background:#fff;padding:8px}
+</style>
+</head>
+<body>
+<h1>NexusShop — Seller Subscription</h1>
+<div id="auth" class="card">
+  <input id="email" type="email" placeholder="Email">
+  <input id="pass" type="password" placeholder="Password">
+  <button onclick="signIn()">Sign in</button>
+  <button onclick="signUp()">Create account</button>
+  <span id="authMsg" class="muted"></span>
+</div>
+<div id="plans" class="card" hidden><h2>Choose your plan</h2><div id="planList"></div></div>
+<div id="pay" class="card" hidden>
+  <h2>Pay with JazzCash / EasyPaisa / Bank</h2>
+  <div id="payInfo"></div>
+  <label class="muted"><input type="checkbox" id="consent" style="width:auto">
+   I agree to receive order updates on WhatsApp at this number. Reply STOP anytime to opt out.</label>
+  <input id="phone" type="tel" placeholder="Your WhatsApp number (+92...)">
+  <input id="txn" placeholder="Transaction ID from your payment app">
+  <button onclick="submitProof()">I paid — submit transaction ID</button>
+  <span id="payMsg" class="muted"></span>
+</div>
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
+const sb = createClient('https://iafofzwxkzwliisvstfy.supabase.co','sb_publishable_uXpbSgDe4OXVWibgQ187RA_INLaX0SY');
+let me=null, orderId=null;
+const val=id=>document.getElementById(id).value.trim();
+const msg=(id,t,c)=>{const e=document.getElementById(id);e.textContent=t;e.className=c||'muted';};
+window.signIn=async()=>{const{error}=await sb.auth.signInWithPassword({email:val('email'),password:val('pass')});
+  msg('authMsg',error?error.message:'Signed in');if(!error)boot();};
+window.signUp=async()=>{const{error}=await sb.auth.signUp({email:val('email'),password:val('pass')});
+  msg('authMsg',error?error.message:'Check your email, then sign in');};
+async function boot(){
+  me=(await sb.auth.getUser()).data.user; if(!me)return;
+  document.getElementById('auth').hidden=true;
+  document.getElementById('plans').hidden=false;
+  const{data}=await sb.from('plans').select('*').eq('active',true);
+  window.PLANS=data;
+  document.getElementById('planList').innerHTML=data.map(p=>
+   `<div class="card"><b>${p.name_en}</b> — PKR ${p.price_pkr_monthly}/month
+    <br><span class="muted">${(p.features||[]).join(' · ')}</span>
+    <br><button onclick="choose('${p.id}')">Choose</button></div>`).join('');
+}
+window.choose=async(planId)=>{
+  const plan=window.PLANS.find(p=>p.id===planId);
+  const{data:sub,error:e1}=await sb.from('subscriptions')
+    .insert({seller_id:me.id,plan_id:planId,period:'monthly'}).select().single();
+  if(e1){msg('authMsg',e1.message,'err');return;}
+  const{data:rails}=await sb.from('rail_config').select('key,value')
+    .in('key',['jazzcash_number','jazzcash_qr_url','easypaisa_number','bank_iban']);
+  const r=Object.fromEntries((rails||[]).map(x=>[x.key,x.value]));
+  const{data:order,error:e2}=await sb.from('payment_orders').insert({
+    subscription_id:sub.id,amount_pkr:plan.price_pkr_monthly,method:'jazzcash',instructions:r
+  }).select().single();
+  if(e2){msg('authMsg',e2.message,'err');return;}
+  orderId=order.id;
+  document.getElementById('plans').hidden=true;
+  document.getElementById('pay').hidden=false;
+  document.getElementById('payInfo').innerHTML=`
+   <img class="qr" src="${r.jazzcash_qr_url||''}" alt="JazzCash QR">
+   <p>1. Scan QR or send to <b>${r.jazzcash_number||''}</b> (EasyPaisa: ${r.easypaisa_number||''})</p>
+   <p>2. Amount: <b>PKR ${plan.price_pkr_monthly}</b> · Bank IBAN: ${r.bank_iban||''}</p>
+   <p class="muted">Access activates within 24h after admin verification.</p>`;
+};
+window.submitProof=async()=>{
+  if(!document.getElementById('consent').checked){msg('payMsg','Accept the WhatsApp checkbox first.','err');return;}
+  const{error:e1}=await sb.from('whatsapp_consents')
+    .insert({user_id:me.id,phone:val('phone'),purpose:'order_updates'});
+  if(e1&&!e1.message.includes('duplicate')){msg('payMsg',e1.message,'err');return;}
+  const{error:e2}=await sb.from('payment_orders')
+    .update({transaction_ref:val('txn'),status:'under_review'})
+    .eq('id',orderId).eq('status','awaiting_payment');
+  msg('payMsg',e2?e2.message:'Submitted! Verification within 24h.',e2?'err':'ok');
+};
+boot();
+</script>
+</body>
+</html>
