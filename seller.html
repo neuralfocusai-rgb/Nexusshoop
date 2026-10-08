@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NexusShop — Seller Center</title>
 <style>
@@ -112,10 +113,10 @@ async function refresh(){
  document.getElementById('eWa').value=SHOP.whatsapp||'';
  document.getElementById('subBanner').innerHTML=PLAN
   ?'<div class="banner ok">✓ Plan <b>'+PLAN+'</b> active — your products publish live instantly.</div>'
-  :'<div class="banner warn">⚠ No active subscription yet. New products save as <b>draft</b> and go live when you subscribe. <a href="checkout.html">See plans →</a></div>';
+  :'<div class="banner ok">🎁 <b>Free tier</b> active — up to 5 products live right now, no payment. Upgrade anytime for more. <a href="checkout.html">See plans →</a></div>';
  document.getElementById('pCat').innerHTML='<option value="">— none —</option>'+CATS.map(function(x){return '<option value="'+x.id+'">'+(x.name_en||x.name)+'</option>'}).join('');
  var mp=await SB.from('ns_products').select('*').eq('shop_id',SHOP.id).order('created_at',{ascending:false});
- document.getElementById('myProds').innerHTML='<h2>My products ('+(mp.data||[]).length+')</h2>'+
+ document.getElementById('myProds').innerHTML='<h2>My products ('+(mp.data||[]).length+(PLAN?'':(' / 5 free'))+')</h2>'+
   (mp.data||[]).map(function(p){return '<div class="item">'+(p.image_url?'<img src="'+p.image_url+'">':'<div style="width:52px;height:52px;border-radius:10px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center">🛍️</div>')+
    '<div class="inf"><div class="nm">'+(p.title_en||'')+'</div><div class="mt">Rs. '+((p.price_cents||0)/100).toLocaleString()+' · stock '+(p.stock||0)+'</div></div>'+
    '<span class="pill '+(p.status==='active'?'on':'draft')+'">'+p.status.toUpperCase()+'</span>'+
@@ -143,6 +144,8 @@ window.saveProduct=async function(){
  var name=document.getElementById('pEn').value.trim();
  var price=parseFloat(document.getElementById('pPrice').value)||0;
  if(!name||price<=0)return toast('Title and price required','err');
+ if(!PLAN){var cnt=await SB.from('ns_products').select('id',{count:'exact',head:true}).eq('shop_id',SHOP.id);
+  if((cnt.count||0)>=5)return toast('Free tier limit: 5 products. Upgrade to publish more.','err');}
  var old=parseFloat(document.getElementById('pOld').value)||null;
  var r=await SB.from('ns_products').insert({
   shop_id:SHOP.id,
@@ -155,10 +158,10 @@ window.saveProduct=async function(){
   image_url:IMG_URL,
   video_url:document.getElementById('pVid').value.trim()||null,
   stock:parseInt(document.getElementById('pStock').value)||0,
-  status:PLAN?'active':'draft',
+  status:'active',
   is_demo:false}).select();
  if(r.error)return toast(r.error.message,'err');
- toast(PLAN?'Product live! 🎉':'Saved as draft — subscribe to go live');
+ toast('Product live! 🎉');
  IMG_URL=null;document.getElementById('pPrev').hidden=true;document.getElementById('pImg').value='';
  ['pEn','pUr','pPrice','pOld','pStock','pDesc','pVid'].forEach(function(i){document.getElementById(i).value=''});
  await refresh();};
