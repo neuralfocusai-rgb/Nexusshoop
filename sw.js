@@ -1,4 +1,4 @@
-const VER = 'nx-v4-20261027';
+const VER = 'nx-v5-20261027';
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', e => {
   e.waitUntil((async () => {
@@ -8,14 +8,15 @@ self.addEventListener('activate', e => {
   })());
 });
 self.addEventListener('fetch', e => {
-  if (e.request.method !== 'GET') return;
+  const url = new URL(e.request.url);
+  if (e.request.method !== 'GET' || url.origin !== location.origin) return;
   e.respondWith((async () => {
-    const c = await caches.open(VER);
     try {
       const net = await fetch(e.request, { cache: 'no-store' });
-      c.put(e.request, net.clone());
+      try { const c = await caches.open(VER); c.put(e.request, net.clone()); } catch (e2) {}
       return net;
     } catch (err) {
+      const c = await caches.open(VER);
       return (await c.match(e.request)) || new Response('Offline', { status: 503 });
     }
   })());
