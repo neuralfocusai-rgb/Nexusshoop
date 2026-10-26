@@ -1,6 +1,15 @@
 window.NX_AI_ENDPOINT = (typeof NX_AI_ENDPOINT!=='undefined' && NX_AI_ENDPOINT) ? NX_AI_ENDPOINT : 'https://nexusshoop.vercel.app/api/raahnuma';
 function nxLocal2(text){
-  var q=String(text).toLowerCase();
+  var q=String(text).toLowerCase().trim();
+  if(/who are you|quien eres|quién eres|qué eres|que eres|quien te cre|quién te cre|who made you|who created you|tu nombre/.test(q)){
+    return {reply:'I am Raahnuma ✨ — the Urdu-first shopping guide of NexusShop, built by Lucas (Argentina) together with Talal (Lahore). I help you find products, explain Committee Buy groups, and guide your COD order to the seller\'s WhatsApp.',picks:[]};
+  }
+  if(/^(hola|hello|hi |hi$|salam|assalam|aoa|salaam)/.test(q)){
+    return {reply:'Assalam-o-Alaikum! 👋 Tell me what you need — a budget, an occasion, a product — and I\'ll find it in our catalog.',picks:[]};
+  }
+  if(/gracias|thank you|shukriya/.test(q)){
+    return {reply:'You\'re welcome! 🌟 Anything else I can help you find today?',picks:[]};
+  }
   var budget=(q.match(/(\d[\d,]{2,})/)||[])[1]; budget=budget?parseInt(budget.replace(/,/g,'')):null;
   var tokens=q.split(/[^a-z0-9\u0600-\u06FF]+/).filter(function(w){return w.length>2});
   var scored=PRODS.filter(function(p){return !p.demo}).map(function(p){
@@ -9,12 +18,8 @@ function nxLocal2(text){
     if(budget&&p.price<=budget)s+=1; return {p:p,s:s};
   }).sort(function(a,b){return b.s-a.s});
   var picks=scored.filter(function(x){return x.s>0}).slice(0,4).map(function(x){return x.p.id});
-  var reply;
-  if(/what can you do|quién te cre|who made you|kya kar sakte/.test(q)){
-    reply='NexusShop was built by Lucas (Argentina) together with Talal (Lahore) — and I am Raahnuma, their Urdu-first shopping guide. I can find products by need or budget, explain Committee Buy groups, and guide your COD/WhatsApp order.';
-  } else if(picks.length){ reply='Here\'s what I found for you: '; }
-  else { reply='No exact match yet — closest options: '; picks=scored.slice(0,3).map(function(x){return x.p.id}); }
-  return {reply:reply,picks:picks};
+  if(picks.length) return {reply:'Here\'s what I found for you:',picks:picks};
+  return {reply:'I didn\'t find that yet — our sellers are onboarding this week. Try: "bluetooth speaker", "gift under 2000", "sasta TV", or ask me about Committee Buy 👥.',picks:[]};
 }
 window.nxAiSend=function(text){
   text=(text||'').trim(); if(!text)return;
@@ -23,7 +28,7 @@ window.nxAiSend=function(text){
   var ty=nxAiAdd('ai','…');
   var settled=false;
   function finish(reply,ids){ if(settled)return; settled=true; try{ty.remove()}catch(e){} nxAiAdd('ai',reply,ids); }
-  setTimeout(function(){ if(!settled){ var r=nxLocal2(text); finish(r.reply+'  (offline smart search)', r.picks); } },12000);
+  setTimeout(function(){ if(!settled){ var r=nxLocal2(text); finish(r.reply,r.picks); } },12000);
   var snap=nxSnap();
   var SYS='You are Raahnuma, the friendly shopping guide of NexusShop (Pakistan marketplace, COD cash-on-delivery, WhatsApp checkout, Committee Buy group discounts). Answer in the user\'s language (Urdu if Urdu, English otherwise; understand Roman Urdu and Spanish too). Recommend ONLY product ids present in CATALOG. Reply with ONLY valid JSON: {"reply":string,"products":[id strings, max 4]}. If nothing matches, say so kindly and suggest closest alternatives. Be warm, brief, useful.';
   try{
