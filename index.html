@@ -543,7 +543,8 @@ window.nxClose=function(){document.getElementById('nxGroup').hidden=true;};
 <script>
 /* ===== RAAHNUMA AI · FASE 3 ===== */
 var NX_GEMINI_KEY=''; // pegá acá tu clave gratis de Google AI Studio (opcional)
-function nxAiStatus(){return NX_GEMINI_KEY?'AI online ✨':'smart search mode 🔎'}
+var NX_AI_ENDPOINT = NX_GEMINI_KEY ? ('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+NX_GEMINI_KEY) : 'https://nexusshoop.vercel.app/api/raahnuma';
+function nxAiStatus(){return 'AI online ✨'}
 document.body.insertAdjacentHTML('beforeend','<button id="nxAiFab" onclick="nxAiOpen()">✨</button><div id="nxAi" hidden></div>');
 function nxGreet(){return LAN==='ur'?'السلام علیکم! میں راہنما ہوں 🤖 آپ کیا ڈھونڈ رہے ہیں؟ میں آپ کو بہترین پروڈکٹ دکھاؤں گا۔':'Assalam-o-Alaikum! I\'m Raahnuma 🤖 your shopping guide. Tell me what you need — budget, occasion, anything — and I\'ll find it for you.'}
 window.nxAiOpen=function(){var o=document.getElementById('nxAi');o.hidden=false;
@@ -564,9 +565,9 @@ function nxSnap(){return PRODS.filter(function(p){return !p.demo}).slice(0,40).m
 window.nxAiSend=function(text){text=(text||'').trim();if(!text)return;var inp=document.getElementById('nxAiQ');if(inp)inp.value='';
  nxAiAdd('me',text);var ty=nxAiAdd('ai','…');
  var snap=nxSnap();
- if(NX_GEMINI_KEY){
+ if(NX_AI_ENDPOINT){
   var SYS='You are Raahnuma, the friendly shopping guide of NexusShop (Pakistan marketplace, COD cash-on-delivery, WhatsApp checkout, Committee Buy group discounts). Answer in the user\'s language: Urdu if they write Urdu, English otherwise; understand Roman Urdu too. Recommend ONLY product ids that exist in CATALOG. Reply with ONLY valid JSON: {"reply":string,"products":[id strings, max 4]}. If nothing matches, say so kindly and suggest the closest alternatives. Be warm, brief, useful.';
-  fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+NX_GEMINI_KEY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({systemInstruction:{parts:[{text:SYS}]},contents:[{role:'user',parts:[{text:text+'\nCATALOG: '+JSON.stringify(snap)}]}],generationConfig:{temperature:0.4}})})
+  fetch(NX_AI_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({systemInstruction:{parts:[{text:SYS}]},contents:[{role:'user',parts:[{text:text+'\nCATALOG: '+JSON.stringify(snap)}]}],generationConfig:{temperature:0.4}})})
   .then(function(r){return r.json()}).then(function(j){var t=((j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts&&j.candidates[0].content.parts[0]&&j.candidates[0].content.parts[0].text)||'');
    var clean=t.replace(/```json|```/g,'').trim();var o=null;try{o=JSON.parse(clean)}catch(e){var m2=clean.match(/\{[\s\S]*\}/);if(m2){try{o=JSON.parse(m2[0])}catch(e2){}}}
    ty.remove();nxAiAdd('ai',(o&&o.reply)||t||'...',(o&&o.products)||[]);})
