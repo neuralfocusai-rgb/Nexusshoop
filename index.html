@@ -56,7 +56,7 @@ background:linear-gradient(90deg,#00d4ff,#a78bfa,#f472b6,#00d4ff);background-siz
 box-shadow:0 14px 44px rgba(244,114,182,.4);animation:up 1s 1.1s ease both,pulse 2s ease-in-out infinite;transition:.3s}
 .enter-btn:hover{transform:translateY(-3px) scale(1.05);box-shadow:0 20px 50px rgba(244,114,182,.6)}
 
-/* === CAROUSEL BANNER ANIMADO (ESTILO BET30) === */
+/* === CAROUSEL BANNER ANIMADO === */
 .banner-carousel{position:relative;overflow:hidden;border-radius:24px;margin:0 0 16px 0;min-height:280px;
 background:linear-gradient(135deg,#1e1b4b 0%,#312e81 50%,#1e1b4b 100%);border:1px solid rgba(255,255,255,.1);
 box-shadow:0 20px 60px rgba(0,0,0,.4),inset 0 0 60px rgba(255,255,255,.05)}
@@ -188,6 +188,25 @@ footer{max-width:640px;margin:0 auto;padding:20px 16px 8px;text-align:center;col
 #nxAiIn{display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--border)}
 #nxAiIn input{flex:1;margin:0}
 #nxAiIn button{width:52px;border:0;border-radius:14px;background:var(--grad);color:#0b1030;font-size:18px;font-weight:800;cursor:pointer}
+
+/* === COURIERS === */
+.nxcour{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.nxcour b.chip{font-weight:700;cursor:pointer;transition:.2s}
+.nxcour b.chip.on{background:var(--wa);color:#06281a;border-color:var(--wa)}
+.nxcour b.chip:not(.on){color:var(--text)}
+
+/* === REORDER + RECENTLY VIEWED === */
+.nxsec{margin:16px 0}
+.nxsec h3{font-size:13px;font-weight:800;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;padding-left:2px}
+.nxhorz{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none}
+.nxhorz::-webkit-scrollbar{display:none}
+.nxhcard{flex:0 0 140px;border:1px solid var(--border);border-radius:14px;background:var(--glass);backdrop-filter:blur(12px);overflow:hidden;cursor:pointer;animation:up .4s both}
+.nxhcard img{width:100%;height:100px;object-fit:cover;background:rgba(255,255,255,.05)}
+.nxhcard .b{padding:8px 10px}
+.nxhcard .n{font-size:11.5px;line-height:1.3;min-height:30px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.nxhcard .p{font-size:12px;font-weight:800;color:var(--g3);margin-top:4px}
+.nxhcard .badge-again{position:absolute;top:6px;left:6px;background:var(--wa);color:#06281a;font-size:9px;font-weight:900;padding:3px 7px;border-radius:6px;letter-spacing:.5px}
+.nxhcard{position:relative}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
@@ -221,7 +240,7 @@ footer{max-width:640px;margin:0 auto;padding:20px 16px 8px;text-align:center;col
 <header>
   <span class="logo">NexusShop</span><span class="sp"></span>
   <button class="lang" id="langB" onclick="toggleLang()">اردو</button>
-  <button class="icb" onclick="go('wish')">♥</button>
+  <button class="icb" onclick="go('reorder')">🔁</button>
   <button class="icb" onclick="go('cart')"><span class="bdg" id="bdg" hidden>0</span></button>
   <button class="icb" id="userB" onclick="userTap()">👤</button>
 </header>
@@ -231,7 +250,7 @@ footer{max-width:640px;margin:0 auto;padding:20px 16px 8px;text-align:center;col
 
 <nav id="nav">
   <button data-v="home" onclick="go('home')"><i>🏠</i><span data-i="home"></span></button>
-  <button data-v="wish" onclick="go('wish')"><i>💖</i><span data-i="wish"></span></button>
+  <button data-v="reorder" onclick="go('reorder')"><i>🔁</i><span data-i="reorder"></span></button>
   <button data-v="cart" onclick="go('cart')">🛒</button>
   <button data-v="orders" onclick="go('orders')"><i>📦</i><span data-i="orders"></span></button>
   <button data-v="sell" onclick="go('sell')"><i>🏪</i><span data-i="sell"></span></button>
@@ -241,16 +260,18 @@ footer{max-width:640px;margin:0 auto;padding:20px 16px 8px;text-align:center;col
 <div id="nxGroup" hidden></div>
 
 <script>
-/* ========== NEXUSSHOP - FUNCIONALIDAD TIPO MERCADOLIBRE ========== */
+/* ========== NEXUSSHOP CORE ========== */
 var LS={get:function(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}},
         set:function(k,v){localStorage.setItem(k,JSON.stringify(v))}};
 var LAN=LS.get('nx_lang','en'), USER=null, BUYER=null, SB=null, PRODS=[], CATS=[], VIEW='home', CUR=null, QTY=1;
 var WA_DEFAULT='542257550650';
 var I={
-en:{home:'Home',wish:'Wishlist',cart:'Cart',orders:'Orders',sell:'Sell',search:'Search products…',add:'Add',
+en:{home:'Home',reorder:'Reorder',cart:'Cart',orders:'Orders',sell:'Sell',search:'Search products…',add:'Add',
  tag:'Your store. Your country. Your income.',all:'All',
- stock:'in stock',cod:'Cash on Delivery',del:'Delivery tomorrow',ret:'7-day returns',qty:'Quantity',
- emptyCart:'Your cart is empty. Add something you love.',wishEmpty:'Tap 💖 on any product to save it here.',
+ stock:'in stock',cod:'Cash on Delivery',courier:'Courier at checkout',qty:'Quantity',
+ emptyCart:'Your cart is empty. Add something you love.',
+ reorderEmpty:'Products you order will appear here — one tap to buy again.',
+ recentlyViewed:'Recently Viewed',
  ordersEmpty:'No orders yet. When you order, tracking lives here.',total:'Total',orderWA:'Order on WhatsApp (COD)',
  sellT:'Sell on NexusShop',sellP:'Start FREE with 5 products. Then upgrade from PKR 2,500/month.',
  sellBtn:'See plans & subscribe',openCenter:'Open Seller Center',login:'Log in',signup:'Sign up',email:'Email',pass:'Password',logout:'Log out',
@@ -265,10 +286,13 @@ en:{home:'Home',wish:'Wishlist',cart:'Cart',orders:'Orders',sell:'Sell',search:'
   {badge:'🇵🇰 Local',title:'Made for Pakistan',subtitle:'Cash on Delivery, Urdu support, WhatsApp checkout.',features:['COD Ready','Urdu Language','WhatsApp']},
   {badge:'⚡ Fast',title:'List in Minutes',subtitle:'From signup to first sale in under 24 hours.',features:['Quick Setup','Easy Upload','Fast Sales']}
  ]},
-ur:{home:'ہوم',wish:'پسندیدہ',cart:'کارٹ',orders:'آرڈرز',sell:'بیچیں',search:'مصنوعات تلاش کریں…',add:'شامل',
+ur:{home:'ہوم',reorder:'دوبارہ آرڈر',cart:'کارٹ',orders:'آرڈرز',sell:'بیچیں',search:'مصنوعات تلاش کریں…',add:'شامل',
  tag:'آپ کی دکان۔ آپ کا ملک۔ آپ کی کمائی۔',all:'تمام',
- stock:'اسٹاک میں',cod:'کیش آن ڈیلیوری',del:'کل ڈیلیوری',ret:'7 دن واپسی',qty:'تعداد',
- emptyCart:'کارٹ خالی ہے۔',wishEmpty:'کسی پروڈکٹ پر 💖 دبائیں۔',ordersEmpty:'ابھی کوئی آرڈر نہیں۔',total:'کل',
+ stock:'اسٹاک میں',cod:'کیش آن ڈیلیوری',courier:'چیک آؤٹ پر کوریئر',qty:'تعداد',
+ emptyCart:'کارٹ خالی ہے۔',
+ reorderEmpty:'آپ جو مصنوعات آرڈر کریں گے وہ یہاں نظر آئیں گی — ایک ٹیپ میں دوبارہ خریدیں۔',
+ recentlyViewed:'حالیہ دیکھا گیا',
+ ordersEmpty:'ابھی کوئی آرڈر نہیں۔',total:'کل',
  orderWA:'واٹس ایپ پر آرڈر (COD)',sellT:'NexusShop پر فروخت',sellP:'5 مصنوعات مفت۔ پھر PKR 2,500/ماہ سے اپ گریڈ کریں۔',
  sellBtn:'پلان دیکھیں',openCenter:'سیلر سینٹر کھولیں',login:'لاگ ان',signup:'سائن اپ',email:'ای میل',pass:'پاس ورڈ',logout:'لاگ آؤٹ',
  offline:'آف لائن موڈ: کنکشن آنے پر کیٹلاگ sync ہوگا۔',noProds:'اس ہفتہ فروش شامل ہو رہے ہیں۔',details:'تفصیل',waSolo:'فروخت کنندہ سے چیٹ',back:'← واپس',
@@ -305,7 +329,22 @@ function enterShop(){sessionStorage.setItem('nx_in','1');document.getElementById
 function cart(){return LS.get('nx_cart',[])}
 function saveCart(c){LS.set('nx_cart',c);badge()}
 function badge(){var n=cart().reduce(function(s,x){return s+x.q},0);var b=document.getElementById('bdg');b.hidden=!n;b.textContent=n}
-function wish(){return LS.get('nx_wish',[])}
+
+/* ===== REORDER + RECENTLY VIEWED (replaces wishlist) ===== */
+function ordered(){return LS.get('nx_ordered',[])}
+function saveOrdered(arr){LS.set('nx_ordered',arr)}
+function markOrdered(ids){var o=ordered();ids.forEach(function(id){
+ var p=PRODS.find(function(x){return x.id===id});if(!p)return;
+ o=o.filter(function(x){return x.id!==id});
+ o.unshift({id:id,name:p.name,price:p.price,img:p.img,wa:p.wa,shopName:p.shopName,ts:Date.now()});
+});
+ o=o.slice(0,20);saveOrdered(o);}
+function viewed(){return LS.get('nx_viewed',[])}
+function markViewed(id){var p=PRODS.find(function(x){return x.id===id});if(!p||p.demo)return;
+ var v=viewed().filter(function(x){return x.id!==id});
+ v.unshift({id:id,name:p.name,price:p.price,img:p.img});
+ saveOrdered(ordered()); LS.set('nx_viewed',v.slice(0,8));}
+
 function addCart(id){if(!BUYER){toast(t('buyerInfo'),'info');go('login');return}
  var p=PRODS.find(function(x){return x.id===id});if(!p)return;
  if(p.demo){toast('DEMO item — cannot add to cart','info');return}
@@ -314,34 +353,72 @@ function addCart(id){if(!BUYER){toast(t('buyerInfo'),'info');go('login');return}
  saveCart(c);toast('✓ '+t('add'),'ok');render()}
 function setQ(id,d){var c=cart();var f=c.find(function(x){return x.i===id});if(!f)return;
  f.q+=d;if(f.q<1)c=c.filter(function(x){return x.i!==id});saveCart(c);render()}
-function toggleWish(id){var w=wish();var p=PRODS.find(function(x){return x.id===id});
- if(p.demo){toast('DEMO item — cannot save','info');return}
- if(w.includes(id)){w=w.filter(function(x){return x!==id});toast('Removed','info')}
- else{w.push(id);toast('💖 Saved','ok')}
- LS.set('nx_wish',w);render()}
+
+/* ===== COURIERS ===== */
+var NXCOURIERS=[
+ {n:'TCS',u:'https://tcs.com.pk'},
+ {n:'Leopards',u:'https://www.leopardscourier.com'},
+ {n:'M&P',u:'https://www.mp.com.pk'},
+ {n:'Post Ex',u:'https://postex.pk'},
+ {n:'Trax',u:'https://www.trax.com.pk'}
+];
+window.NXCOURIER=LS.get('nx_courier','Seller arranges');
+window.nxSetCourier=function(n,el){window.NXCOURIER=n;LS.set('nx_courier',n);
+ document.querySelectorAll('.nxcour b').forEach(function(x){x.classList.remove('on')});
+ if(el)el.classList.add('on');
+ toast('🚚 '+n+' will be added to your order message','ok');};
+function nxCourierBox(){return '<div class="card" style="margin-top:12px"><h2 class="t">🚚 Doorstep delivery</h2>'+
+ '<div class="nxcour">'+
+ NXCOURIERS.map(function(c){return '<b class="chip'+(window.NXCOURIER===c.n?' on':'')+'" onclick="nxSetCourier(\''+c.n+'\',this)">'+c.n+'</b>'}).join('')+
+ '<b class="chip'+(window.NXCOURIER==='Seller arranges'?' on':'')+'" onclick="nxSetCourier(\'Seller arranges\',this)">Seller arranges</b></div>'+
+ '<div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:10px">'+NXCOURIERS.map(function(c){return '<a href="'+c.u+'" target="_blank" rel="noopener" style="font-size:11px;color:var(--g3);text-decoration:none">'+c.n+' ↗</a>'}).join('')+'</div>'+
+ '<p style="font-size:11px;color:var(--muted);margin-top:10px;line-height:1.6">Independent courier companies. NexusShop is not affiliated with them yet — delivery is arranged between you, the seller and the courier. Cash on Delivery available with most couriers.</p></div>';}
+
 function waCart(){if(!BUYER){toast(t('buyerInfo'),'info');go('login');return}
  var c=cart().filter(function(x){return !x.demo});if(!c.length)return;
  var first=c[0];var wa=(first&&first.wa)||WA_DEFAULT;
  var shopName=(first&&first.shopName)||'Seller';
  var msg='Assalam o Alaikum '+shopName+'! I want to order from NexusShop (Buyer: '+BUYER.email+'):\n'+
   c.map(function(x){return '• '+x.name+' x'+x.q+' — '+money(x.price*x.q)}).join('\n')+
-  '\n'+t('total')+': '+money(c.reduce(function(s,x){return s+x.price*x.q},0))+' (COD)';
- window.open('https://wa.me/'+wa+'?text='+encodeURIComponent(msg),'_blank')}
+  '\n'+t('total')+': '+money(c.reduce(function(s,x){return s+x.price*x.q},0))+' (COD)'+
+  '\n🚚 Preferred courier: '+window.NXCOURIER;
+ window.open('https://wa.me/'+wa+'?text='+encodeURIComponent(msg),'_blank');
+ markOrdered(c.map(function(x){return x.i})); saveCart([]);toast('✓ Order sent — saved for quick reorder!','ok');render();}
 function waOne(p){if(!BUYER){toast(t('buyerInfo'),'info');go('login');return}
  var wa=String((p.wa)||WA_DEFAULT).replace(/\D/g,'');var shopName=p.shopName||'Seller';
- var msg=(LAN==='ur'?'السلام علیکم '+shopName+'! مجھے دلچسپی ہے (خریدار: '+BUYER.email+'): ':'Hi '+shopName+'! I\'m interested (Buyer: '+BUYER.email+'): ')+p.name+' — '+money(p.price);
- window.open('https://wa.me/'+wa+'?text='+encodeURIComponent(msg),'_blank')}
+ var msg=(LAN==='ur'?'السلام علیکم '+shopName+'! مجھے دلچسپی ہے (خریدار: '+BUYER.email+'): ':'Hi '+shopName+'! I\'m interested (Buyer: '+BUYER.email+'): ')+p.name+' — '+money(p.price)+
+ '\n🚚 Preferred courier: '+window.NXCOURIER;
+ window.open('https://wa.me/'+wa+'?text='+encodeURIComponent(msg),'_blank');
+ markOrdered([p.id]);toast('✓ Saved for reorder','ok');}
 
 function go(v){if(v==='cart'&&cart().length>0&&!BUYER){toast(t('buyerInfo'),'info');go('login');return}
  VIEW=v;CUR=null;render();window.scrollTo(0,0);
  document.querySelectorAll('#nav button').forEach(function(b){b.classList.toggle('on',b.dataset.v===v)})}
-function openP(id){CUR=id;QTY=1;VIEW='detail';render();window.scrollTo(0,0)}
+function openP(id){CUR=id;QTY=1;VIEW='detail';markViewed(id);render();window.scrollTo(0,0)}
 
 function vHome(){
  var slides=t('carousel'),dotsHTML='',slidesHTML=slides.map(function(slide,i){
   dotsHTML+='<div class="dot'+(i===0?' active':'')+'" onclick="goToSlide('+i+')"></div>';
   return '<div class="carousel-slide'+(i===0?' active':'')+'" data-slide="'+i+'"><div class="carousel-orb carousel-orb-1"></div><div class="carousel-orb carousel-orb-2"></div><div class="slide-badge">'+slide.badge+'</div><h2 class="slide-title">'+slide.title+'</h2><div class="slide-subtitle">'+slide.subtitle+'</div><div class="slide-features">'+slide.features.map(function(f){return '<div class="slide-pill">✓ '+f+'</div>'}).join('')+'</div></div>'}).join('');
+
+ var reorderSec='';
+ var o=ordered();
+ if(o.length){
+  reorderSec='<div class="nxsec"><h3>🔁 Order Again</h3><div class="nxhorz">'+o.slice(0,6).map(function(x){
+   return '<div class="nxhcard" onclick="openP(\''+x.id+'\')"><span class="badge-again">ORDER AGAIN</span>'+(x.img?'<img src="'+esc(x.img)+'">':'<div style="height:100px;display:flex;align-items:center;justify-content:center;font-size:40px">🛍️</div>')+'<div class="b"><div class="n">'+esc(x.name)+'</div><div class="p">'+money(x.price)+'</div></div></div>'
+  }).join('')+'</div></div>';
+ }
+
+ var viewedSec='';
+ var v=viewed();
+ if(v.length){
+  viewedSec='<div class="nxsec"><h3>👀 '+t('recentlyViewed')+'</h3><div class="nxhorz">'+v.map(function(x){
+   return '<div class="nxhcard" onclick="openP(\''+x.id+'\')">'+(x.img?'<img src="'+esc(x.img)+'">':'<div style="height:100px;display:flex;align-items:center;justify-content:center;font-size:40px">🛍️</div>')+'<div class="b"><div class="n">'+esc(x.name)+'</div><div class="p">'+money(x.price)+'</div></div></div>'
+  }).join('')+'</div></div>';
+ }
+
  return '<div class="banner-carousel" id="bannerCarousel">'+slidesHTML+'<div class="carousel-dots" id="carouselDots">'+dotsHTML+'</div></div>'+
+ reorderSec+viewedSec+
  '<input class="search" placeholder="'+t('search')+'" oninput="filt(this.value)">'+
  '<div class="chips"><button class="chip on" onclick="cat(0,this)">'+t('all')+'</button>'+
  CATS.map(function(c){return '<button class="chip" onclick="cat('+c.id+',this)">'+esc(c.name)+'</button>'}).join('')+'</div>'+
@@ -350,23 +427,21 @@ function vHome(){
  '<div class="grid" id="grid">'+PRODS.map(card).join('')+'</div>'+
  (PRODS.length?'':'<div class="empty">'+t('noProds')+'</div>')}
 
-function card(p){var w=wish().includes(p.id);
+function card(p){
  var acts=p.demo?'<span class="demob">DEMO · example only</span>'
- :'<button class="add" onclick="event.stopPropagation();addCart(\''+p.id+'\')">+ '+t('add')+'</button>'+
-  '<button class="fav'+(w?' on':'')+'" onclick="event.stopPropagation();toggleWish(\''+p.id+'\')">💖</button>';
+ :'<button class="add" onclick="event.stopPropagation();addCart(\''+p.id+'\')">+ '+t('add')+'</button>';
  return '<div class="pcard" onclick="openP(\''+p.id+'\')">'+(p.demo?'<span class="ribbon">DEMO</span>':'')+
  (p.img?'<img class="pimg" src="'+esc(p.img)+'" loading="lazy" onerror="this.outerHTML=\'<div class=pimg style=&quot;display:flex;align-items:center;justify-content:center;font-size:44px&quot;>🛍️</div>\'">':'<div class="pimg" style="display:flex;align-items:center;justify-content:center;font-size:44px">🛍️</div>')+
  '<div class="pbody"><div class="pname">'+esc(p.name)+'</div><div class="pprice">'+money(p.price)+'</div>'+
  '<div class="pacts">'+acts+'</div></div></div>'}
 
-function vDetail(){var p=PRODS.find(function(x){return x.id===CUR});if(!p)return vHome();var w=wish().includes(p.id);
+function vDetail(){var p=PRODS.find(function(x){return x.id===CUR});if(!p)return vHome();
  var actions;
  if(p.demo){
   actions='<div class="infob" style="margin-top:14px">ℹ️ '+t('demoDetail')+'</div>';
  }else{
   actions='<div style="margin-top:14px"><button class="btn" onclick="addCur()">+ '+t('add')+' — '+money(p.price*QTY)+'</button>'+
-  '<button class="btn wa" onclick="waOne(PRODS.find(function(x){return x.id===CUR}))">💬 '+t('waSolo')+'</button>'+
-  '<button class="btn ghost" onclick="toggleWish(\''+p.id+'\')">'+(w?'💖 Saved':'💖 '+t('wish'))+'</button></div>';
+  '<button class="btn wa" onclick="waOne(PRODS.find(function(x){return x.id===CUR}))">💬 '+t('waSolo')+'</button></div>';
  }
  var html='<div class="card"><button class="btn ghost" style="width:auto;padding:10px 16px;margin:0 0 12px" onclick="go(\'home\')">'+t('back')+'</button>'+
  (p.img?'<img class="dimg" src="'+esc(p.img)+'" onerror="this.outerHTML=\'<div class=dimg style=&quot;display:flex;align-items:center;justify-content:center;font-size:70px&quot;>🛍️</div>\'">':'<div class="dimg" style="display:flex;align-items:center;justify-content:center;font-size:70px">🛍️</div>')+
@@ -374,11 +449,11 @@ function vDetail(){var p=PRODS.find(function(x){return x.id===CUR});if(!p)return
  '<h2 class="t" style="margin-top:14px">'+esc(p.name)+'</h2>'+
  (p.shopName?'<div class="shopline">🏪 Sold by <b>'+esc(p.shopName)+'</b></div>':'')+
  '<div style="font-size:24px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;margin-top:8px">'+money(p.price)+'</div>'+
- '<div class="tags"><span class="tag">🚚 '+t('del')+'</span><span class="tag">💵 '+t('cod')+'</span><span class="tag">↩ '+t('ret')+'</span></div>'+
+ '<div class="tags"><span class="tag">💵 '+t('cod')+'</span><span class="tag">🚚 '+t('courier')+'</span></div>'+
  '<div class="lbl">'+t('qty')+'</div><div class="q"><button onclick="dq(-1)">−</button><span id="q">'+QTY+'</span><button onclick="dq(1)">+</button></div>'+
  actions+
  (p.desc?'<div class="lbl" style="margin-top:16px">'+t('details')+'</div><p style="font-size:13.5px;color:var(--muted);line-height:1.7">'+esc(p.desc)+'</p>':'')+'</div>';
- if(!p.demo)html+='<div id="nxCommitBox"></div>';
+ if(!p.demo)html+=nxCourierBox()+'<div id="nxCommitBox"></div>';
  return html;}
 
 function vCart(){if(!BUYER){return vLogin()}
@@ -391,11 +466,18 @@ function vCart(){if(!BUYER){return vLogin()}
  '<div class="inf"><div class="nm">'+esc(x.name)+'</div><div class="pr">'+money(x.price*x.q)+'</div></div>'+
  '<div class="q"><button onclick="setQ(\''+x.i+'\',-1)">−</button><span>'+x.q+'</span><button onclick="setQ(\''+x.i+'\',1)">+</button></div></div>'}).join('')+
  '<div class="tot"><span>'+t('total')+'</span><b>'+money(tot)+'</b></div>'+
- '<button class="btn wa" onclick="waCart()">💬 '+t('orderWA')+'</button></div>'}
+ nxCourierBox()+
+ '<button class="btn wa" style="margin-top:12px" onclick="waCart()">💬 '+t('orderWA')+'</button></div>'}
 
-function vWish(){var w=wish();var items=PRODS.filter(function(p){return w.includes(p.id)});
- return '<div class="card"><h2 class="t">💖 '+t('wish')+'</h2>'+
- (items.length?'<div class="grid" style="margin:0">'+items.map(card).join('')+'</div>':'<div class="empty">'+t('wishEmpty')+'</div>')+'</div>'}
+function vReorder(){
+ var o=ordered();
+ if(!o.length)return '<div class="card"><h2 class="t">🔁 '+t('reorder')+'</h2><div class="empty">'+t('reorderEmpty')+'</div></div>';
+ return '<div class="card"><h2 class="t">🔁 '+t('reorder')+'</h2><p style="color:var(--muted);font-size:12px;margin-bottom:12px">Tap any product to order again in one tap.</p>'+
+ '<div class="grid" style="margin:0">'+o.map(function(x){var p=PRODS.find(function(q){return q.id===x.id});if(!p)return '';
+  return '<div class="pcard" onclick="openP(\''+p.id+'\')"><span class="ribbon">ORDER AGAIN</span>'+
+  (p.img?'<img class="pimg" src="'+esc(p.img)+'">':'<div class="pimg" style="display:flex;align-items:center;justify-content:center;font-size:44px">🛍️</div>')+
+  '<div class="pbody"><div class="pname">'+esc(p.name)+'</div><div class="pprice">'+money(p.price)+'</div>'+
+  '<div class="pacts"><button class="add" onclick="event.stopPropagation();addCart(\''+p.id+'\')">+ '+t('add')+'</button></div></div></div>'}).join('')+'</div></div>';}
 
 function vOrders(){return '<div class="card"><h2 class="t">📦 '+t('orders')+'</h2><div class="empty">'+t('ordersEmpty')+'</div></div>'}
 
@@ -427,7 +509,7 @@ window.goToSlide=function(n){var slides=document.querySelectorAll('.carousel-sli
  window.currentSlide=n;}
 
 function render(){if(!sessionStorage.getItem('nx_in'))return;applyLanguage();
- var v=VIEW==='home'?vHome():VIEW==='detail'?vDetail():VIEW==='cart'?vCart():VIEW==='wish'?vWish():VIEW==='orders'?vOrders():VIEW==='sell'?vSell():vLogin();
+ var v=VIEW==='home'?vHome():VIEW==='detail'?vDetail():VIEW==='cart'?vCart():VIEW==='reorder'?vReorder():VIEW==='orders'?vOrders():VIEW==='sell'?vSell():vLogin();
  document.getElementById('view').innerHTML=v;
  document.querySelectorAll('#nav button').forEach(function(b){b.classList.toggle('on',b.dataset.v===VIEW)});badge();
  if(VIEW==='home')initCarousel();
@@ -435,6 +517,7 @@ function render(){if(!sessionStorage.getItem('nx_in'))return;applyLanguage();
 
 function initCarousel(){
  window.currentSlide=0;
+ if(window.carouselInterval)clearInterval(window.carouselInterval);
  window.carouselInterval=setInterval(function(){
   var next=(window.currentSlide+1)%t('carousel').length;
   goToSlide(next);
@@ -442,9 +525,11 @@ function initCarousel(){
 
 function userTap(){if(BUYER){BUYER=null;LS.set('nx_buyer',null);document.getElementById('userB').textContent='👤';toast(t('logout'),'info');go('home')}else go('login')}
 
-async function ensureSB(){if(SB)return SB;try{
+async function ensurePublic(){if(window.SBP)return window.SBP;try{
  var m=await import('https://esm.sh/@supabase/supabase-js@2.45.4');
- SB=m.createClient('https://iafofzwxkzwliisvstfy.supabase.co','sb_publishable_uXpbSgDe4OXVWibgQ187RA_INLaX0SY');return SB}catch(e){return null}}
+ window.SBP=m.createClient('https://iafofzwxkzwliisvstfy.supabase.co','sb_publishable_uXpbSgDe4OXVWibgQ187RA_INLaX0SY',{auth:{persistSession:false,autoRefreshToken:false}});return window.SBP}catch(e){return null}}
+
+async function ensureSB(){return await ensurePublic()}
 
 async function doBuyerLogin(){var email=document.getElementById('le').value.trim(),pass=document.getElementById('lp').value;
  if(!email||!pass){toast('Email and password required','err');return}
@@ -455,7 +540,7 @@ async function doBuyerSignup(){var email=document.getElementById('le').value.tri
  BUYER={email:email,loginTime:Date.now()};LS.set('nx_buyer',BUYER);
  document.getElementById('userB').textContent='✅';toast('✓ '+t('signup'),'ok');go('home')}
 
-async function loadCatalog(){var s=await ensureSB();if(!s){var o=document.getElementById('off');if(o)o.hidden=false;return}
+async function loadCatalog(){var s=await ensurePublic();if(!s){var o=document.getElementById('off');if(o)o.hidden=false;return}
  try{var a=await s.from('ns_products').select('*,ns_shops(name,whatsapp)').eq('status','active').limit(60);
   if(!a.error&&a.data&&a.data.length){PRODS=a.data.map(function(p){return{id:p.id,name:LAN==='ur'&&p.title_ur?p.title_ur:p.title_en,price:(p.price_cents||0)/100,img:p.image_url,cat:p.category_id,desc:p.description,demo:!!p.is_demo,wa:(p.ns_shops&&p.ns_shops.whatsapp)||null,shopName:(p.ns_shops&&p.ns_shops.name)||null}});}
   else{var b=await s.from('products').select('*').limit(60);
@@ -542,7 +627,7 @@ window.nxClose=function(){document.getElementById('nxGroup').hidden=true;};
 
 <script>
 /* ===== RAAHNUMA AI · FASE 3 ===== */
-var NX_GEMINI_KEY=''; // pegá acá tu clave gratis de Google AI Studio (opcional)
+var NX_GEMINI_KEY='';
 var NX_AI_ENDPOINT = NX_GEMINI_KEY ? ('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+NX_GEMINI_KEY) : 'https://nexusshoop.vercel.app/api/raahnuma';
 function nxAiStatus(){return 'AI online ✨'}
 document.body.insertAdjacentHTML('beforeend','<button id="nxAiFab" onclick="nxAiOpen()">✨</button><div id="nxAi" hidden></div>');
@@ -592,6 +677,6 @@ applyLanguage();badge();
 if(sessionStorage.getItem('nx_in')){document.getElementById('splash').style.display='none';render();loadCatalog()}
 else{createParticles()}
 </script>
-<script src="raahnuma-guard.js?v=3"></script>
+<script src="raahnuma-guard.js?v=5"></script>
 </body>
 </html>
