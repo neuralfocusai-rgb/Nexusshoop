@@ -171,5 +171,6 @@ window.delProd=async function(id){if(!confirm('Delete this product?'))return;
  var r=await SB.from('ns_products').delete().eq('id',id);toast(r.error?r.error.message:'Deleted',r.error?'err':'ok');if(!r.error)await refresh();};
 boot();
 </script>
+<script src="seller-profile.js?v=1"></script>
 </body>
 </html>
