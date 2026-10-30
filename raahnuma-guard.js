@@ -11,7 +11,7 @@ function nxLocal2(text){
     return {reply:'You\'re welcome! 🌟 Anything else I can help you find today?',picks:[]};
   }
   var budget=(q.match(/(\d[\d,]{2,})/)||[])[1]; budget=budget?parseInt(budget.replace(/,/g,'')):null;
-  var tokens=q.split(/[^a-z0-9\u0600-\u06FF]+/).filter(function(w){return w.length>2});
+  var tokens=q.split(/[^a-z0-9\u0600-\u06FF]+/).filter(function(w){return w.length>1});
   var scored=PRODS.filter(function(p){return !p.demo}).map(function(p){
     var hay=(p.name+' '+(p.desc||'')).toLowerCase(); var s=0;
     tokens.forEach(function(w){ if(hay.indexOf(w)>-1) s++; });
