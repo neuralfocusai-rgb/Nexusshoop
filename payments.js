@@ -62,3 +62,10 @@ function stats(s){var div=document.createElement('div');div.className='nxpf-card
   '<div style="flex:1;min-width:90px;border:1px solid rgba(0,166,80,.4);border-radius:12px;padding:10px;text-align:center"><b style="font-size:18px">'+com+'</b><div style="font-size:10.5px;opacity:.7">committee</div></div></div>';
   (document.querySelector('main')||document.body).appendChild(div);});}
 })();
+/* tope de productos segun plan */
+(function(){function setLimit(){if(!window.NXUID)return setTimeout(setLimit,1500);
+ SB.from('stores').select('id,plan').eq('owner_id',window.NXUID).limit(1).then(function(r){var s=r.data&&r.data[0];if(!s)return;
+  var p=s.plan||'free';window.NXLIMIT=p==='max'?500:(p==='pro'?50:5);
+  SB.from('ns_products').select('id',{count:'exact',head:true}).eq('shop_id',s.id).then(function(c){
+   var el=document.getElementById('myProdCount');if(el&&c.count!=null)el.innerHTML=c.count+' / '+window.NXLIMIT+(p==='free'?' free':' included');});});}
+ setTimeout(setLimit,2500);})();

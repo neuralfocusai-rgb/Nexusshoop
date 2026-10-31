@@ -145,7 +145,7 @@ window.saveProduct=async function(){
  var price=parseFloat(document.getElementById('pPrice').value)||0;
  if(!name||price<=0)return toast('Title and price required','err');
  if(!PLAN){var cnt=await SB.from('ns_products').select('id',{count:'exact',head:true}).eq('shop_id',SHOP.id);
-  if((cnt.count||0)>=5)return toast('Free tier limit: 5 products. Upgrade to publish more.','err');}
+  if((cnt.count||0)>=5)return toast('Plan limit reached — upgrade in Plans Free tier limit: 5 products. Upgrade to publish more. subscription.','err');}
  var old=parseFloat(document.getElementById('pOld').value)||null;
  var r=await SB.from('ns_products').insert({
   shop_id:SHOP.id,
