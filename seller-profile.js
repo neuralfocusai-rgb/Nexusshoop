@@ -29,3 +29,8 @@ window.pfSave=function(id){
  else fin(null)};
 boot();
 })();
+/* banner explicativo en el login de vendedores */
+(function(){function note(){var pw=document.querySelector('input[type="password"]');
+ if(pw&&!document.getElementById('nxSellNote')){(document.querySelector('main')||document.body).insertAdjacentHTML('afterbegin',
+ '<div id="nxSellNote" style="padding:12px 14px;border-radius:14px;border:1px solid rgba(34,211,238,.4);background:rgba(34,211,238,.08);color:#a5f3fc;font-size:12.5px;margin:12px 0">🔐 <b>Seller area</b> — the key to your shop. Buyers never see this screen: they shop as guests and order by WhatsApp.</div>');}}
+ setTimeout(note,800);setTimeout(note,2500);})();
