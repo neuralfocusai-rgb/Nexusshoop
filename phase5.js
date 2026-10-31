@@ -33,7 +33,7 @@ function vSettings(){
  '<details class="nxleg"><summary>🔒 Privacy policy</summary><p>'+PRIV+'</p></details>'+
  '<details class="nxleg"><summary>📜 Terms of service</summary><p>'+TERMS+'</p></details>'+
  '<button class="btn ghost" style="margin-top:12px" onclick="nxClearData()">🧹 Clear my local data</button>'+
- '<p style="font-size:11px;color:var(--muted);margin-top:12px">NexusShop v1.6 · Lahore ↔ Argentina · built in public 🇵🇦</p></div>';}
+ '<p style="font-size:11px;color:var(--muted);margin-top:12px">NexusShop v1.7™ · The E-Commerce of Pakistan · پاکستان کا ای کامرس 🇵🇦</p></div>';}
 window.nxVoiceSet=function(v){LS.set('nx_voice',v);render()};
 window.nxClearData=function(){['nx_cart','nx_wish','nx_viewed','nx_ordered','nx_buyer','nx_courier'].forEach(function(k){localStorage.removeItem(k)});location.reload()};
 var _r5=render;

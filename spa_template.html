@@ -191,7 +191,7 @@ footer{max-width:640px;margin:0 auto;padding:20px 16px 8px;text-align:center;col
 </header>
 
 <main id="view"></main>
-<footer>© 2026 NexusShop · Built with ❤️ in Argentina 🇦🇷 · Made for Pakistan 🇰</footer>
+<footer>© 2026 NexusShop™ · Built with ❤️ in Argentina 🇦🇷 · Made for Pakistan 🇰</footer>
 
 <nav id="nav">
   <button data-v="home" onclick="go('home')"><i>🏠</i><span data-i="home"></span></button>
@@ -416,8 +416,8 @@ async function doBuyerSignup(){var email=document.getElementById('le').value.tri
  document.getElementById('userB').textContent='✅';toast('✓ '+t('signup'),'ok');go('home')}
 
 async function loadCatalog(){var s=await ensureSB();if(!s){var o=document.getElementById('off');if(o)o.hidden=false;return}
- try{var a=await s.from('ns_products').select('*,ns_shops(name,whatsapp)').eq('status','active').limit(60);
-  if(!a.error&&a.data&&a.data.length){PRODS=a.data.map(function(p){return{id:p.id,name:LAN==='ur'&&p.title_ur?p.title_ur:p.title_en,price:(p.price_cents||0)/100,img:p.image_url,cat:p.category_id,desc:p.description,demo:!!p.is_demo,wa:(p.ns_shops&&p.ns_shops.whatsapp)||null,shopName:(p.ns_shops&&p.ns_shops.name)||null}});}
+ try{var a=await s.from('ns_products').select('*,ns_shops(name,whatsapp,plan)').eq('status','active').limit(60);
+  if(!a.error&&a.data&&a.data.length){PRODS=a.data.map(function(p){return{id:p.id,name:LAN==='ur'&&p.title_ur?p.title_ur:p.title_en,price:(p.price_cents||0)/100,img:p.image_url,cat:p.category_id,desc:p.description,demo:!!p.is_demo,wa:(p.ns_shops&&p.ns_shops.whatsapp)||null,shopName:(p.ns_shops&&p.ns_shops.name)||null,shopPlan:(p.ns_shops&&p.ns_shops.plan)||'free'}});}
   else{var b=await s.from('products').select('*').limit(60);
    if(!b.error&&b.data)PRODS=b.data.map(function(p){return{id:p.id,name:p.name||p.title||'Item',price:p.price_pkr||p.price||0,img:p.image_url,cat:p.category_id,desc:p.description,demo:true,wa:null,shopName:null}});}
   var c=await s.from('ns_categories').select('*');if(!c.error&&c.data)CATS=c.data.map(function(x){return{id:x.id,name:LAN==='ur'&&x.name_ur?x.name_ur:x.name_en}});
@@ -444,5 +444,6 @@ else{createParticles()}
 <script src="raahnuma-guard.js?v=3"></script>
 <script src="phase5.js?v=1"></script>
 <script src="guest.js?v=1"></script>
+<script src="nxauth.js?v=1"></script>
 </body>
 </html>
